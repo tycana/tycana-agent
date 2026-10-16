@@ -4,6 +4,10 @@ Do this before you run anything from a release. It takes two minutes and needs
 [cosign](https://github.com/sigstore/cosign) and
 [slsa-verifier](https://github.com/slsa-framework/slsa-verifier). Replace `vX.Y.Z` with the tag.
 
+Tool versions: cosign 3 or later (with cosign 2.x, add `--new-bundle-format` to step 2), and
+slsa-verifier 2.7 or later (2.6 fails with "expected intoto:0.0.2, got dsse:0.0.1"). Both
+were checked against `v0.0.1-alpha.3` on 2026-10-16.
+
 ## 1. Download
 
 From https://github.com/tycana/tycana-agent/releases/tag/vX.Y.Z take:
