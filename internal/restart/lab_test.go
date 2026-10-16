@@ -32,10 +32,14 @@ var labCases = []struct {
 			"systemd-logind.service":      Inferred,
 			"session-4.scope":             Inferred,
 			"user@1000.service":           Inferred,
-			"unattended-upgrades.service": Unknown, // python3: libsystemd and libudev via modules
-			"init.scope":                  Unknown,
+			"unattended-upgrades.service": Possible, // python3; packages changed after it started
+			"init.scope":                  Possible,
 		},
-		counts: map[Status]int{Inferred: 4, Possible: 0, Unknown: 2, None: 17},
+		// With package times (dpkg.log of the run), every unit that
+		// started before the run's last change is possible: needrestart
+		// restarted most services during the run, before tzdata and the
+		// python3 packages were unpacked.
+		counts: map[Status]int{Inferred: 4, Possible: 19, Unknown: 0, None: 0},
 	},
 	{
 		// Only NSS and PAM modules were replaced: no stale unit links
@@ -48,7 +52,7 @@ var labCases = []struct {
 			"session-4.scope":        Possible,
 			"user@1000.service":      Possible,
 		},
-		counts: map[Status]int{Inferred: 0, Possible: 19, Unknown: 2, None: 3},
+		counts: map[Status]int{Inferred: 0, Possible: 22, Unknown: 0, None: 2},
 	},
 	{
 		// Debian 12 after its ten pending security updates (libssl3,
@@ -58,7 +62,8 @@ var labCases = []struct {
 		want: map[string]Status{
 			"dbus.service":                Inferred,
 			"ssh.service":                 Inferred,
-			"session-4.scope":             Inferred,
+			"session-5.scope":             Inferred,
+			"systemd-fsckd.service":       Inferred,
 			"systemd-journald.service":    Inferred,
 			"systemd-logind.service":      Inferred,
 			"systemd-networkd.service":    Inferred,
@@ -67,9 +72,9 @@ var labCases = []struct {
 			"systemd-udevd.service":       Inferred,
 			"unattended-upgrades.service": Inferred, // python3.11 itself was replaced
 			"user@1000.service":           Inferred,
-			"init.scope":                  Unknown,
+			"init.scope":                  Possible, // stale per root; systemd itself was not updated
 		},
-		counts: map[Status]int{Inferred: 11, Possible: 0, Unknown: 1, None: 4},
+		counts: map[Status]int{Inferred: 12, Possible: 4, Unknown: 0, None: 1},
 	},
 	{
 		// AlmaLinux 9 after all 66 pending updates (glibc, systemd,
@@ -93,11 +98,11 @@ var labCases = []struct {
 			"systemd-logind.service":     Inferred,
 			"tuned.service":              Inferred, // python3.9 itself was replaced
 			"user@1000.service":          Inferred,
-			"init.scope":                 Unknown,
+			"init.scope":                 Possible, // PID 1 re-executed; the package rule cannot see that
 			"sshd.service":               None,
 			"systemd-journald.service":   None,
 		},
-		counts: map[Status]int{Inferred: 16, Possible: 0, Unknown: 1, None: 7},
+		counts: map[Status]int{Inferred: 16, Possible: 2, Unknown: 0, None: 6},
 	},
 	{
 		// Debian 12, Apache with mod_ssl, then only libssl3 and openssl
@@ -131,7 +136,9 @@ var labCases = []struct {
 		want: map[string]Status{
 			"php8.2-fpm.service": Possible,
 		},
-		counts: map[Status]int{Inferred: 0, Possible: 1, Unknown: 2, None: 15},
+		// Installing php8.2-fpm itself is a package change after every
+		// older unit started, so all of them are possible.
+		counts: map[Status]int{Inferred: 0, Possible: 17, Unknown: 0, None: 1},
 	},
 	{
 		// Hold-out: PostgreSQL backend with PL/Python, then only python3
@@ -141,8 +148,30 @@ var labCases = []struct {
 			"postgresql.service": Possible,
 			"tuned.service":      Inferred,
 		},
-		counts: map[Status]int{Inferred: 1, Possible: 1, Unknown: 1, None: 22},
+		counts: map[Status]int{Inferred: 1, Possible: 23, Unknown: 0, None: 1},
 	},
+}
+
+// TestLabHoldoutsWithoutModuleRules checks ADR 0020's claim on the two
+// hold-outs: with package change times, a stale service is found even
+// when the agent knows nothing about the application. The snapshots'
+// module evidence for PHP and PostgreSQL is removed before the analysis.
+func TestLabHoldoutsWithoutModuleRules(t *testing.T) {
+	for dir, unit := range map[string]string{
+		"debian12/restart-php":   "php8.2-fpm.service",
+		"alma9/restart-postgres": "postgresql.service",
+	} {
+		snap := readSnapshotFile(t, filepath.Join("..", "..", "testdata", "lab", dir, "snapshot.json"))
+		if len(snap.Packages) == 0 {
+			t.Fatalf("%s: no package times", dir)
+		}
+		snap.Modules = slices.DeleteFunc(snap.Modules, func(m Module) bool { return m.Kind == "php" || m.Kind == "postgresql" })
+		for _, f := range Analyze(snap).Findings {
+			if f.Unit == unit && (f.Status != Possible || f.ChangedCount == 0) {
+				t.Errorf("%s %s: %s (%s)", dir, unit, f.Status, f.Reason)
+			}
+		}
+	}
 }
 
 // TestLabHoldoutsBeforeFix records the two silent misses the hold-out

@@ -22,6 +22,7 @@
 package restart
 
 import (
+	"fmt"
 	"maps"
 	"slices"
 	"strings"
@@ -61,6 +62,11 @@ type Snapshot struct {
 	// Modules lists run-time modules created after the earliest unit
 	// started.
 	Modules []Module `json:"modules,omitempty"`
+	// Packages is when each installed package last changed (dpkg's info
+	// files, rpm's install times). With it, a unit is "none" only when no
+	// package changed after it started. Snapshots from before 2026-10-16
+	// have none.
+	Packages []PackageChange `json:"packages,omitempty"`
 	// SSHProgram is the program an sshd login session runs: sshd itself,
 	// or sshd-session from OpenSSH 9.8. Its closure is in Programs.
 	SSHProgram string `json:"ssh_program,omitempty"`
@@ -88,7 +94,14 @@ type Finding struct {
 	Replaced []Replaced `json:"replaced,omitempty"`
 	// Modules lists the run-time modules behind a Possible verdict.
 	Modules []Replaced `json:"modules,omitempty"`
+	// Changed names packages that changed after the unit started, at most
+	// maxChanged of ChangedCount.
+	Changed      []string `json:"changed_packages,omitempty"`
+	ChangedCount int      `json:"changed_count,omitempty"`
 }
+
+// maxChanged bounds the package names listed for one unit.
+const maxChanged = 20
 
 // Replaced is one file a unit maps that has been replaced since.
 type Replaced struct {
@@ -111,7 +124,7 @@ func Analyze(s Snapshot) Report {
 		exec := u.Exec
 		switch {
 		case u.ID == "init.scope":
-			f.Status, f.Reason = Unknown, "PID 1 re-executes itself when systemd is updated; its start time does not show that"
+			f.Status, f.Reason = Unknown, "PID 1 re-executes itself only when systemd is updated; its start time does not show that"
 		case strings.HasSuffix(u.ID, ".scope") && u.Service == "sshd" && s.SSHProgram != "":
 			exec = s.SSHProgram
 			f.Reason = "an sshd login session; sshd starts this program for each connection"
@@ -132,6 +145,9 @@ func Analyze(s Snapshot) Report {
 		}
 		if f.Status == None {
 			possible(&f, u.Start, s.Programs[exec], s.Modules)
+		}
+		if len(s.Packages) > 0 {
+			packageRule(&f, u.Start, s.Packages)
 		}
 		f.Program = exec
 		r.Findings = append(r.Findings, f)
@@ -168,6 +184,36 @@ func judge(f *Finding, start time.Time, p Program, files map[string]FileTime) {
 	default:
 		f.Status = None
 	}
+}
+
+// packageRule bounds every verdict by the package changes, with no list
+// of applications (ADR 0020): a unit that started after the last change of
+// every package cannot use a replaced file ("none"); a unit that started
+// before some change may ("possible"), unless its closure already proves
+// it does ("inferred"). Only a unit without a start time stays "unknown".
+func packageRule(f *Finding, start time.Time, pkgs []PackageChange) {
+	if start.IsZero() || f.Status == Inferred {
+		return
+	}
+	var changed []PackageChange
+	for _, c := range pkgs {
+		if c.after(start) {
+			changed = append(changed, c)
+		}
+	}
+	if len(changed) == 0 {
+		if f.Status != Possible { // module files replaced outside the package manager still count
+			f.Status, f.Reason = None, "no package changed after it started"
+		}
+		return
+	}
+	slices.SortFunc(changed, func(a, b PackageChange) int { return b.Changed.Compare(a.Changed) })
+	f.ChangedCount = len(changed)
+	for _, c := range changed[:min(len(changed), maxChanged)] {
+		f.Changed = append(f.Changed, c.Name)
+	}
+	f.Status = Possible
+	f.Reason = join(f.Reason, fmt.Sprintf("%d packages changed after it started; it may use them", len(changed)))
 }
 
 // possible marks a unit whose closure is clean but whose host libraries

@@ -25,3 +25,6 @@ after the reboot on 2026-10-16 (no package changed in between):
   (logind "New session 4", 14:16:22.712800Z, PAM service `sshd`) are added by hand.
 - Programs and file birth times from the `TestLabCapture` tool in `internal/restart`,
   run on the VM for every ExecStart program in `units.txt` and `/usr/sbin/sshd`.
+
+Package change times (`packages` in `snapshot.json`, added 2026-10-16 for ADR 0020):
+`dpkg-log-run.txt`, every install and upgrade of the run, local time (EDT) converted to UTC, whole seconds (`coarse`). No package changed between the boot and the run.

@@ -21,3 +21,8 @@ only `dnf upgrade python3 python3-libs` (3.9.25-7.el9_8.2 to .3); nothing restar
 Same-UID probe on the same state: a process in the tycanad sandbox with `User=postgres`
 and `PrivateUsers=no` read `/proc/2742/maps` and saw the five deleted libpython mappings,
 with no capability. With `PrivateUsers=yes` the backend was not visible.
+
+Captured again at 19:00 UTC with package change times (ADR 0020), from the same snapshot
+and the same steps: `snapshot.json` and `deleted-maps.tsv` now hold that capture.
+`TestLabHoldoutsWithoutModuleRules` removes the PostgreSQL module evidence and still finds
+postgresql "possible", from the package rule alone.

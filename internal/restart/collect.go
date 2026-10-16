@@ -11,9 +11,10 @@ import (
 )
 
 // Collect reads the running units from systemd, the closures of their
-// programs, and the creation times of those files.
-func Collect(ctx context.Context, now time.Time) (Snapshot, error) {
-	s := Snapshot{Collected: now.UTC()}
+// programs, and the creation times of those files. pkgs are the package
+// change times (DpkgChanges, or rpm install times from the inventory).
+func Collect(ctx context.Context, now time.Time, pkgs []PackageChange) (Snapshot, error) {
+	s := Snapshot{Collected: now.UTC(), Packages: pkgs}
 	if b, err := os.ReadFile("/proc/sys/kernel/random/boot_id"); err == nil {
 		s.BootID = strings.TrimSpace(string(b))
 	}

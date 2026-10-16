@@ -515,6 +515,263 @@
       "time": "2026-10-16T14:34:47.367746415Z"
     }
   },
+  "packages": [
+    {
+      "changed": "2026-10-16T14:34:21Z",
+      "coarse": true,
+      "name": "bind9-dnsutils:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:21Z",
+      "coarse": true,
+      "name": "bind9-host:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:21Z",
+      "coarse": true,
+      "name": "bind9-libs:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:53Z",
+      "coarse": true,
+      "name": "dracut-install:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:12Z",
+      "coarse": true,
+      "name": "libarchive13t64:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:23Z",
+      "coarse": true,
+      "name": "libevent-core-2.1-7t64:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:21Z",
+      "coarse": true,
+      "name": "libfreetype6:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:18Z",
+      "coarse": true,
+      "name": "libheif-plugin-aomdec:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:18Z",
+      "coarse": true,
+      "name": "libheif-plugin-aomenc:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:19Z",
+      "coarse": true,
+      "name": "libheif1:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:08Z",
+      "coarse": true,
+      "name": "libnss-systemd:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "libpam-systemd:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:17Z",
+      "coarse": true,
+      "name": "libpng16-16t64:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:01Z",
+      "coarse": true,
+      "name": "libsgutils2-1.46-2:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:28Z",
+      "coarse": true,
+      "name": "libssl3t64:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "libsystemd-shared:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "libsystemd0:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:10Z",
+      "coarse": true,
+      "name": "libudev1:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:07Z",
+      "coarse": true,
+      "name": "libx11-6:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:07Z",
+      "coarse": true,
+      "name": "libx11-data:all"
+    },
+    {
+      "changed": "2026-10-16T14:34:51Z",
+      "coarse": true,
+      "name": "libxml2:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:19Z",
+      "coarse": true,
+      "name": "libxpm4:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:38Z",
+      "coarse": true,
+      "name": "linux-headers-6.8.0-147-generic:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:35Z",
+      "coarse": true,
+      "name": "linux-headers-6.8.0-147:all"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-headers-generic:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-headers-virtual:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-image-6.8.0-147-generic:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-image-virtual:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:32Z",
+      "coarse": true,
+      "name": "linux-libc-dev:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:39Z",
+      "coarse": true,
+      "name": "linux-modules-6.8.0-147-generic:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-tools-6.8.0-147-generic:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-tools-6.8.0-147:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:32Z",
+      "coarse": true,
+      "name": "linux-tools-common:all"
+    },
+    {
+      "changed": "2026-10-16T14:34:40Z",
+      "coarse": true,
+      "name": "linux-virtual:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:47Z",
+      "coarse": true,
+      "name": "openssh-client:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:47Z",
+      "coarse": true,
+      "name": "openssh-server:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:47Z",
+      "coarse": true,
+      "name": "openssh-sftp-server:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:28Z",
+      "coarse": true,
+      "name": "openssl:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:59Z",
+      "coarse": true,
+      "name": "python3-jwt:all"
+    },
+    {
+      "changed": "2026-10-16T14:34:26Z",
+      "coarse": true,
+      "name": "python3-requests:all"
+    },
+    {
+      "changed": "2026-10-16T14:35:10Z",
+      "coarse": true,
+      "name": "python3-urllib3:all"
+    },
+    {
+      "changed": "2026-10-16T14:35:01Z",
+      "coarse": true,
+      "name": "sg3-utils-udev:all"
+    },
+    {
+      "changed": "2026-10-16T14:35:01Z",
+      "coarse": true,
+      "name": "sg3-utils:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:56Z",
+      "coarse": true,
+      "name": "sudo:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:08Z",
+      "coarse": true,
+      "name": "systemd-dev:all"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "systemd-resolved:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "systemd-sysv:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "systemd-timesyncd:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "systemd:amd64"
+    },
+    {
+      "changed": "2026-10-16T14:35:15Z",
+      "coarse": true,
+      "name": "tzdata:all"
+    },
+    {
+      "changed": "2026-10-16T14:34:09Z",
+      "coarse": true,
+      "name": "udev:amd64"
+    }
+  ],
   "programs": {
     "/sbin/agetty": {
       "closure": [

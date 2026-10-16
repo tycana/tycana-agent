@@ -14,3 +14,8 @@ was then restored from the Lima snapshot `staged-2026-10-16`.
 - The same state was then built again for the agent with PHP's extension directory
   (`internal/restart/modules.go`, programDirs): `snapshot.json` and `deleted-maps.tsv`
   (root, same moment). php8.2-fpm.service is "possible", the only one.
+
+Captured a third time at 18:59 UTC with package change times (ADR 0020), from the same
+snapshot and the same steps: `snapshot.json` and `deleted-maps.tsv` now hold that capture.
+`TestLabHoldoutsWithoutModuleRules` removes the PHP module evidence and still finds
+php8.2-fpm "possible", from the package rule alone.

@@ -16,10 +16,12 @@ func TestRestartFromSnapshot(t *testing.T) {
 	}
 	s := out.String()
 	for _, want := range []string{
-		"4 units use a file replaced since they started (inferred); 0 possible; 2 unknown; 17 with no evidence.\n",
+		"Host: restart needed. A reboot clears all of it.\n",
+		"Services: 4 use a replaced file (inferred); 19 started before a package change (possible); 0 unknown; 0 current.\n",
+		"Latest package change: 2026-10-16 14:35:21 UTC.\n",
 		"inferred  dbus.service",
 		"replaced: /usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0",
-		"a script run by /usr/bin/python3.12",
+		"51 packages changed after it started",
 	} {
 		if !strings.Contains(s, want) {
 			t.Errorf("missing %q in:\n%s", want, s)

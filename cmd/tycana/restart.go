@@ -20,8 +20,11 @@ import (
 
 // restartOutput is "tycana restart --format json".
 type restartOutput struct {
-	Kernel *kernelRestart      `json:"kernel,omitempty"`
-	Reboot *restart.RebootHint `json:"reboot_hint,omitempty"`
+	// Host is the main result (ADR 0020); the findings are detail.
+	Host         restart.HostState     `json:"host"`
+	Kernel       *kernelRestart        `json:"kernel,omitempty"`
+	LivePatching *restart.LivePatching `json:"live_patching,omitempty"`
+	Reboot       *restart.RebootHint   `json:"reboot_hint,omitempty"`
 	restart.Report
 }
 
@@ -76,10 +79,16 @@ func runRestart(args []string, stdout, stderr io.Writer) int {
 		now := time.Now()
 		var inv *inventory.Snapshot
 		inv, _, err = inventory.Collect("/", now)
+		var pkgs []restart.PackageChange
 		if err == nil {
 			out.Kernel = kernelState(inv.Kernel)
 			out.Reboot = rebootHint(inv)
-			snap, err = restart.Collect(context.Background(), now)
+			lp := livePatching(inv)
+			out.LivePatching = &lp
+			pkgs, err = packageChanges(inv)
+		}
+		if err == nil {
+			snap, err = restart.Collect(context.Background(), now, pkgs)
 		}
 	}
 	if err != nil {
@@ -92,6 +101,10 @@ func runRestart(args []string, stdout, stderr io.Writer) int {
 		err = enc.Encode(snap)
 	} else {
 		out.Report = restart.Analyze(snap)
+		out.Host = restart.Host(snap, out.Report)
+		if out.Kernel != nil && out.Kernel.RebootNeeded {
+			out.Host.State = "restart-needed"
+		}
 		if *format == "json" {
 			err = enc.Encode(out)
 		} else {
@@ -117,6 +130,36 @@ func readSnapshot(name string) (restart.Snapshot, error) {
 		return s, fmt.Errorf("%s: %w", name, err)
 	}
 	return s, nil
+}
+
+// packageChanges is when each package last changed: dpkg's info files,
+// or rpm's install times (whole seconds).
+func packageChanges(inv *inventory.Snapshot) ([]restart.PackageChange, error) {
+	switch inv.PackageDB.Format {
+	case "deb":
+		return restart.DpkgChanges("/")
+	case "rpm":
+		out := make([]restart.PackageChange, 0, len(inv.Packages))
+		for _, p := range inv.Packages {
+			if !p.InstalledAt.IsZero() {
+				out = append(out, restart.PackageChange{Name: p.Name + "." + p.Arch, Changed: p.InstalledAt, Coarse: true})
+			}
+		}
+		return out, nil
+	}
+	return nil, nil
+}
+
+func livePatching(inv *inventory.Snapshot) restart.LivePatching {
+	names := make([]string, 0, len(inv.Kernel.LivePatches))
+	for _, p := range inv.Kernel.LivePatches {
+		names = append(names, p.Name)
+	}
+	pkgs := make([]restart.PackageInfo, 0, len(inv.Packages))
+	for _, p := range inv.Packages {
+		pkgs = append(pkgs, restart.PackageInfo{Name: p.Name, Version: p.Version, Release: p.Release})
+	}
+	return restart.DetectLivePatching("/", names, inv.Kernel.KspliceModules, pkgs)
 }
 
 // rebootHint applies the distribution's own reboot rule: dnf's
@@ -155,8 +198,25 @@ func writeRestartText(w io.Writer, out restartOutput) error {
 	for _, f := range out.Findings {
 		count[f.Status]++
 	}
-	fmt.Fprintf(w, "%d units use a file replaced since they started (inferred); %d possible; %d unknown; %d with no evidence.\n",
-		count[restart.Inferred], count[restart.Possible], count[restart.Unknown], count[restart.None])
+	h := out.Host
+	switch h.State {
+	case "restart-needed":
+		fmt.Fprintf(w, "Host: restart needed. A reboot clears all of it.\n")
+	case "current":
+		fmt.Fprintf(w, "Host: current. No package changed after a running service started.\n")
+	default:
+		fmt.Fprintf(w, "Host: unknown.\n")
+	}
+	if h.PackageData {
+		fmt.Fprintf(w, "Services: %d use a replaced file (inferred); %d started before a package change (possible); %d unknown; %d current.\n",
+			count[restart.Inferred], count[restart.Possible], count[restart.Unknown], count[restart.None])
+		if !h.LatestChange.IsZero() {
+			fmt.Fprintf(w, "Latest package change: %s UTC.\n", h.LatestChange.Format("2006-01-02 15:04:05"))
+		}
+	} else {
+		fmt.Fprintf(w, "Services: %d use a replaced file (inferred); %d possible; %d unknown; %d with no evidence (no package change times in this snapshot).\n",
+			count[restart.Inferred], count[restart.Possible], count[restart.Unknown], count[restart.None])
+	}
 	if k := out.Kernel; k != nil {
 		switch {
 		case k.RebootNeeded:
@@ -166,6 +226,14 @@ func writeRestartText(w io.Writer, out restartOutput) error {
 		}
 		if !k.EffectiveKnown {
 			fmt.Fprintln(w, "Live patches are loaded: the running kernel may carry fixes its release does not show.")
+		}
+	}
+	if lp := out.LivePatching; lp != nil {
+		for _, l := range lp.Kernel {
+			fmt.Fprintf(w, "Live patch: %s.\n", l)
+		}
+		for _, l := range lp.UserSpace {
+			fmt.Fprintf(w, "Live patch: %s.\n", l)
 		}
 	}
 	if h := out.Reboot; h != nil {
@@ -197,12 +265,14 @@ func writeRestartText(w io.Writer, out restartOutput) error {
 			}
 			detail = "replaced: " + strings.Join(paths, " ")
 		}
-		if f.Status == restart.Possible {
+		if f.Status == restart.Possible && len(f.Modules) > 0 {
 			paths := make([]string, len(f.Modules))
 			for i, m := range f.Modules {
 				paths[i] = m.Path
 			}
 			detail = "modules replaced: " + strings.Join(paths, " ")
+		} else if f.Status == restart.Possible && f.ChangedCount > 0 {
+			detail = fmt.Sprintf("%d packages changed after it started: %s", f.ChangedCount, strings.Join(f.Changed[:min(len(f.Changed), 5)], " "))
 		}
 		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\n", f.Status, f.Unit, started, detail)
 	}

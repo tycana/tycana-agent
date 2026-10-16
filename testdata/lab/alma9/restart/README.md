@@ -18,3 +18,6 @@ The openssh update installed `/usr/libexec/openssh/sshd-session`, so the snapsho
 times that program for the sshd session, which started under the old `sshd`. The
 verdict holds (every file of the new program is newer than the session), but the
 listed files are the new program's.
+
+Package change times (`packages` in `snapshot.json`, added 2026-10-16 for ADR 0020):
+`installtime.txt` (rpm install times, whole seconds).

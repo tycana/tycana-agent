@@ -21,3 +21,6 @@ at 17:13:02 UTC. This replaces `libnss_systemd.so.2` (NSS, loaded by libc) and
 `../restart/snapshot.json` was captured before the agent listed run-time modules, and
 the reinstall above has since replaced the module files whose times it would need. It
 has no `modules` and no `sonames`, so it can never show "possible".
+
+Package change times (`packages` in `snapshot.json`, added 2026-10-16 for ADR 0020):
+the mtimes of `/var/lib/dpkg/info/*.list` on the VM, read later the same day by the agent; no package changed after the reinstall at 17:13:02 UTC.

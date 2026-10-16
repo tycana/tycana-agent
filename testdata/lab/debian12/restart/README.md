@@ -1,5 +1,8 @@
 # Restart ground truth, tycana-debian12, 2026-10-16
 
+*Captured again at 18:59 UTC the same day, with package change times (ADR 0020): the same
+upgrade from the same Lima snapshot. The sshd session is session-5 in this capture.*
+
 On a fresh boot (17:16:42 UTC), as root, the ten pending security updates were
 installed with `apt-get upgrade` at 17:17:04 UTC: libexpat1, libpcre2-8-0, libpng16-16,
 libpython3.11-minimal, libpython3.11-stdlib, libssl3, openssl, perl-base,
