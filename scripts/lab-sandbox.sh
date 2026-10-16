@@ -35,6 +35,9 @@ make -C "$root" -s build
 limactl copy "$root/bin/tycana" "$vm:/tmp/tycana-sandbox-bin"
 limactl shell "$vm" -- sudo install -D -m 0755 -o root -g root /tmp/tycana-sandbox-bin /opt/tycana-lab/tycana
 limactl shell "$vm" -- rm -f /tmp/tycana-sandbox-bin
+# The unit's User= must exist; create it the way the package will.
+limactl copy "$root/packaging/sysusers.d/tycana.conf" "$vm:/tmp/tycana-sysusers.conf"
+limactl shell "$vm" -- sudo sh -c 'install -D -m 0644 /tmp/tycana-sysusers.conf /usr/lib/sysusers.d/tycana.conf && rm /tmp/tycana-sysusers.conf && systemd-sysusers /usr/lib/sysusers.d/tycana.conf'
 trap 'limactl shell "$vm" -- sudo rm -rf /opt/tycana-lab' EXIT
 
 q=()

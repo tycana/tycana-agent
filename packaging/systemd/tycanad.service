@@ -12,10 +12,14 @@ ExecStart=/usr/bin/tycanad --config /etc/tycana/tycanad.yaml
 Restart=on-failure
 RestartSec=10s
 
-# Identity: a dedicated, system-managed unprivileged user. No capabilities at all.
-DynamicUser=yes
-User=tycanad
-Group=tycanad
+# Identity: a dedicated unprivileged system user from
+# packaging/sysusers.d/tycana.conf. No capabilities at all. Not
+# DynamicUser=: dbus-daemon refuses DynamicUser clients, and the agent
+# reads unit state over D-Bus (M2). The settings DynamicUser= implied are
+# set explicitly below (PrivateTmp, RemoveIPC, ProtectSystem, ProtectHome,
+# NoNewPrivileges, RestrictSUIDSGID).
+User=tycana
+Group=tycana
 StateDirectory=tycanad
 StateDirectoryMode=0700
 ConfigurationDirectory=tycana
