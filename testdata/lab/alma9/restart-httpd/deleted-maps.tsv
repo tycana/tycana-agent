@@ -1,0 +1,20 @@
+1	/init.scope	/usr/lib/systemd/systemd	/usr/lib64/libcrypto.so.3.5.8 
+1039	/system.slice/sshd.service	/usr/sbin/sshd	/usr/lib64/libcrypto.so.3.5.8 
+1045	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd	/usr/lib64/libcrypto.so.3.5.8 
+1047	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd	/usr/lib64/libcrypto.so.3.5.8 
+1411	/user.slice/user-1000.slice/session-6.scope	/usr/libexec/openssh/sshd-session	/usr/lib64/libcrypto.so.3.5.8 
+1414	/user.slice/user-1000.slice/session-6.scope	/usr/libexec/openssh/sshd-session	/usr/lib64/libcrypto.so.3.5.8 
+1895	/system.slice/httpd.service	/usr/sbin/httpd	/usr/lib64/libcrypto.so.3.5.8 /usr/lib64/libssl.so.3.5.8 
+1897	/system.slice/httpd.service	/usr/sbin/httpd	/usr/lib64/libcrypto.so.3.5.8 /usr/lib64/libssl.so.3.5.8 
+1900	/system.slice/httpd.service	/usr/sbin/httpd	/usr/lib64/libcrypto.so.3.5.8 /usr/lib64/libssl.so.3.5.8 
+1901	/system.slice/httpd.service	/usr/sbin/httpd	/usr/lib64/libcrypto.so.3.5.8 /usr/lib64/libssl.so.3.5.8 
+1902	/system.slice/httpd.service	/usr/sbin/httpd	/usr/lib64/libcrypto.so.3.5.8 /usr/lib64/libssl.so.3.5.8 
+573	/system.slice/systemd-journald.service	/usr/lib/systemd/systemd-journald	/usr/lib64/libcrypto.so.3.5.8 
+586	/system.slice/systemd-udevd.service/udev	/usr/bin/udevadm	/usr/lib64/libcrypto.so.3.5.8 
+636	/system.slice/rpcbind.service	/usr/bin/rpcbind	/usr/lib64/libcrypto.so.3.5.8 
+637	/system.slice/auditd.service	/usr/sbin/auditd	/usr/lib64/libcrypto.so.3.5.8 
+679	/system.slice/systemd-logind.service	/usr/lib/systemd/systemd-logind	/usr/lib64/libcrypto.so.3.5.8 
+704	/system.slice/NetworkManager.service	/usr/sbin/NetworkManager	/usr/lib64/libcrypto.so.3.5.8 /usr/lib64/libssl.so.3.5.8 
+715	/system.slice/tuned.service	/usr/bin/python3.9	/usr/lib64/libcrypto.so.3.5.8 
+716	/system.slice/gssproxy.service	/usr/sbin/gssproxy	/usr/lib64/libcrypto.so.3.5.8 
+987	/system.slice/polkit.service	/usr/lib/polkit-1/polkitd	/usr/lib64/libcrypto.so.3.5.8 

@@ -1,7 +1,9 @@
 package restart
 
 import (
+	"debug/elf"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 )
@@ -30,22 +32,30 @@ func TestModules(t *testing.T) {
 		"security/pam_systemd.so", "ossl-modules/legacy.so", "sasl2/libplain.so.2", "gconv/UTF-7.so"} {
 		writeFile(t, root, lib+f, nil)
 	}
+	// An Apache module whose own closure (libcap, libc) the host program
+	// does not link.
+	writeELF(t, root, "/usr/sbin/apache2", elf.EM_X86_64, "/lib64/ld-linux-x86-64.so.2", "", "libc.so.6")
+	writeELF(t, root, "/usr/lib/apache2/modules/mod_ssl.so", elf.EM_X86_64, "", "", "libcap.so.2")
 	r := NewResolver(root)
 	got := r.modules(time.Now().Add(-time.Hour))
-	var paths []string
+	var lines []string
 	for _, m := range got {
-		paths = append(paths, m.Kind+" "+m.Host+" "+m.Path)
+		lines = append(lines, strings.TrimSpace(m.Kind+" "+m.Host+" "+m.Path+" "+m.Via))
 	}
+	ssl := "/usr/lib/apache2/modules/mod_ssl.so"
 	want := []string{
+		"apache /usr/sbin/apache2 " + ssl,
+		"apache /usr/sbin/apache2 " + lib + "libc.so.6 " + ssl,
+		"apache /usr/sbin/apache2 " + lib + "libcap.so.2.66 " + ssl,
 		"gconv libc.so.6 " + lib + "gconv/UTF-7.so",
 		"nss libc.so.6 " + lib + "libnss_files.so.2",
 		"nss libc.so.6 " + lib + "libnss_systemd.so.2",
 		"openssl libcrypto.so.3 " + lib + "ossl-modules/legacy.so",
-		"sasl libsasl2.so.2 " + lib + "sasl2/libplain.so.2",
 		"pam libpam.so.0 " + lib + "security/pam_systemd.so",
+		"sasl libsasl2.so.2 " + lib + "sasl2/libplain.so.2",
 	}
-	if !slices.Equal(paths, want) {
-		t.Errorf("got  %q\nwant %q", paths, want)
+	if !slices.Equal(lines, want) {
+		t.Errorf("got  %q\nwant %q", lines, want)
 	}
 	if got := r.modules(time.Now().Add(time.Hour)); len(got) != 0 {
 		t.Errorf("modules older than since: %v", got)
@@ -68,6 +78,7 @@ func TestPossible(t *testing.T) {
 		Files: map[string]FileTime{"/bin/pam": {Time: old}, "/bin/plain": {Time: old}},
 		Modules: []Module{
 			{Path: "/lib/security/pam_x.so", Kind: "pam", Host: "libpam.so.0", Created: t0.Add(time.Minute)},
+			{Path: "/lib/libssl.so.3", Kind: "apache", Host: "/bin/plain", Via: "/mod/mod_ssl.so", Created: t0.Add(time.Minute)},
 		},
 	}
 	got := map[string]Finding{}
@@ -77,8 +88,8 @@ func TestPossible(t *testing.T) {
 	if f := got["pam.service"]; f.Status != Possible || len(f.Modules) != 1 || f.Reason == "" {
 		t.Errorf("pam.service: %+v", f)
 	}
-	if f := got["plain.service"]; f.Status != None {
-		t.Errorf("plain.service does not link libpam: %+v", f)
+	if f := got["plain.service"]; f.Status != Possible || len(f.Modules) != 1 || f.Modules[0].Path != "/lib/libssl.so.3" {
+		t.Errorf("plain.service is the host program of a module: %+v", f)
 	}
 	if f := got["late.service"]; f.Status != None {
 		t.Errorf("late.service started after the module: %+v", f)

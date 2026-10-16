@@ -10,19 +10,25 @@ import (
 	"time"
 )
 
-// Module is a shared object that programs open at run time (dlopen)
-// rather than at start, and that was created after the earliest unit
-// started. Its host library loads it; a unit whose closure contains the
-// host may have it mapped.
+// Module is a file that programs map only after they open a module at
+// run time (dlopen): the module itself, or a library in the module's own
+// closure. It was created after the earliest unit started. A unit whose
+// program is Host, or whose closure contains Host, may have it mapped.
 type Module struct {
-	Path    string    `json:"path"`
-	Kind    string    `json:"kind"` // nss, pam, openssl, sasl, gconv
-	Host    string    `json:"host"` // soname of the library that loads it
+	Path string `json:"path"`
+	Kind string `json:"kind"` // nss, pam, openssl, sasl, gconv, apache, nginx
+	// Host is the soname of the library that opens the module (libc.so.6,
+	// libpam.so.0), or the canonical path of the program that does
+	// (/usr/sbin/httpd).
+	Host string `json:"host"`
+	// Via is the module that needs Path, when Path is a dependency of the
+	// module rather than the module itself.
+	Via     string    `json:"via,omitempty"`
 	Created time.Time `json:"created"`
 }
 
 // moduleDirs are the plugin directories, relative to a library directory,
-// and the library that loads their modules.
+// and the library that opens their modules.
 var moduleDirs = []struct{ kind, host, dir string }{
 	{"pam", "libpam.so.0", "security"},
 	{"openssl", "libcrypto.so.3", "ossl-modules"},
@@ -31,45 +37,95 @@ var moduleDirs = []struct{ kind, host, dir string }{
 	{"gconv", "libc.so.6", "gconv"},
 }
 
-// maxModules bounds the files one collection times.
-const maxModules = 8192
+// programDirs are plugin directories of servers that open their modules
+// themselves: mod_ssl, not httpd, links libssl.
+var programDirs = []struct{ kind, host, dir string }{
+	{"apache", "/usr/sbin/httpd", "/usr/lib64/httpd/modules"},
+	{"apache", "/usr/sbin/apache2", "/usr/lib/apache2/modules"},
+	{"nginx", "/usr/sbin/nginx", "/usr/lib64/nginx/modules"},
+	{"nginx", "/usr/sbin/nginx", "/usr/lib/nginx/modules"},
+}
 
-// modules lists the run-time modules created after since. NSS modules are
-// limited to the sources /etc/nsswitch.conf names: an unconfigured module
-// is never loaded.
+// maxModules bounds the modules one collection resolves.
+const maxModules = 4096
+
+// modules lists the files of run-time modules, and of the modules' own
+// closures, created after since. NSS modules are limited to the sources
+// /etc/nsswitch.conf names: an unconfigured module is never loaded.
 func (r *Resolver) modules(since time.Time) []Module {
-	var out []Module
-	checked := 0
-	seen := map[string]bool{}
-	add := func(kind, host, p string) {
-		canon, err := r.canonical(p)
-		if err != nil || seen[canon] || checked >= maxModules {
-			return
-		}
-		seen[canon] = true
-		checked++
-		ft := fileTime(r.host(canon))
-		if ft.Error == "" && ft.Time.After(since) {
-			out = append(out, Module{Path: canon, Kind: kind, Host: host, Created: ft.Time})
-		}
-	}
-	nss := r.nssSources()
+	type cand struct{ kind, host, path string }
+	var cands []cand
 	for _, lib := range r.libDirs() {
-		for _, src := range nss {
+		for _, src := range r.nssSources() {
 			p := path.Join(lib, "libnss_"+src+".so.2")
 			if _, err := os.Lstat(r.host(p)); err == nil {
-				add("nss", "libc.so.6", p)
+				cands = append(cands, cand{"nss", "libc.so.6", p})
 			}
 		}
 		for _, d := range moduleDirs {
-			matches, _ := filepath.Glob(r.host(path.Join(lib, d.dir, "*.so*")))
-			slices.Sort(matches)
-			for _, m := range matches {
-				add(d.kind, d.host, path.Join(lib, d.dir, filepath.Base(m)))
+			for _, m := range r.glob(path.Join(lib, d.dir)) {
+				cands = append(cands, cand{d.kind, d.host, m})
 			}
 		}
 	}
-	slices.SortFunc(out, func(a, b Module) int { return strings.Compare(a.Path, b.Path) })
+	for _, d := range programDirs {
+		host, err := r.canonical(d.host)
+		if err != nil {
+			continue
+		}
+		for _, m := range r.glob(d.dir) {
+			cands = append(cands, cand{d.kind, host, m})
+		}
+	}
+
+	var out []Module
+	seenMod := map[string]bool{}
+	seenOut := map[string]bool{}
+	times := map[string]FileTime{}
+	for _, c := range cands {
+		mod, err := r.canonical(c.path)
+		if err != nil || seenMod[c.host+"|"+mod] {
+			continue
+		}
+		seenMod[c.host+"|"+mod] = true
+		if len(seenMod) > maxModules {
+			break
+		}
+		closure := []string{mod}
+		if p := r.Program(mod); p.Error == "" {
+			closure = p.Closure
+		}
+		for _, f := range closure {
+			ft, ok := times[f]
+			if !ok {
+				ft = fileTime(r.host(f))
+				times[f] = ft
+			}
+			if ft.Error != "" || !ft.Time.After(since) || seenOut[c.host+"|"+f] {
+				continue
+			}
+			seenOut[c.host+"|"+f] = true
+			m := Module{Path: f, Kind: c.kind, Host: c.host, Created: ft.Time}
+			if f != mod {
+				m.Via = mod
+			}
+			out = append(out, m)
+		}
+	}
+	slices.SortFunc(out, func(a, b Module) int {
+		return strings.Compare(a.Host+"|"+a.Path, b.Host+"|"+b.Path)
+	})
+	return out
+}
+
+// glob lists the shared objects in dir, sorted.
+func (r *Resolver) glob(dir string) []string {
+	matches, _ := filepath.Glob(r.host(path.Join(dir, "*.so*")))
+	slices.Sort(matches)
+	out := make([]string, 0, len(matches))
+	for _, m := range matches {
+		out = append(out, path.Join(dir, filepath.Base(m)))
+	}
 	return out
 }
 

@@ -99,6 +99,31 @@ var labCases = []struct {
 		},
 		counts: map[Status]int{Inferred: 16, Possible: 0, Unknown: 1, None: 7},
 	},
+	{
+		// Debian 12, Apache with mod_ssl, then only libssl3 and openssl
+		// updated. apache2 starts through apachectl, a shell script.
+		dir: "debian12/restart-apache",
+		want: map[string]Status{
+			"apache2.service": Unknown,
+			"ssh.service":     Inferred,
+			"init.scope":      Unknown,
+		},
+		counts: map[Status]int{Inferred: 9, Possible: 0, Unknown: 3, None: 6},
+	},
+	{
+		// AlmaLinux 9, httpd with mod_ssl, then only openssl-libs
+		// reinstalled. httpd and polkit map libssl and libcrypto only
+		// through run-time modules (mod_ssl, libnss_systemd).
+		dir: "alma9/restart-httpd",
+		want: map[string]Status{
+			"httpd.service":  Possible,
+			"polkit.service": Possible,
+			"sshd.service":   Inferred,
+			"tuned.service":  Unknown,
+			"init.scope":     Unknown,
+		},
+		counts: map[Status]int{Inferred: 10, Possible: 10, Unknown: 2, None: 3},
+	},
 }
 
 // TestLab checks the property the product promises: a unit the agent

@@ -1,0 +1,15 @@
+1	/init.scope	/usr/lib/systemd/systemd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+1612	/system.slice/apache2.service	/usr/sbin/apache2	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libssl.so.3 
+1613	/system.slice/apache2.service	/usr/sbin/apache2	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libssl.so.3 
+1614	/system.slice/apache2.service	/usr/sbin/apache2	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libssl.so.3 
+224	/system.slice/systemd-journald.service	/usr/lib/systemd/systemd-journald	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+251	/system.slice/systemd-udevd.service/udev	/usr/bin/udevadm	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+381	/system.slice/systemd-networkd.service	/usr/lib/systemd/systemd-networkd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+402	/system.slice/systemd-resolved.service	/usr/lib/systemd/systemd-resolved	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libssl.so.3 
+406	/system.slice/systemd-timesyncd.service	/usr/lib/systemd/systemd-timesyncd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+461	/system.slice/systemd-logind.service	/usr/lib/systemd/systemd-logind	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+467	/system.slice/ssh.service	/usr/sbin/sshd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+479	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+484	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+721	/user.slice/user-1000.slice/session-4.scope	/usr/sbin/sshd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+728	/user.slice/user-1000.slice/session-4.scope	/usr/sbin/sshd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 

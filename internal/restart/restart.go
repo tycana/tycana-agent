@@ -14,10 +14,11 @@
 // A finding is therefore "inferred", never "observed". Libraries opened
 // later with dlopen are outside the closure. For the common kinds (NSS
 // modules named in nsswitch.conf, PAM modules, OpenSSL providers and
-// engines, SASL and gconv modules) the agent lists those replaced since
-// the earliest unit started, and a unit that links their host library
-// becomes "possible" rather than "none". Interpreter modules are outside
-// its view: a script's unit is "unknown".
+// engines, SASL and gconv modules, Apache and nginx modules) the agent
+// lists the module files, and the files of the modules' own closures,
+// replaced since the earliest unit started. A unit that links the host
+// library, or is the host program, becomes "possible" rather than "none".
+// Interpreter modules are outside its view: a script's unit is "unknown".
 package restart
 
 import (
@@ -160,7 +161,7 @@ func judge(f *Finding, start time.Time, p Program, files map[string]FileTime) {
 		f.Status = Inferred
 	case p.Interpreter != "":
 		f.Status = Unknown
-		f.Reason = join(f.Reason, "a script run by "+p.Interpreter+"; the modules it loads are not checked")
+		f.Reason = join(f.Reason, "a script run by "+p.Interpreter+"; the programs it starts and the modules it loads are not checked")
 	case p.Error != "" || len(p.Unresolved) > 0 || len(missing) > 0:
 		f.Status = Unknown
 		f.Reason = join(f.Reason, incomplete(p, missing))
@@ -174,10 +175,14 @@ func judge(f *Finding, start time.Time, p Program, files map[string]FileTime) {
 func possible(f *Finding, start time.Time, p Program, mods []Module) {
 	kinds := map[string]bool{}
 	for _, m := range mods {
-		if m.Created.After(start) && slices.Contains(p.Sonames, m.Host) {
-			f.Modules = append(f.Modules, Replaced{Path: m.Path, Created: m.Created})
-			kinds[m.Kind] = true
+		hosted := slices.Contains(p.Sonames, m.Host) || m.Host == p.Path
+		if !hosted || !m.Created.After(start) {
+			continue
 		}
+		if !slices.ContainsFunc(f.Modules, func(r Replaced) bool { return r.Path == m.Path }) {
+			f.Modules = append(f.Modules, Replaced{Path: m.Path, Created: m.Created})
+		}
+		kinds[m.Kind] = true
 	}
 	if len(f.Modules) > 0 {
 		f.Status = Possible
