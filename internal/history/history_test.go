@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"os"
+	"path/filepath"
 	"testing"
 	"testing/fstest"
 	"time"
@@ -109,14 +110,14 @@ func TestParseAptHistory(t *testing.T) {
 	}
 	a := got[0]
 	if a.RequestedBy != "operator" || a.RequestedByUID == nil || *a.RequestedByUID != 1000 || len(a.Changes) != 2 ||
-		a.Changes[1] != (AptChange{Kind: KindUpgrade, Package: "curl", Arch: "amd64", From: "8.5.0-2ubuntu10.15", To: "8.5.0-2ubuntu10.16"}) {
+		a.Changes[1] != (TransactionChange{Kind: KindUpgrade, Package: "curl", Arch: "amd64", From: "8.5.0-2ubuntu10.15", To: "8.5.0-2ubuntu10.16"}) {
 		t.Errorf("first: %+v", a)
 	}
 	b := got[1]
 	if b.RequestedBy != "" || b.RequestedByUID != nil || b.Error == "" || len(b.Changes) != 3 ||
-		b.Changes[0] != (AptChange{Kind: KindInstall, Package: "linux-image-6.8.0-150-generic", Arch: "amd64", To: "6.8.0-150.150", Automatic: true}) ||
-		b.Changes[1] != (AptChange{Kind: KindReinstall, Package: "hello", Arch: "amd64", From: "2.10-3build1", To: "2.10-3build1"}) ||
-		b.Changes[2] != (AptChange{Kind: KindPurge, Package: "at", Arch: "amd64", From: "3.2.5"}) {
+		b.Changes[0] != (TransactionChange{Kind: KindInstall, Package: "linux-image-6.8.0-150-generic", Arch: "amd64", To: "6.8.0-150.150", Automatic: true}) ||
+		b.Changes[1] != (TransactionChange{Kind: KindReinstall, Package: "hello", Arch: "amd64", From: "2.10-3build1", To: "2.10-3build1"}) ||
+		b.Changes[2] != (TransactionChange{Kind: KindPurge, Package: "at", Arch: "amd64", From: "3.2.5"}) {
 		t.Errorf("second: %+v", b)
 	}
 	if !got[2].End.IsZero() || got[2].Commandline != "apt-get upgrade" {
@@ -128,6 +129,29 @@ func TestParseAptHistory(t *testing.T) {
 	if _, err := parseAptHistory([]byte("Start-Date: 2026-10-15  21:00:00\nInstall: nover:amd64\n"), Zone{loc: time.UTC}); err == nil {
 		t.Error("entry without version: want error")
 	}
+}
+
+// writeTree materializes an in-memory tree in a temp directory, because
+// Collect takes a path.
+func writeTree(t *testing.T, fsys fstest.MapFS) string {
+	t.Helper()
+	root := t.TempDir()
+	for name, f := range fsys {
+		p := filepath.Join(root, filepath.FromSlash(name))
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if f.Mode&os.ModeSymlink != 0 {
+			if err := os.Symlink(string(f.Data), p); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		if err := os.WriteFile(p, f.Data, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return root
 }
 
 func gz(t *testing.T, s string) []byte {
@@ -157,7 +181,7 @@ func TestCollectRotationsZoneAndLinking(t *testing.T) {
 		"var/log/dpkg.log.bak":                {Data: []byte("garbage that must not be read\n")},
 		"var/log/apt/history.log.1.gz":        {Data: gz(t, "Start-Date: 2026-10-15  21:08:40\nUpgrade: curl:amd64 (1, 2)\nEnd-Date: 2026-10-15  21:08:41\n")},
 	}
-	h, err := Collect(fsys)
+	h, err := Collect(writeTree(t, fsys))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -195,7 +219,7 @@ func TestCollectRotationsZoneAndLinking(t *testing.T) {
 }
 
 func TestZoneFallbacksAndDST(t *testing.T) {
-	h, err := Collect(fstest.MapFS{})
+	h, err := Collect(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -224,7 +248,7 @@ func TestZoneFallbacksAndDST(t *testing.T) {
 // ends in exactly the state and version the database holds.
 func TestLabHistoryAgreesWithDatabase(t *testing.T) {
 	root := "../../testdata/lab/ubuntu2404/root"
-	h, err := Collect(os.DirFS(root))
+	h, err := Collect(root)
 	if err != nil {
 		t.Fatal(err)
 	}

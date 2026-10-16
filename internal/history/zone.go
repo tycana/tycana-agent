@@ -71,3 +71,9 @@ func (z Zone) ambiguous(t time.Time) bool {
 	_, after := t.Add(time.Hour).In(z.loc).Zone()
 	return before != after
 }
+
+// local formats a UTC instant as the host's local wall-clock time, the
+// way the logs would have written it.
+func (z Zone) local(t time.Time) string {
+	return t.In(z.loc).Format("2006-01-02 15:04:05")
+}

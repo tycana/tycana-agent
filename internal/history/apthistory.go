@@ -9,8 +9,13 @@ import (
 	"time"
 )
 
-// Transaction is one apt run from /var/log/apt/history.log.
+// Transaction is one package-manager run: an apt run from
+// /var/log/apt/history.log, or a dnf transaction from history.sqlite.
 type Transaction struct {
+	// Source is "apt" or "dnf".
+	Source string `json:"source"`
+	// ID is dnf's transaction id; apt has none.
+	ID         int       `json:"id,omitempty"`
 	Start      time.Time `json:"start"` // UTC
 	End        time.Time `json:"end,omitzero"`
 	LocalStart string    `json:"local_start"`
@@ -21,20 +26,43 @@ type Transaction struct {
 	Commandline string `json:"commandline,omitempty"`
 	// RequestedBy is the invoking user when apt ran under sudo or pkexec.
 	// Absent for root shells, cron, and unattended-upgrades alike.
-	RequestedBy    string      `json:"requested_by,omitempty"`
-	RequestedByUID *int        `json:"requested_by_uid,omitempty"`
-	Changes        []AptChange `json:"changes"`
-	Error          string      `json:"error,omitempty"`
+	RequestedBy    string              `json:"requested_by,omitempty"`
+	RequestedByUID *int                `json:"requested_by_uid,omitempty"`
+	Changes        []TransactionChange `json:"changes"`
+	Error          string              `json:"error,omitempty"`
+
+	// dnf only. State is "done", "error", or "" when dnf recorded no
+	// result. RPMDBBefore and RPMDBAfter are dnf's checksums of the rpm
+	// database around the transaction. OutOfBandBefore is set when
+	// RPMDBBefore differs from the previous transaction's RPMDBAfter:
+	// something other than dnf (rpm itself, say) changed packages in
+	// between. Output is scriptlet output dnf kept; it is data from the
+	// host, to display and never interpret.
+	ReleaseVer      string   `json:"releasever,omitempty"`
+	State           string   `json:"state,omitempty"`
+	RPMDBBefore     string   `json:"rpmdb_before,omitempty"`
+	RPMDBAfter      string   `json:"rpmdb_after,omitempty"`
+	OutOfBandBefore bool     `json:"out_of_band_before,omitempty"`
+	Output          []string `json:"output,omitempty"`
 }
 
-// AptChange is one package line of an apt transaction.
-type AptChange struct {
-	Kind      string `json:"kind"` // install, upgrade, downgrade, reinstall, remove, purge
-	Package   string `json:"package"`
-	Arch      string `json:"arch"` // apt logs arch-all packages under the native arch
-	From      string `json:"from,omitempty"`
-	To        string `json:"to,omitempty"`
-	Automatic bool   `json:"automatic,omitempty"`
+// TransactionChange is one package line of a transaction.
+type TransactionChange struct {
+	Kind    string `json:"kind"` // install, upgrade, downgrade, reinstall, remove, purge, reason-change
+	Package string `json:"package"`
+	Arch    string `json:"arch"` // apt logs arch-all packages under the native arch
+	From    string `json:"from,omitempty"`
+	To      string `json:"to,omitempty"`
+	// Automatic means the package manager pulled the package in as a
+	// dependency rather than at the user's request.
+	Automatic bool `json:"automatic,omitempty"`
+	// Reason (dnf) is why the package is installed: user, dependency,
+	// weak-dependency, group, clean. Repo is the repository it came
+	// from, "@System" for packages already on the host. State is "done"
+	// or "error" for the item.
+	Reason string `json:"reason,omitempty"`
+	Repo   string `json:"repo,omitempty"`
+	State  string `json:"state,omitempty"`
 }
 
 var aptKinds = map[string]string{
@@ -66,7 +94,7 @@ func parseAptHistory(data []byte, z Zone) ([]Transaction, error) {
 			if err != nil {
 				return nil, fmt.Errorf("history.log line %d: %w", lineNo, err)
 			}
-			out = append(out, Transaction{Start: t.UTC(), LocalStart: f[0] + " " + f[1], Changes: []AptChange{}})
+			out = append(out, Transaction{Source: "apt", Start: t.UTC(), LocalStart: f[0] + " " + f[1], Changes: []TransactionChange{}})
 			cur = &out[len(out)-1]
 			continue
 		}
@@ -109,15 +137,15 @@ func parseAptHistory(data []byte, z Zone) ([]Transaction, error) {
 // parseAptPackages splits "a:amd64 (1.0, automatic), b:amd64 (1.0, 2.0)".
 // Debian versions cannot contain commas or parentheses, so "), " is a safe
 // separator.
-func parseAptPackages(kind, val string) ([]AptChange, error) {
-	var out []AptChange
+func parseAptPackages(kind, val string) ([]TransactionChange, error) {
+	var out []TransactionChange
 	for _, item := range strings.Split(strings.TrimSuffix(strings.TrimSpace(val), ")"), "), ") {
 		pkg, inner, ok := strings.Cut(item, " (")
 		if !ok {
 			return nil, fmt.Errorf("%s entry %q: no version", kind, item)
 		}
 		name, arch, _ := strings.Cut(pkg, ":")
-		c := AptChange{Kind: kind, Package: name, Arch: arch}
+		c := TransactionChange{Kind: kind, Package: name, Arch: arch}
 		parts := strings.Split(inner, ", ")
 		if parts[len(parts)-1] == "automatic" {
 			c.Automatic = true

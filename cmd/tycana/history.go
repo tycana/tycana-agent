@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -24,7 +23,7 @@ func runHistory(args []string, stdout, stderr io.Writer) int {
 	root := fs.String("root", "/", "read the host rooted at this directory")
 	fs.Usage = func() {
 		fmt.Fprintf(stderr, "Usage: tycana history [--since TIME] [--format text|json] [--root DIR]\n\n"+
-			"Normalizes dpkg.log and apt history.log, including rotated logs. Never writes or runs anything.\n\n")
+			"Normalizes dpkg.log and apt history.log (rotations included) and dnf's history database. Never writes or runs anything.\n\n")
 		fs.PrintDefaults()
 	}
 	if err := fs.Parse(args); err != nil {
@@ -37,7 +36,7 @@ func runHistory(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "tycana history: unexpected argument %q\n", fs.Arg(0))
 		return 2
 	}
-	h, err := history.Collect(os.DirFS(*root))
+	h, err := history.Collect(*root)
 	if err != nil {
 		fmt.Fprintf(stderr, "tycana history: %v\n", err)
 		return 1
@@ -78,7 +77,7 @@ func parseSince(s string) (time.Time, error) {
 func writeHistoryText(w io.Writer, h *history.History) error {
 	fmt.Fprintf(w, "Times are UTC, converted from %s (%s).\n", h.Zone.Name, h.Zone.Source)
 	if len(h.Sources) == 0 {
-		fmt.Fprintln(w, "No dpkg.log or apt history.log found.")
+		fmt.Fprintln(w, "No dpkg.log, apt history.log, or dnf history found.")
 		return nil
 	}
 	fmt.Fprintf(w, "Sources: %s\n", strings.Join(h.Sources, ", "))
@@ -93,12 +92,31 @@ func writeHistoryText(w io.Writer, h *history.History) error {
 			} else {
 				tr := h.Transactions[cur]
 				who := ""
-				if tr.RequestedBy != "" {
+				switch {
+				case tr.RequestedBy != "":
 					who = "  (requested by " + safe(tr.RequestedBy) + ")"
+				case tr.RequestedByUID != nil:
+					who = fmt.Sprintf("  (uid %d)", *tr.RequestedByUID)
 				}
-				fmt.Fprintf(tw, "%s  %s%s\n", tr.Start.Format("2006-01-02 15:04:05Z"), safe(tr.Commandline), who)
+				what := safe(tr.Commandline)
+				if tr.Source == "dnf" {
+					what = fmt.Sprintf("dnf transaction %d: %s", tr.ID, what)
+					if tr.Commandline == "" {
+						what = fmt.Sprintf("dnf transaction %d (no command line recorded)", tr.ID)
+					}
+				}
+				fmt.Fprintf(tw, "%s  %s%s\n", tr.Start.Format("2006-01-02 15:04:05Z"), what, who)
 				if tr.Error != "" {
 					fmt.Fprintf(tw, "  apt reported an error: %s\n", safe(tr.Error))
+				}
+				if tr.State == "error" {
+					fmt.Fprintln(tw, "  dnf recorded an error for this transaction")
+				}
+				if tr.OutOfBandBefore {
+					fmt.Fprintln(tw, "  the rpm database changed outside dnf before this transaction")
+				}
+				for _, o := range tr.Output {
+					fmt.Fprintf(tw, "  output: %s\n", safe(o))
 				}
 			}
 		}

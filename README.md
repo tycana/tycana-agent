@@ -12,17 +12,22 @@ whatever they already use; the agent then verifies the result and issues a signe
 Status: pre-release. Nothing to install yet. When there is, verify it first: see
 [VERIFY.md](VERIFY.md). The safety model is in [docs/SAFETY.md](docs/SAFETY.md).
 
-What works today, on Debian and Ubuntu, as an ordinary user:
+What works today, on Debian, Ubuntu, and the RHEL 9 family, as an ordinary user:
 
 ```sh
 go run ./cmd/tycana inventory                       # packages, OS, kernels
 go run ./cmd/tycana inventory --format dpkg-query   # byte-identical to dpkg-query -W (see --help)
-go run ./cmd/tycana history --since 2026-10-01      # what dpkg and apt changed, and who asked
+go run ./cmd/tycana inventory --format rpm-query    # byte-identical to rpm -qa --qf (see --help)
+go run ./cmd/tycana history --since 2026-10-01      # what dpkg, apt, and dnf changed, and who asked
 ```
 
-The package list is read straight from dpkg's database, not by running dpkg, and is checked
-against `dpkg-query` and `dpkg -l` on lab hosts (`scripts/lab-dpkg.sh`, fixtures in
-`testdata/lab/`). RPM-based distributions come next.
+The package list is read straight from the package manager's database, never by running it:
+dpkg's status file and journal, or rpm's `rpmdb.sqlite` (rpm 4.16 and later). dnf's history
+database is read the same way. Every read is checked byte for byte against `dpkg-query`,
+`dpkg -l`, and `rpm -qa` on lab hosts (`scripts/lab-dpkg.sh`, `scripts/lab-rpm.sh`), as an
+ordinary user and inside the shipped unit's sandbox; the captured databases in `testdata/lab/`
+keep those checks running in CI. SQLite files are opened read-only through one small package,
+`internal/sqlitero`, the only place allowed to import the driver.
 
 ## What it will do
 

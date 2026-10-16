@@ -31,10 +31,17 @@ plane.
 
 ## 3. What the agent reads
 
-*planned (M1–M2)*: installed packages (dpkg status, rpmdb), pending updates and their security
-classification from the distribution's own metadata, kernel and service restart requirements,
-and basic host identity. Every reading records its source. Nothing is inferred from
-third-party feeds without the vendor's data.
+Done in M1: installed packages from dpkg's status file and journal, or from rpm's
+`rpmdb.sqlite`; the package managers' own transaction records (dpkg.log, apt history.log,
+dnf's history.sqlite); os-release; the running kernel from /proc and installed kernels from
+the package list and /boot; live patches from /sys. The agent never runs the package manager.
+SQLite databases are opened read-only by one package (`internal/sqlitero`); when the file's
+write-ahead log is empty the open is immutable and takes no lock, and when it is not, SQLite's
+read-only path is used, which cannot create or change a file as the unit's user.
+
+*planned (M2)*: pending updates and their security classification from the distribution's own
+metadata, and kernel and service restart requirements. Every reading records its source.
+Nothing is inferred from third-party feeds without the vendor's data.
 
 ## 4. What leaves the host
 

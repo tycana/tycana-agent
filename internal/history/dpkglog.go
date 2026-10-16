@@ -22,8 +22,10 @@ const (
 	KindDisappear = "disappear"
 )
 
-// Change is one package operation dpkg performed.
+// Change is one package operation dpkg or dnf performed.
 type Change struct {
+	// Source is "dpkg" or "dnf".
+	Source    string    `json:"source"`
 	Time      time.Time `json:"time"`       // UTC
 	LocalTime string    `json:"local_time"` // as logged
 	// NearZoneChange is set when LocalTime is within an hour of a

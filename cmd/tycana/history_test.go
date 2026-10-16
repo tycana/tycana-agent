@@ -57,3 +57,33 @@ func TestSafe(t *testing.T) {
 		t.Errorf("escape sequence survived: %q", got)
 	}
 }
+
+// The dnf side of the text output, from the AlmaLinux fixture; the
+// history database there is committed uncompressed.
+func TestHistoryTextDnf(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"history", "--root", "../../testdata/lab/alma9/root"}, &out, &errb); code != 0 {
+		t.Fatalf("exit %d: %s", code, errb.String())
+	}
+	for _, want := range []string{
+		"Sources: /var/lib/dnf/history.sqlite",
+		"dnf transaction 7: -y -q install bc (uid 1000)",
+		"the rpm database changed outside dnf before this transaction",
+		"dnf transaction 9 (no command line recorded) (uid 1000)",
+		"output: Many EPEL packages require the CodeReady Builder (CRB) repository.",
+		"downgrade tzdata:noarch 2026c-1.el9_8 -> 2026b-1.el9 installed",
+		"remove tree:x86_64 1.8.0-10.el9 not-installed",
+	} {
+		// Column padding depends on the block; compare with spaces collapsed.
+		if !strings.Contains(strings.Join(strings.Fields(out.String()), " "), want) {
+			t.Errorf("text output missing %q:\n%s", want, out.String())
+		}
+	}
+	out.Reset()
+	if code := run([]string{"history", "--root", "../../testdata/lab/alma9/root", "--since", "2026-10-16T12:30:00Z", "--format", "json"}, &out, &errb); code != 0 {
+		t.Fatalf("exit %d: %s", code, errb.String())
+	}
+	if c := strings.Count(out.String(), `"source": "dnf"`); c == 0 || strings.Contains(out.String(), "install bc") {
+		t.Errorf("--since did not filter: %d dnf records, contains old transaction %v", c, strings.Contains(out.String(), "install bc"))
+	}
+}

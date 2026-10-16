@@ -1,7 +1,11 @@
 package history
 
 import (
+	"errors"
 	"io/fs"
+	"os"
+	"path/filepath"
+	"sort"
 	"time"
 )
 
@@ -19,9 +23,12 @@ type History struct {
 	Changes      []Change      `json:"changes"`
 }
 
-// Collect reads dpkg.log and apt's history.log with their rotations.
-// Missing logs are not an error: minimal images often have neither.
-func Collect(fsys fs.FS) (*History, error) {
+// Collect reads dpkg.log and apt's history.log with their rotations, and
+// dnf's history database, from the host rooted at root ("/" in
+// production; a path, because SQLite opens files by path). Missing logs
+// are not an error: minimal images often have none.
+func Collect(root string) (*History, error) {
+	fsys := os.DirFS(root)
 	z, err := hostZone(fsys)
 	if err != nil {
 		return nil, err
@@ -51,8 +58,55 @@ func Collect(fsys fs.FS) (*History, error) {
 	if h.Changes == nil {
 		h.Changes = []Change{}
 	}
+	for i := range h.Changes {
+		h.Changes[i].Source = "dpkg"
+	}
 	link(h)
+
+	if _, err := fs.Stat(fsys, DnfHistory); err == nil {
+		trans, changes, err := readDnf(filepath.Join(root, filepath.FromSlash(DnfHistory)), z)
+		if err != nil {
+			return nil, err
+		}
+		base := len(h.Transactions)
+		for i := range changes {
+			changes[i].Transaction += base
+		}
+		merged := len(h.Transactions) > 0 || len(h.Changes) > 0
+		h.Transactions = append(h.Transactions, trans...)
+		h.Changes = append(h.Changes, changes...)
+		h.Sources = append(h.Sources, "/"+DnfHistory)
+		if merged {
+			sortByTime(h)
+		}
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return nil, err
+	}
 	return h, nil
+}
+
+// sortByTime orders transactions and changes by time when a host has
+// records from both package managers, keeping each source's own order
+// among equal times and the change-to-transaction links intact.
+func sortByTime(h *History) {
+	order := make([]int, len(h.Transactions))
+	for i := range order {
+		order[i] = i
+	}
+	sort.SliceStable(order, func(a, b int) bool { return h.Transactions[order[a]].Start.Before(h.Transactions[order[b]].Start) })
+	remap := make(map[int]int, len(order))
+	sorted := make([]Transaction, len(order))
+	for newIdx, oldIdx := range order {
+		remap[oldIdx] = newIdx
+		sorted[newIdx] = h.Transactions[oldIdx]
+	}
+	h.Transactions = sorted
+	for i := range h.Changes {
+		if n, ok := remap[h.Changes[i].Transaction]; ok {
+			h.Changes[i].Transaction = n
+		}
+	}
+	sort.SliceStable(h.Changes, func(a, b int) bool { return h.Changes[a].Time.Before(h.Changes[b].Time) })
 }
 
 // link attributes each dpkg change to the apt transaction whose window
