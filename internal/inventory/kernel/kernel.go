@@ -116,8 +116,9 @@ func Collect(fsys fs.FS, candidates []Candidate, cmp func(a, b string) int) (Inf
 		info.LivePatches = append(info.LivePatches, Patch{Name: e.Name(), Enabled: en == "1", Transition: tr == "1"})
 	}
 
-	// UNVERIFIED: Ksplice module naming (ksplice_*) is from Oracle's docs,
-	// not yet observed on tycana-oel9. Verify when that VM exists.
+	// UNVERIFIED: Ksplice module naming (ksplice_*) is from Oracle's docs.
+	// tycana-oel9 (Oracle Linux 9.8, 2026-10-16) ships no Ksplice packages
+	// or modules; verifying needs a host registered for Ksplice updates.
 	mods, err := fs.ReadDir(fsys, "sys/module")
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return info, err
@@ -152,9 +153,10 @@ func DebianRelease(name string) string {
 
 // rpmKernelImages maps rpm package names that carry a kernel image to the
 // suffix uname -r appends for that variant. The empty suffix is the plain
-// kernel. UNVERIFIED on a live host: kernel-debug-core ("+debug") and the
-// rt/64k variants are from Fedora and RHEL packaging, not yet observed in
-// the lab; kernel-uek-core is checked on tycana-oel9.
+// kernel. kernel-core (AlmaLinux 9) and kernel-uek-core (Oracle Linux 9,
+// UEK 8) are verified on the lab VMs, 2026-10-16. UNVERIFIED on a live
+// host: kernel-debug-core ("+debug") and the rt/64k variants are from
+// Fedora and RHEL packaging, not yet observed in the lab.
 var rpmKernelImages = map[string]string{
 	"kernel-core":       "",
 	"kernel-uek-core":   "",
