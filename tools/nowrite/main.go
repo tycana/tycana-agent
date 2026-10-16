@@ -76,7 +76,7 @@ func main() {
 func scan(root string) ([]finding, error) {
 	var findings []finding
 	fset := token.NewFileSet()
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error { //nolint:gosec // root is the operator-supplied tree to scan
 		if err != nil {
 			return err
 		}

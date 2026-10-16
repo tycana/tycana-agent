@@ -20,12 +20,19 @@ linters:
     - revive
     - unconvert
     - unparam
+  settings:
+    errcheck:
+      # Writes to stdout/stderr in a CLI; nothing useful to do on failure.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
   exclusions:
     paths:
       - testdata
     rules:
       - path: _test\.go
-        linters: [gosec, unparam]
+        linters: [gosec, unparam, prealloc]
 
 formatters:
   enable:

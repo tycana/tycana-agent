@@ -10,7 +10,7 @@ func TestBad(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var msgs []string
+	msgs := make([]string, 0, len(got))
 	for _, f := range got {
 		msgs = append(msgs, f.msg)
 	}
