@@ -1,0 +1,1583 @@
+{
+  "collected": "2026-10-16T17:45:52.180191323Z",
+  "boot_id": "a903a14d-fd19-43bb-a743-9c40da2a5dc1",
+  "units": [
+    {
+      "id": "systemd-journald.service",
+      "main_pid": 572,
+      "start": "2026-10-16T17:44:59.323872Z",
+      "exec": "/usr/lib/systemd/systemd-journald"
+    },
+    {
+      "id": "chronyd.service",
+      "main_pid": 690,
+      "start": "2026-10-16T17:45:00.783446Z",
+      "exec": "/usr/sbin/chronyd"
+    },
+    {
+      "id": "getty@tty1.service",
+      "main_pid": 1038,
+      "start": "2026-10-16T17:45:02.748195Z",
+      "exec": "/sbin/agetty"
+    },
+    {
+      "id": "crond.service",
+      "main_pid": 1037,
+      "start": "2026-10-16T17:45:02.742972Z",
+      "exec": "/usr/sbin/crond"
+    },
+    {
+      "id": "systemd-logind.service",
+      "main_pid": 685,
+      "start": "2026-10-16T17:45:00.739464Z",
+      "exec": "/usr/lib/systemd/systemd-logind"
+    },
+    {
+      "id": "rpcbind.service",
+      "main_pid": 645,
+      "start": "2026-10-16T17:45:00.496477Z",
+      "exec": "/usr/bin/rpcbind"
+    },
+    {
+      "id": "run-u59.service",
+      "main_pid": 4470,
+      "start": "2026-10-16T17:45:52.084046Z",
+      "exec": "/opt/tycana-lab/tycana"
+    },
+    {
+      "id": "NetworkManager.service",
+      "main_pid": 707,
+      "start": "2026-10-16T17:45:01.481048Z",
+      "exec": "/usr/sbin/NetworkManager"
+    },
+    {
+      "id": "systemd-hostnamed.service",
+      "main_pid": 711,
+      "start": "2026-10-16T17:45:01.549013Z",
+      "exec": "/usr/lib/systemd/systemd-hostnamed"
+    },
+    {
+      "id": "sshd.service",
+      "main_pid": 1035,
+      "start": "2026-10-16T17:45:02.707466Z",
+      "exec": "/usr/sbin/sshd"
+    },
+    {
+      "id": "tuned.service",
+      "main_pid": 720,
+      "start": "2026-10-16T17:45:01.660008Z",
+      "exec": "/usr/sbin/tuned"
+    },
+    {
+      "id": "systemd-udevd.service",
+      "main_pid": 585,
+      "start": "2026-10-16T17:44:59.52701Z",
+      "exec": "/usr/lib/systemd/systemd-udevd"
+    },
+    {
+      "id": "dbus-broker.service",
+      "main_pid": 675,
+      "start": "2026-10-16T17:45:00.633217Z",
+      "exec": "/usr/bin/dbus-broker-launch"
+    },
+    {
+      "id": "user@1000.service",
+      "main_pid": 1041,
+      "start": "2026-10-16T17:45:02.773994Z",
+      "exec": "/usr/lib/systemd/systemd"
+    },
+    {
+      "id": "gssproxy.service",
+      "main_pid": 726,
+      "start": "2026-10-16T17:45:01.679269Z",
+      "exec": "/usr/sbin/gssproxy"
+    },
+    {
+      "id": "init.scope",
+      "start": "2026-10-16T17:44:56.861381Z"
+    },
+    {
+      "id": "serial-getty@hvc0.service",
+      "main_pid": 1039,
+      "start": "2026-10-16T17:45:02.756967Z",
+      "exec": "/sbin/agetty"
+    },
+    {
+      "id": "postgresql.service",
+      "main_pid": 2673,
+      "start": "2026-10-16T17:45:20.80527Z",
+      "exec": "/usr/bin/postmaster"
+    },
+    {
+      "id": "session-5.scope",
+      "start": "2026-10-16T17:45:14.40113Z",
+      "service": "sshd"
+    },
+    {
+      "id": "auditd.service",
+      "main_pid": 646,
+      "start": "2026-10-16T17:45:00.518938Z",
+      "exec": "/sbin/auditd"
+    },
+    {
+      "id": "lima-guestagent.service",
+      "main_pid": 681,
+      "start": "2026-10-16T17:45:00.695426Z",
+      "exec": "/usr/local/bin/lima-guestagent"
+    },
+    {
+      "id": "polkit.service",
+      "main_pid": 987,
+      "start": "2026-10-16T17:45:02.158982Z",
+      "exec": "/usr/lib/polkit-1/polkitd"
+    },
+    {
+      "id": "rsyslog.service",
+      "main_pid": 1034,
+      "start": "2026-10-16T17:45:02.701996Z",
+      "exec": "/usr/sbin/rsyslogd"
+    },
+    {
+      "id": "serial-getty@ttyS0.service",
+      "main_pid": 1040,
+      "start": "2026-10-16T17:45:02.760862Z",
+      "exec": "/sbin/agetty"
+    },
+    {
+      "id": "irqbalance.service",
+      "main_pid": 680,
+      "start": "2026-10-16T17:45:00.684332Z",
+      "exec": "/usr/sbin/irqbalance"
+    }
+  ],
+  "programs": {
+    "/opt/tycana-lab/tycana": {
+      "path": "/opt/tycana-lab/tycana",
+      "closure": [
+        "/opt/tycana-lab/tycana"
+      ]
+    },
+    "/sbin/agetty": {
+      "path": "/usr/sbin/agetty",
+      "closure": [
+        "/usr/sbin/agetty",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libc.so.6"
+      ],
+      "sonames": [
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ]
+    },
+    "/sbin/auditd": {
+      "path": "/usr/sbin/auditd",
+      "closure": [
+        "/usr/sbin/auditd",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libauparse.so.0.0.0",
+        "/usr/lib64/libgssapi_krb5.so.2.2",
+        "/usr/lib64/libkrb5.so.3.3",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libk5crypto.so.3.1",
+        "/usr/lib64/libcom_err.so.2.1",
+        "/usr/lib64/libkrb5support.so.0.1",
+        "/usr/lib64/libkeyutils.so.1.10",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libresolv.so.2",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libpcre2-8.so.0.11.0"
+      ],
+      "sonames": [
+        "libaudit.so.1",
+        "libauparse.so.0",
+        "libgssapi_krb5.so.2",
+        "libkrb5.so.3",
+        "libc.so.6",
+        "libcap-ng.so.0",
+        "libk5crypto.so.3",
+        "libcom_err.so.2",
+        "libkrb5support.so.0",
+        "libkeyutils.so.1",
+        "libcrypto.so.3",
+        "libresolv.so.2",
+        "ld-linux-x86-64.so.2",
+        "libselinux.so.1",
+        "libz.so.1",
+        "libpcre2-8.so.0"
+      ]
+    },
+    "/usr/bin/dbus-broker-launch": {
+      "path": "/usr/bin/dbus-broker-launch",
+      "closure": [
+        "/usr/bin/dbus-broker-launch",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libexpat.so.1.8.10",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libgpg-error.so.0.32.0"
+      ],
+      "sonames": [
+        "libaudit.so.1",
+        "libcap-ng.so.0",
+        "libexpat.so.1",
+        "libsystemd.so.0",
+        "libselinux.so.1",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libm.so.6",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "liblzma.so.5",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "libpcre2-8.so.0",
+        "libgpg-error.so.0"
+      ]
+    },
+    "/usr/bin/postmaster": {
+      "path": "/usr/bin/postgres",
+      "closure": [
+        "/usr/bin/postgres",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libxml2.so.2.9.13",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libssl.so.3.5.8",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libgssapi_krb5.so.2.2",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libldap_r.so.2.0.200",
+        "/usr/lib64/libicui18n.so.67.1",
+        "/usr/lib64/libicuuc.so.67.1",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libkrb5.so.3.3",
+        "/usr/lib64/libk5crypto.so.3.1",
+        "/usr/lib64/libcom_err.so.2.1",
+        "/usr/lib64/libkrb5support.so.0.1",
+        "/usr/lib64/libkeyutils.so.1.10",
+        "/usr/lib64/libresolv.so.2",
+        "/usr/lib64/liblber.so.2.0.200",
+        "/usr/lib64/libevent-2.1.so.7.0.1",
+        "/usr/lib64/libsasl2.so.3.0.0",
+        "/usr/lib64/libstdc++.so.6.0.29",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libicudata.so.67.1",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libpcre2-8.so.0.11.0"
+      ],
+      "sonames": [
+        "libxml2.so.2",
+        "libpam.so.0",
+        "libssl.so.3",
+        "libcrypto.so.3",
+        "libgssapi_krb5.so.2",
+        "libm.so.6",
+        "libldap.so.2",
+        "libicui18n.so.67",
+        "libicuuc.so.67",
+        "libsystemd.so.0",
+        "libc.so.6",
+        "libz.so.1",
+        "liblzma.so.5",
+        "libaudit.so.1",
+        "libeconf.so.0",
+        "libkrb5.so.3",
+        "libk5crypto.so.3",
+        "libcom_err.so.2",
+        "libkrb5support.so.0",
+        "libkeyutils.so.1",
+        "libresolv.so.2",
+        "ld-linux-x86-64.so.2",
+        "liblber.so.2",
+        "libevent-2.1.so.7",
+        "libsasl2.so.3",
+        "libstdc++.so.6",
+        "libgcc_s.so.1",
+        "libicudata.so.67",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "libcap-ng.so.0",
+        "libselinux.so.1",
+        "libcrypt.so.2",
+        "libgpg-error.so.0",
+        "libpcre2-8.so.0"
+      ]
+    },
+    "/usr/bin/rpcbind": {
+      "path": "/usr/bin/rpcbind",
+      "closure": [
+        "/usr/bin/rpcbind",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libtirpc.so.3.0.0",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libgssapi_krb5.so.2.2",
+        "/usr/lib64/libkrb5.so.3.3",
+        "/usr/lib64/libk5crypto.so.3.1",
+        "/usr/lib64/libcom_err.so.2.1",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libkrb5support.so.0.1",
+        "/usr/lib64/libkeyutils.so.1.10",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libresolv.so.2",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libpcre2-8.so.0.11.0"
+      ],
+      "sonames": [
+        "libtirpc.so.3",
+        "libsystemd.so.0",
+        "libc.so.6",
+        "libgssapi_krb5.so.2",
+        "libkrb5.so.3",
+        "libk5crypto.so.3",
+        "libcom_err.so.2",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "liblzma.so.5",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "libgcc_s.so.1",
+        "ld-linux-x86-64.so.2",
+        "libkrb5support.so.0",
+        "libkeyutils.so.1",
+        "libcrypto.so.3",
+        "libresolv.so.2",
+        "libgpg-error.so.0",
+        "libselinux.so.1",
+        "libz.so.1",
+        "libpcre2-8.so.0"
+      ]
+    },
+    "/usr/lib/polkit-1/polkitd": {
+      "path": "/usr/lib/polkit-1/polkitd",
+      "closure": [
+        "/usr/lib/polkit-1/polkitd",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libpolkit-gobject-1.so.0.0.0",
+        "/usr/lib64/libgio-2.0.so.0.6800.4",
+        "/usr/lib64/libgobject-2.0.so.0.6800.4",
+        "/usr/lib64/libglib-2.0.so.0.6800.4",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libexpat.so.1.8.10",
+        "/usr/lib64/polkit-1/libmozjs-78.so",
+        "/usr/lib64/libstdc++.so.6.0.29",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libgmodule-2.0.so.0.6800.4",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libffi.so.8.1.0",
+        "/usr/lib64/libpcre.so.1.2.12",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libgpg-error.so.0.32.0"
+      ],
+      "sonames": [
+        "libpolkit-gobject-1.so.0",
+        "libgio-2.0.so.0",
+        "libgobject-2.0.so.0",
+        "libglib-2.0.so.0",
+        "libsystemd.so.0",
+        "libexpat.so.1",
+        "libmozjs-78.so",
+        "libstdc++.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "libgmodule-2.0.so.0",
+        "libz.so.1",
+        "libmount.so.1",
+        "libselinux.so.1",
+        "libffi.so.8",
+        "libpcre.so.1",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "liblzma.so.5",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "ld-linux-x86-64.so.2",
+        "libm.so.6",
+        "libblkid.so.1",
+        "libpcre2-8.so.0",
+        "libgpg-error.so.0"
+      ]
+    },
+    "/usr/lib/systemd/systemd": {
+      "path": "/usr/lib/systemd/systemd",
+      "closure": [
+        "/usr/lib/systemd/systemd",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/systemd/libsystemd-core-252.so",
+        "/usr/lib64/systemd/libsystemd-shared-252.so",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libseccomp.so.2.5.2",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libkmod.so.2.3.6",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libacl.so.1.2.2400",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libffi.so.8.1.0"
+      ],
+      "sonames": [
+        "libsystemd-core-252.so",
+        "libsystemd-shared-252.so",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "libseccomp.so.2",
+        "libpam.so.0",
+        "libaudit.so.1",
+        "libkmod.so.2",
+        "libselinux.so.1",
+        "libmount.so.1",
+        "libacl.so.1",
+        "libblkid.so.1",
+        "libcap.so.2",
+        "libcrypt.so.2",
+        "libgcrypt.so.20",
+        "liblz4.so.1",
+        "libcrypto.so.3",
+        "libp11-kit.so.0",
+        "libzstd.so.1",
+        "liblzma.so.5",
+        "libm.so.6",
+        "ld-linux-x86-64.so.2",
+        "libeconf.so.0",
+        "libcap-ng.so.0",
+        "libz.so.1",
+        "libpcre2-8.so.0",
+        "libgpg-error.so.0",
+        "libffi.so.8"
+      ]
+    },
+    "/usr/lib/systemd/systemd-hostnamed": {
+      "path": "/usr/lib/systemd/systemd-hostnamed",
+      "closure": [
+        "/usr/lib/systemd/systemd-hostnamed",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/systemd/libsystemd-shared-252.so",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libacl.so.1.2.2400",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/libkmod.so.2.3.6",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libseccomp.so.2.5.2",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libffi.so.8.1.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libcap-ng.so.0.0.0"
+      ],
+      "sonames": [
+        "libsystemd-shared-252.so",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "libacl.so.1",
+        "libblkid.so.1",
+        "libcap.so.2",
+        "libcrypt.so.2",
+        "libgcrypt.so.20",
+        "libkmod.so.2",
+        "liblz4.so.1",
+        "libmount.so.1",
+        "libcrypto.so.3",
+        "libp11-kit.so.0",
+        "libpam.so.0",
+        "libseccomp.so.2",
+        "libselinux.so.1",
+        "libzstd.so.1",
+        "liblzma.so.5",
+        "libm.so.6",
+        "ld-linux-x86-64.so.2",
+        "libgpg-error.so.0",
+        "libz.so.1",
+        "libffi.so.8",
+        "libaudit.so.1",
+        "libeconf.so.0",
+        "libpcre2-8.so.0",
+        "libcap-ng.so.0"
+      ]
+    },
+    "/usr/lib/systemd/systemd-journald": {
+      "path": "/usr/lib/systemd/systemd-journald",
+      "closure": [
+        "/usr/lib/systemd/systemd-journald",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/systemd/libsystemd-shared-252.so",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libacl.so.1.2.2400",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/libkmod.so.2.3.6",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libseccomp.so.2.5.2",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libffi.so.8.1.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libcap-ng.so.0.0.0"
+      ],
+      "sonames": [
+        "libsystemd-shared-252.so",
+        "libselinux.so.1",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "libacl.so.1",
+        "libblkid.so.1",
+        "libcap.so.2",
+        "libcrypt.so.2",
+        "libgcrypt.so.20",
+        "libkmod.so.2",
+        "liblz4.so.1",
+        "libmount.so.1",
+        "libcrypto.so.3",
+        "libp11-kit.so.0",
+        "libpam.so.0",
+        "libseccomp.so.2",
+        "libzstd.so.1",
+        "liblzma.so.5",
+        "libm.so.6",
+        "ld-linux-x86-64.so.2",
+        "libpcre2-8.so.0",
+        "libgpg-error.so.0",
+        "libz.so.1",
+        "libffi.so.8",
+        "libaudit.so.1",
+        "libeconf.so.0",
+        "libcap-ng.so.0"
+      ]
+    },
+    "/usr/lib/systemd/systemd-logind": {
+      "path": "/usr/lib/systemd/systemd-logind",
+      "closure": [
+        "/usr/lib/systemd/systemd-logind",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/systemd/libsystemd-shared-252.so",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libacl.so.1.2.2400",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/libkmod.so.2.3.6",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libseccomp.so.2.5.2",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libffi.so.8.1.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libcap-ng.so.0.0.0"
+      ],
+      "sonames": [
+        "libsystemd-shared-252.so",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libacl.so.1",
+        "libblkid.so.1",
+        "libcap.so.2",
+        "libcrypt.so.2",
+        "libgcrypt.so.20",
+        "libkmod.so.2",
+        "liblz4.so.1",
+        "libmount.so.1",
+        "libcrypto.so.3",
+        "libp11-kit.so.0",
+        "libpam.so.0",
+        "libseccomp.so.2",
+        "libselinux.so.1",
+        "libzstd.so.1",
+        "liblzma.so.5",
+        "libm.so.6",
+        "libgpg-error.so.0",
+        "libz.so.1",
+        "libffi.so.8",
+        "libaudit.so.1",
+        "libeconf.so.0",
+        "libpcre2-8.so.0",
+        "libcap-ng.so.0"
+      ]
+    },
+    "/usr/lib/systemd/systemd-udevd": {
+      "path": "/usr/bin/udevadm",
+      "closure": [
+        "/usr/bin/udevadm",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/systemd/libsystemd-shared-252.so",
+        "/usr/lib64/libkmod.so.2.3.6",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libacl.so.1.2.2400",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libseccomp.so.2.5.2",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libffi.so.8.1.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libcap-ng.so.0.0.0"
+      ],
+      "sonames": [
+        "libsystemd-shared-252.so",
+        "libkmod.so.2",
+        "libblkid.so.1",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "libacl.so.1",
+        "libcap.so.2",
+        "libcrypt.so.2",
+        "libgcrypt.so.20",
+        "liblz4.so.1",
+        "libmount.so.1",
+        "libcrypto.so.3",
+        "libp11-kit.so.0",
+        "libpam.so.0",
+        "libseccomp.so.2",
+        "libselinux.so.1",
+        "libzstd.so.1",
+        "liblzma.so.5",
+        "libm.so.6",
+        "ld-linux-x86-64.so.2",
+        "libz.so.1",
+        "libgpg-error.so.0",
+        "libffi.so.8",
+        "libaudit.so.1",
+        "libeconf.so.0",
+        "libpcre2-8.so.0",
+        "libcap-ng.so.0"
+      ]
+    },
+    "/usr/libexec/openssh/sshd-session": {
+      "path": "/usr/libexec/openssh/sshd-session",
+      "closure": [
+        "/usr/libexec/openssh/sshd-session",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libgssapi_krb5.so.2.2",
+        "/usr/lib64/libkrb5.so.3.3",
+        "/usr/lib64/libk5crypto.so.3.1",
+        "/usr/lib64/libcom_err.so.2.1",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libkrb5support.so.0.1",
+        "/usr/lib64/libkeyutils.so.1.10",
+        "/usr/lib64/libresolv.so.2"
+      ],
+      "sonames": [
+        "libcrypt.so.2",
+        "libaudit.so.1",
+        "libpam.so.0",
+        "libselinux.so.1",
+        "libgssapi_krb5.so.2",
+        "libkrb5.so.3",
+        "libk5crypto.so.3",
+        "libcom_err.so.2",
+        "libcrypto.so.3",
+        "libz.so.1",
+        "libc.so.6",
+        "libcap-ng.so.0",
+        "libeconf.so.0",
+        "libm.so.6",
+        "libpcre2-8.so.0",
+        "ld-linux-x86-64.so.2",
+        "libkrb5support.so.0",
+        "libkeyutils.so.1",
+        "libresolv.so.2"
+      ]
+    },
+    "/usr/local/bin/lima-guestagent": {
+      "path": "/usr/local/bin/lima-guestagent",
+      "closure": [
+        "/usr/local/bin/lima-guestagent"
+      ]
+    },
+    "/usr/sbin/NetworkManager": {
+      "path": "/usr/sbin/NetworkManager",
+      "closure": [
+        "/usr/sbin/NetworkManager",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libgio-2.0.so.0.6800.4",
+        "/usr/lib64/libgobject-2.0.so.0.6800.4",
+        "/usr/lib64/libglib-2.0.so.0.6800.4",
+        "/usr/lib64/libgmodule-2.0.so.0.6800.4",
+        "/usr/lib64/libndp.so.0.3.0",
+        "/usr/lib64/libudev.so.1.7.5",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libcurl.so.4.7.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libgnutls.so.30.40.4",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libmount.so.1.1.0",
+        "/usr/lib64/libffi.so.8.1.0",
+        "/usr/lib64/libpcre.so.1.2.12",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libnghttp2.so.14.20.1",
+        "/usr/lib64/libidn2.so.0.3.7",
+        "/usr/lib64/libssh.so.4.9.4",
+        "/usr/lib64/libpsl.so.5.3.3",
+        "/usr/lib64/libssl.so.3.5.8",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libgssapi_krb5.so.2.2",
+        "/usr/lib64/libkrb5.so.3.3",
+        "/usr/lib64/libk5crypto.so.3.1",
+        "/usr/lib64/libcom_err.so.2.1",
+        "/usr/lib64/libldap_r.so.2.0.200",
+        "/usr/lib64/liblber.so.2.0.200",
+        "/usr/lib64/libbrotlidec.so.1.0.9",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libunistring.so.2.1.0",
+        "/usr/lib64/libtasn1.so.6.6.0",
+        "/usr/lib64/libhogweed.so.6.10",
+        "/usr/lib64/libnettle.so.8.10",
+        "/usr/lib64/libblkid.so.1.1.0",
+        "/usr/lib64/libgpg-error.so.0.32.0",
+        "/usr/lib64/libkrb5support.so.0.1",
+        "/usr/lib64/libkeyutils.so.1.10",
+        "/usr/lib64/libresolv.so.2",
+        "/usr/lib64/libevent-2.1.so.7.0.1",
+        "/usr/lib64/libsasl2.so.3.0.0",
+        "/usr/lib64/libbrotlicommon.so.1.0.9",
+        "/usr/lib64/libcrypt.so.2.0.0"
+      ],
+      "sonames": [
+        "libgio-2.0.so.0",
+        "libgobject-2.0.so.0",
+        "libglib-2.0.so.0",
+        "libgmodule-2.0.so.0",
+        "libndp.so.0",
+        "libudev.so.1",
+        "libsystemd.so.0",
+        "libcurl.so.4",
+        "libaudit.so.1",
+        "libselinux.so.1",
+        "libgnutls.so.30",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libz.so.1",
+        "libmount.so.1",
+        "libffi.so.8",
+        "libpcre.so.1",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "liblzma.so.5",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "libnghttp2.so.14",
+        "libidn2.so.0",
+        "libssh.so.4",
+        "libpsl.so.5",
+        "libssl.so.3",
+        "libcrypto.so.3",
+        "libgssapi_krb5.so.2",
+        "libkrb5.so.3",
+        "libk5crypto.so.3",
+        "libcom_err.so.2",
+        "libldap.so.2",
+        "liblber.so.2",
+        "libbrotlidec.so.1",
+        "libcap-ng.so.0",
+        "libpcre2-8.so.0",
+        "libp11-kit.so.0",
+        "libunistring.so.2",
+        "libtasn1.so.6",
+        "libhogweed.so.6",
+        "libnettle.so.8",
+        "libblkid.so.1",
+        "libgpg-error.so.0",
+        "libkrb5support.so.0",
+        "libkeyutils.so.1",
+        "libresolv.so.2",
+        "libevent-2.1.so.7",
+        "libsasl2.so.3",
+        "libbrotlicommon.so.1",
+        "libcrypt.so.2"
+      ]
+    },
+    "/usr/sbin/chronyd": {
+      "path": "/usr/sbin/chronyd",
+      "closure": [
+        "/usr/sbin/chronyd",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libgnutls.so.30.40.4",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libseccomp.so.2.5.2",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libp11-kit.so.0.4.10",
+        "/usr/lib64/libidn2.so.0.3.7",
+        "/usr/lib64/libunistring.so.2.1.0",
+        "/usr/lib64/libtasn1.so.6.6.0",
+        "/usr/lib64/libhogweed.so.6.10",
+        "/usr/lib64/libnettle.so.8.10",
+        "/usr/lib64/libffi.so.8.1.0"
+      ],
+      "sonames": [
+        "libm.so.6",
+        "libgnutls.so.30",
+        "libcap.so.2",
+        "libseccomp.so.2",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libp11-kit.so.0",
+        "libidn2.so.0",
+        "libunistring.so.2",
+        "libtasn1.so.6",
+        "libhogweed.so.6",
+        "libnettle.so.8",
+        "libffi.so.8"
+      ]
+    },
+    "/usr/sbin/crond": {
+      "path": "/usr/sbin/crond",
+      "closure": [
+        "/usr/sbin/crond",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libcap-ng.so.0.0.0"
+      ],
+      "sonames": [
+        "libselinux.so.1",
+        "libpam.so.0",
+        "libaudit.so.1",
+        "libc.so.6",
+        "libpcre2-8.so.0",
+        "ld-linux-x86-64.so.2",
+        "libeconf.so.0",
+        "libm.so.6",
+        "libcap-ng.so.0"
+      ]
+    },
+    "/usr/sbin/gssproxy": {
+      "path": "/usr/sbin/gssproxy",
+      "closure": [
+        "/usr/sbin/gssproxy",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libpopt.so.0.0.1",
+        "/usr/lib64/libkrb5.so.3.3",
+        "/usr/lib64/libk5crypto.so.3.1",
+        "/usr/lib64/libverto.so.1.0.0",
+        "/usr/lib64/libini_config.so.5.2.1",
+        "/usr/lib64/libref_array.so.1.2.1",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libgssrpc.so.4.2",
+        "/usr/lib64/libgssapi_krb5.so.2.2",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libcom_err.so.2.1",
+        "/usr/lib64/libkrb5support.so.0.1",
+        "/usr/lib64/libkeyutils.so.1.10",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libresolv.so.2",
+        "/usr/lib64/libcollection.so.4.1.1",
+        "/usr/lib64/libpath_utils.so.1.0.1",
+        "/usr/lib64/libbasicobjects.so.0.1.0",
+        "/usr/lib64/libpcre2-8.so.0.11.0",
+        "/usr/lib64/libz.so.1.2.11"
+      ],
+      "sonames": [
+        "libpopt.so.0",
+        "libkrb5.so.3",
+        "libk5crypto.so.3",
+        "libverto.so.1",
+        "libini_config.so.5",
+        "libref_array.so.1",
+        "libselinux.so.1",
+        "libgssrpc.so.4",
+        "libgssapi_krb5.so.2",
+        "libc.so.6",
+        "libcom_err.so.2",
+        "libkrb5support.so.0",
+        "libkeyutils.so.1",
+        "libcrypto.so.3",
+        "libresolv.so.2",
+        "ld-linux-x86-64.so.2",
+        "libcollection.so.4",
+        "libpath_utils.so.1",
+        "libbasicobjects.so.0",
+        "libpcre2-8.so.0",
+        "libz.so.1"
+      ]
+    },
+    "/usr/sbin/irqbalance": {
+      "path": "/usr/sbin/irqbalance",
+      "closure": [
+        "/usr/sbin/irqbalance",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libglib-2.0.so.0.6800.4",
+        "/usr/lib64/libnuma.so.1.0.0",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libpcre.so.1.2.12",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libgpg-error.so.0.32.0"
+      ],
+      "sonames": [
+        "libcap-ng.so.0",
+        "libglib-2.0.so.0",
+        "libnuma.so.1",
+        "libsystemd.so.0",
+        "libm.so.6",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libpcre.so.1",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "liblzma.so.5",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "libgcc_s.so.1",
+        "libgpg-error.so.0"
+      ]
+    },
+    "/usr/sbin/rsyslogd": {
+      "path": "/usr/sbin/rsyslogd",
+      "closure": [
+        "/usr/sbin/rsyslogd",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libestr.so.0.0.0",
+        "/usr/lib64/libfastjson.so.4.3.0",
+        "/usr/lib64/libsystemd.so.0.35.0",
+        "/usr/lib64/libuuid.so.1.3.0",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libgcc_s-11-20240719.so.1",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libcap.so.2.48",
+        "/usr/lib64/libgcrypt.so.20.4.0",
+        "/usr/lib64/liblzma.so.5.2.5",
+        "/usr/lib64/libzstd.so.1.5.5",
+        "/usr/lib64/liblz4.so.1.9.3",
+        "/usr/lib64/libgpg-error.so.0.32.0"
+      ],
+      "sonames": [
+        "libz.so.1",
+        "libm.so.6",
+        "libestr.so.0",
+        "libfastjson.so.4",
+        "libsystemd.so.0",
+        "libuuid.so.1",
+        "libcap-ng.so.0",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libcap.so.2",
+        "libgcrypt.so.20",
+        "liblzma.so.5",
+        "libzstd.so.1",
+        "liblz4.so.1",
+        "libgpg-error.so.0"
+      ]
+    },
+    "/usr/sbin/sshd": {
+      "path": "/usr/sbin/sshd",
+      "closure": [
+        "/usr/sbin/sshd",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libcrypt.so.2.0.0",
+        "/usr/lib64/libaudit.so.1.0.0",
+        "/usr/lib64/libpam.so.0.85.1",
+        "/usr/lib64/libselinux.so.1",
+        "/usr/lib64/libcrypto.so.3.5.8",
+        "/usr/lib64/libz.so.1.2.11",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libcap-ng.so.0.0.0",
+        "/usr/lib64/libeconf.so.0.4.1",
+        "/usr/lib64/libm.so.6",
+        "/usr/lib64/libpcre2-8.so.0.11.0"
+      ],
+      "sonames": [
+        "libcrypt.so.2",
+        "libaudit.so.1",
+        "libpam.so.0",
+        "libselinux.so.1",
+        "libcrypto.so.3",
+        "libz.so.1",
+        "libc.so.6",
+        "libcap-ng.so.0",
+        "libeconf.so.0",
+        "libm.so.6",
+        "libpcre2-8.so.0",
+        "ld-linux-x86-64.so.2"
+      ]
+    },
+    "/usr/sbin/tuned": {
+      "path": "/usr/sbin/tuned",
+      "interpreter": "/usr/bin/python3.9",
+      "closure": [
+        "/usr/bin/python3.9",
+        "/usr/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib64/libpython3.9.so.1.0",
+        "/usr/lib64/libc.so.6",
+        "/usr/lib64/libm.so.6"
+      ],
+      "sonames": [
+        "libpython3.9.so.1.0",
+        "libc.so.6",
+        "libm.so.6",
+        "ld-linux-x86-64.so.2"
+      ]
+    }
+  },
+  "files": {
+    "/opt/tycana-lab/tycana": {
+      "time": "2026-10-16T17:45:51.535781286Z",
+      "source": "birth"
+    },
+    "/usr/bin/dbus-broker-launch": {
+      "time": "2026-08-10T04:57:54.573980831Z",
+      "source": "birth"
+    },
+    "/usr/bin/postgres": {
+      "time": "2026-10-16T17:45:18.250191618Z",
+      "source": "birth"
+    },
+    "/usr/bin/python3.9": {
+      "time": "2026-10-16T17:45:49.665782837Z",
+      "source": "birth"
+    },
+    "/usr/bin/rpcbind": {
+      "time": "2026-08-10T05:00:32.819025973Z",
+      "source": "birth"
+    },
+    "/usr/bin/udevadm": {
+      "time": "2026-08-10T04:57:54.72498083Z",
+      "source": "birth"
+    },
+    "/usr/lib/polkit-1/polkitd": {
+      "time": "2026-08-10T05:00:33.147022046Z",
+      "source": "birth"
+    },
+    "/usr/lib/systemd/systemd": {
+      "time": "2026-08-10T04:57:54.298980831Z",
+      "source": "birth"
+    },
+    "/usr/lib/systemd/systemd-hostnamed": {
+      "time": "2026-08-10T04:57:54.300980831Z",
+      "source": "birth"
+    },
+    "/usr/lib/systemd/systemd-journald": {
+      "time": "2026-08-10T04:57:54.300980831Z",
+      "source": "birth"
+    },
+    "/usr/lib/systemd/systemd-logind": {
+      "time": "2026-08-10T04:57:54.300980831Z",
+      "source": "birth"
+    },
+    "/usr/lib64/ld-linux-x86-64.so.2": {
+      "time": "2026-08-10T04:57:44.994980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libacl.so.1.2.2400": {
+      "time": "2026-08-10T04:57:45.041980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libaudit.so.1.0.0": {
+      "time": "2026-08-10T04:57:45.158980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libauparse.so.0.0.0": {
+      "time": "2026-08-10T04:57:45.159980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libbasicobjects.so.0.1.0": {
+      "time": "2026-08-10T04:57:45.355980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libblkid.so.1.1.0": {
+      "time": "2026-08-10T04:57:46.107980851Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libbrotlicommon.so.1.0.9": {
+      "time": "2026-08-10T04:57:47.462980848Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libbrotlidec.so.1.0.9": {
+      "time": "2026-08-10T04:57:47.463980848Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libc.so.6": {
+      "time": "2026-08-10T04:57:44.998980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcap-ng.so.0.0.0": {
+      "time": "2026-08-10T04:57:45.155980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcap.so.2.48": {
+      "time": "2026-08-10T04:57:45.044980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcollection.so.4.1.1": {
+      "time": "2026-08-10T04:57:45.361980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcom_err.so.2.1": {
+      "time": "2026-08-10T04:57:45.082980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcrypt.so.2.0.0": {
+      "time": "2026-08-10T04:57:45.060980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcrypto.so.3.5.8": {
+      "time": "2026-10-16T12:32:47.061137033Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libcurl.so.4.7.0": {
+      "time": "2026-10-16T12:32:47.092136906Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libeconf.so.0.4.1": {
+      "time": "2026-08-10T04:57:47.493980848Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libestr.so.0.0.0": {
+      "time": "2026-08-10T04:57:54.101980832Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libevent-2.1.so.7.0.1": {
+      "time": "2026-08-10T04:57:47.074980849Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libexpat.so.1.8.10": {
+      "time": "2026-08-10T04:57:45.176980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libfastjson.so.4.3.0": {
+      "time": "2026-08-10T04:57:54.105980832Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libffi.so.8.1.0": {
+      "time": "2026-08-10T04:57:45.184980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgcc_s-11-20240719.so.1": {
+      "time": "2026-08-10T04:57:44.890980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgcrypt.so.20.4.0": {
+      "time": "2026-08-10T04:57:45.234980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgio-2.0.so.0.6800.4": {
+      "time": "2026-08-10T04:57:53.699980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libglib-2.0.so.0.6800.4": {
+      "time": "2026-08-10T04:57:53.704980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgmodule-2.0.so.0.6800.4": {
+      "time": "2026-08-10T04:57:53.707980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgnutls.so.30.40.4": {
+      "time": "2026-08-10T04:57:53.683980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgobject-2.0.so.0.6800.4": {
+      "time": "2026-08-10T04:57:53.708980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgpg-error.so.0.32.0": {
+      "time": "2026-08-10T04:57:45.135980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgssapi_krb5.so.2.2": {
+      "time": "2026-08-10T04:57:47.913980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libgssrpc.so.4.2": {
+      "time": "2026-08-10T04:57:47.914980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libhogweed.so.6.10": {
+      "time": "2026-08-10T04:57:53.675980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libicudata.so.67.1": {
+      "time": "2026-10-16T17:45:18.008199417Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libicui18n.so.67.1": {
+      "time": "2026-10-16T17:45:18.099196485Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libicuuc.so.67.1": {
+      "time": "2026-10-16T17:45:18.113196034Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libidn2.so.0.3.7": {
+      "time": "2026-08-10T04:57:45.171980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libini_config.so.5.2.1": {
+      "time": "2026-08-10T04:57:47.882980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libk5crypto.so.3.1": {
+      "time": "2026-08-10T04:57:47.915980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libkeyutils.so.1.10": {
+      "time": "2026-08-10T04:57:45.151980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libkmod.so.2.3.6": {
+      "time": "2026-08-10T04:57:46.121980851Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libkrb5.so.3.3": {
+      "time": "2026-08-10T04:57:47.916980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libkrb5support.so.0.1": {
+      "time": "2026-08-10T04:57:47.919980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/liblber.so.2.0.200": {
+      "time": "2026-08-10T04:57:47.945980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libldap_r.so.2.0.200": {
+      "time": "2026-08-10T04:57:47.946980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/liblz4.so.1.9.3": {
+      "time": "2026-08-10T04:57:45.202980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/liblzma.so.5.2.5": {
+      "time": "2026-08-10T04:57:45.034980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libm.so.6": {
+      "time": "2026-08-10T04:57:45.004980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libmount.so.1.1.0": {
+      "time": "2026-08-10T04:57:46.117980851Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libndp.so.0.3.0": {
+      "time": "2026-08-10T04:57:47.820980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libnettle.so.8.10": {
+      "time": "2026-08-10T04:57:53.677980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libnghttp2.so.14.20.1": {
+      "time": "2026-08-10T04:57:47.876980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libnuma.so.1.0.0": {
+      "time": "2026-08-10T04:57:45.389980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libp11-kit.so.0.4.10": {
+      "time": "2026-08-10T04:57:45.303980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpam.so.0.85.1": {
+      "time": "2026-08-10T04:57:47.512980848Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpath_utils.so.1.0.1": {
+      "time": "2026-08-10T04:57:47.879980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpcre.so.1.2.12": {
+      "time": "2026-08-10T04:57:45.394980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpcre2-8.so.0.11.0": {
+      "time": "2026-08-10T04:57:45.205980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpolkit-gobject-1.so.0.0.0": {
+      "time": "2026-08-10T04:57:53.819980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpopt.so.0.0.1": {
+      "time": "2026-08-10T04:57:45.050980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpsl.so.5.3.3": {
+      "time": "2026-08-10T04:57:47.243980848Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libpython3.9.so.1.0": {
+      "time": "2026-10-16T17:45:49.030783364Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libref_array.so.1.2.1": {
+      "time": "2026-08-10T04:57:45.372980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libresolv.so.2": {
+      "time": "2026-08-10T04:57:45.009980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libsasl2.so.3.0.0": {
+      "time": "2026-08-10T04:57:47.931980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libseccomp.so.2.5.2": {
+      "time": "2026-08-10T04:57:45.375980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libselinux.so.1": {
+      "time": "2026-08-10T04:57:45.209980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libssh.so.4.9.4": {
+      "time": "2026-08-10T04:57:47.954980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libssl.so.3.5.8": {
+      "time": "2026-10-16T12:32:47.073136984Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libstdc++.so.6.0.29": {
+      "time": "2026-08-10T04:57:45.070980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libsystemd.so.0.35.0": {
+      "time": "2026-08-10T04:57:46.086980851Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libtasn1.so.6.6.0": {
+      "time": "2026-08-10T04:57:45.298980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libtirpc.so.3.0.0": {
+      "time": "2026-08-10T05:00:32.748026823Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libudev.so.1.7.5": {
+      "time": "2026-08-10T04:57:46.088980851Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libunistring.so.2.1.0": {
+      "time": "2026-08-10T04:57:45.141980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libuuid.so.1.3.0": {
+      "time": "2026-08-10T04:57:45.056980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libverto.so.1.0.0": {
+      "time": "2026-08-10T04:57:47.907980847Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libxml2.so.2.9.13": {
+      "time": "2026-08-10T04:57:45.090980853Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libz.so.1.2.11": {
+      "time": "2026-08-10T04:57:45.030980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/libzstd.so.1.5.5": {
+      "time": "2026-08-10T04:57:45.037980854Z",
+      "source": "birth"
+    },
+    "/usr/lib64/polkit-1/libmozjs-78.so": {
+      "time": "2026-08-10T04:57:53.820980833Z",
+      "source": "birth"
+    },
+    "/usr/lib64/systemd/libsystemd-core-252.so": {
+      "time": "2026-08-10T04:57:54.315980831Z",
+      "source": "birth"
+    },
+    "/usr/lib64/systemd/libsystemd-shared-252.so": {
+      "time": "2026-08-10T04:57:54.320980831Z",
+      "source": "birth"
+    },
+    "/usr/libexec/openssh/sshd-session": {
+      "time": "2026-08-10T04:58:05.696980804Z",
+      "source": "birth"
+    },
+    "/usr/local/bin/lima-guestagent": {
+      "time": "2026-10-16T12:17:20.970954619Z",
+      "source": "birth"
+    },
+    "/usr/sbin/NetworkManager": {
+      "time": "2026-08-10T04:57:55.138980829Z",
+      "source": "birth"
+    },
+    "/usr/sbin/agetty": {
+      "time": "2026-08-10T04:57:46.132980851Z",
+      "source": "birth"
+    },
+    "/usr/sbin/auditd": {
+      "time": "2026-08-10T04:58:04.194980808Z",
+      "source": "birth"
+    },
+    "/usr/sbin/chronyd": {
+      "time": "2026-08-10T04:58:04.277980808Z",
+      "source": "birth"
+    },
+    "/usr/sbin/crond": {
+      "time": "2026-08-10T04:57:54.613980831Z",
+      "source": "birth"
+    },
+    "/usr/sbin/gssproxy": {
+      "time": "2026-08-10T05:00:33.195021472Z",
+      "source": "birth"
+    },
+    "/usr/sbin/irqbalance": {
+      "time": "2026-08-10T04:58:05.834980804Z",
+      "source": "birth"
+    },
+    "/usr/sbin/rsyslogd": {
+      "time": "2026-08-10T04:58:03.862980809Z",
+      "source": "birth"
+    },
+    "/usr/sbin/sshd": {
+      "time": "2026-08-10T04:58:05.698980804Z",
+      "source": "birth"
+    }
+  },
+  "ssh_program": "/usr/libexec/openssh/sshd-session"
+}

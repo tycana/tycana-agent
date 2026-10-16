@@ -124,6 +124,43 @@ var labCases = []struct {
 		},
 		counts: map[Status]int{Inferred: 10, Possible: 10, Unknown: 2, None: 3},
 	},
+	{
+		// Hold-out: PHP-FPM, then only libcurl replaced. php-fpm maps
+		// libcurl through the curl.so extension.
+		dir: "debian12/restart-php",
+		want: map[string]Status{
+			"php8.2-fpm.service": Possible,
+		},
+		counts: map[Status]int{Inferred: 0, Possible: 1, Unknown: 2, None: 15},
+	},
+	{
+		// Hold-out: PostgreSQL backend with PL/Python, then only python3
+		// and python3-libs updated.
+		dir: "alma9/restart-postgres",
+		want: map[string]Status{
+			"postgresql.service": Possible,
+			"tuned.service":      Inferred,
+		},
+		counts: map[Status]int{Inferred: 1, Possible: 1, Unknown: 1, None: 22},
+	},
+}
+
+// TestLabHoldoutsBeforeFix records the two silent misses the hold-out
+// cases found before the agent knew PHP's and PostgreSQL's plugin
+// directories. Each before-fix snapshot holds the modules the agent saw
+// then, so Analyze still gives "none".
+func TestLabHoldoutsBeforeFix(t *testing.T) {
+	for dir, unit := range map[string]string{
+		"debian12/restart-php":   "php8.2-fpm.service",
+		"alma9/restart-postgres": "postgresql.service",
+	} {
+		snap := readSnapshotFile(t, filepath.Join("..", "..", "testdata", "lab", dir, "before-fix", "snapshot.json"))
+		for _, f := range Analyze(snap).Findings {
+			if f.Unit == unit && f.Status != None {
+				t.Errorf("%s %s: %s; the recorded miss was none", dir, unit, f.Status)
+			}
+		}
+	}
 }
 
 // TestLab checks the property the product promises: a unit the agent

@@ -16,7 +16,7 @@ import (
 // program is Host, or whose closure contains Host, may have it mapped.
 type Module struct {
 	Path string `json:"path"`
-	Kind string `json:"kind"` // nss, pam, openssl, sasl, gconv, apache, nginx
+	Kind string `json:"kind"` // nss, pam, openssl, sasl, gconv, apache, nginx, php, postgresql
 	// Host is the soname of the library that opens the module (libc.so.6,
 	// libpam.so.0), or the canonical path of the program that does
 	// (/usr/sbin/httpd).
@@ -38,12 +38,19 @@ var moduleDirs = []struct{ kind, host, dir string }{
 }
 
 // programDirs are plugin directories of servers that open their modules
-// themselves: mod_ssl, not httpd, links libssl.
+// themselves: mod_ssl, not httpd, links libssl; PHP's curl.so, not
+// php-fpm, links libcurl; plpython3.so, not postgres, links libpython.
+// Both fields are globs. This list is enumeration: a plugin host missing
+// from it is a silent miss (lab hold-outs, 2026-10-16).
 var programDirs = []struct{ kind, host, dir string }{
 	{"apache", "/usr/sbin/httpd", "/usr/lib64/httpd/modules"},
 	{"apache", "/usr/sbin/apache2", "/usr/lib/apache2/modules"},
 	{"nginx", "/usr/sbin/nginx", "/usr/lib64/nginx/modules"},
 	{"nginx", "/usr/sbin/nginx", "/usr/lib/nginx/modules"},
+	{"php", "/usr/sbin/php-fpm*", "/usr/lib64/php/modules"},
+	{"php", "/usr/sbin/php-fpm*", "/usr/lib/php/20*"},
+	{"postgresql", "/usr/bin/postgres", "/usr/lib64/pgsql"},
+	{"postgresql", "/usr/lib/postgresql/*/bin/postgres", "/usr/lib/postgresql/*/lib"},
 }
 
 // maxModules bounds the modules one collection resolves.
@@ -69,12 +76,16 @@ func (r *Resolver) modules(since time.Time) []Module {
 		}
 	}
 	for _, d := range programDirs {
-		host, err := r.canonical(d.host)
-		if err != nil {
-			continue
-		}
-		for _, m := range r.glob(d.dir) {
-			cands = append(cands, cand{d.kind, host, m})
+		for _, h := range r.globPaths(d.host) {
+			host, err := r.canonical(h)
+			if err != nil {
+				continue
+			}
+			for _, dir := range r.globPaths(d.dir) {
+				for _, m := range r.glob(dir) {
+					cands = append(cands, cand{d.kind, host, m})
+				}
+			}
 		}
 	}
 
@@ -115,6 +126,21 @@ func (r *Resolver) modules(since time.Time) []Module {
 	slices.SortFunc(out, func(a, b Module) int {
 		return strings.Compare(a.Host+"|"+a.Path, b.Host+"|"+b.Path)
 	})
+	return out
+}
+
+// globPaths expands a glob inside Root, sorted.
+func (r *Resolver) globPaths(pattern string) []string {
+	matches, _ := filepath.Glob(r.host(pattern))
+	slices.Sort(matches)
+	out := make([]string, 0, len(matches))
+	for _, m := range matches {
+		rel, err := filepath.Rel(r.Root, m)
+		if err != nil {
+			continue
+		}
+		out = append(out, "/"+filepath.ToSlash(rel))
+	}
 	return out
 }
 

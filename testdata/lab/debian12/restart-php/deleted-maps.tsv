@@ -1,0 +1,3 @@
+7092	/system.slice/php8.2-fpm.service	/usr/sbin/php-fpm8.2	/usr/lib/x86_64-linux-gnu/libcurl.so.4.8.0 
+7093	/system.slice/php8.2-fpm.service	/usr/sbin/php-fpm8.2	/usr/lib/x86_64-linux-gnu/libcurl.so.4.8.0 
+7094	/system.slice/php8.2-fpm.service	/usr/sbin/php-fpm8.2	/usr/lib/x86_64-linux-gnu/libcurl.so.4.8.0 
