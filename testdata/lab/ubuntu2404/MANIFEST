@@ -3,3 +3,9 @@ Host: Ubuntu 24.04.5 LTS, kernel 6.8.0-142-generic, Debian 'dpkg' package manage
 root/ holds copies of the files the agent reads; boot/vmlinuz-* are empty placeholders.
 Requested-By user names in var/log/apt/history.log are replaced with 'operator'; nothing else is edited.
 expected/ holds the native tools' output on the same host at the same moment.
+
+Baseline (2026-10-16, scripts/lab-baseline.sh): baseline-root.json.gz and baseline-sandbox.json.gz are everything one
+run of the host's preset read, as root and inside the tycanad sandbox; /etc/passwd and /etc/group have the lab user
+replaced with 'operator'. baseline-openscap.tsv is OpenSCAP's result per rule on the same VM state, from the
+datastream built from the same ComplianceAsCode commit (4ab60a5, 0.1.83) and profile, with the distribution's
+openscap-scanner installed for the run (the VM was restored from its snapshot afterwards).

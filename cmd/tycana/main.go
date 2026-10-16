@@ -23,6 +23,7 @@ Commands:
   history     package changes from dpkg and apt logs (--since DATE, --format json)
   updates     updates waiting on this host, and what its own autopilot installs (--format json)
   restart     services still using replaced files, and a waiting kernel (--format json)
+  baseline    configuration baseline and compliance score (--format json, --list)
   version     print build information (--json for machine-readable output)
   help        print this help
 
@@ -47,6 +48,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runUpdates(args[1:], stdout, stderr)
 	case "restart":
 		return runRestart(args[1:], stdout, stderr)
+	case "baseline":
+		return runBaseline(args[1:], stdout, stderr)
 	case "version":
 		return runVersion(args[1:], stdout, stderr)
 	case "help", "-h", "--help":

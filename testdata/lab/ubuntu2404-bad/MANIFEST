@@ -1,0 +1,7 @@
+Known-bad baseline case, 2026-10-16, Lima VM tycana-ubuntu2404 (same state as ../ubuntu2404 plus the changes below).
+Broken by hand before the capture (scripts/lab-baseline.sh) and the OpenSCAP run:
+  chmod 0666 /etc/passwd; chgrp 1000 /etc/passwd; /etc/sysctl.d/99-tycana-bad.conf with
+  net.ipv4.icmp_echo_ignore_broadcasts = 0; sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0 kernel.yama.ptrace_scope=0;
+  touch /etc/cron.deny; systemctl stop cron; /etc/ssh/sshd_config.d/99-tycana-bad.conf with PermitEmptyPasswords yes.
+OpenSCAP turned six rules from pass to fail; Tycana as root does the same. In the sandbox, gid 1000 is not mapped,
+so file_groupowner_etc_passwd is unknown there. The VM was restored from snapshot pre-m3-2026-10-16 afterwards.

@@ -20,6 +20,8 @@ func TestRun(t *testing.T) {
 		{"version json", []string{"version", "--json"}, 0, `"version"`, ""},
 		{"version bad flag", []string{"version", "--nope"}, 2, "", "flag provided but not defined"},
 		{"unknown", []string{"upgrade"}, 2, "", `unknown command "upgrade"`},
+		{"baseline list", []string{"baseline", "--list"}, 0, "ubuntu2404-level1-server", ""},
+		{"baseline bad format", []string{"baseline", "--format", "xml"}, 2, "", `unknown format "xml"`},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

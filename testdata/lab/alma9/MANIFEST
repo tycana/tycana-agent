@@ -5,3 +5,9 @@ var/lib/rpm/rpmdb.sqlite.gz is the Packages table of the host's rpmdb.sqlite, gz
 var/lib/dnf/history.sqlite is a VACUUM INTO copy of the host's dnf history (write-ahead log folded in, nothing else changed).
 The User line in expected/dnf-history-info.txt is replaced with 'operator'; nothing else is edited.
 expected/ holds the native tools' output on the same host at the same moment (C locale, UTC).
+
+Baseline (2026-10-16, scripts/lab-baseline.sh): baseline-root.json.gz and baseline-sandbox.json.gz are everything one
+run of the host's preset read, as root and inside the tycanad sandbox; /etc/passwd and /etc/group have the lab user
+replaced with 'operator'. baseline-openscap.tsv is OpenSCAP's result per rule on the same VM state, from the
+datastream built from the same ComplianceAsCode commit (4ab60a5, 0.1.83) and profile, with the distribution's
+openscap-scanner installed for the run (the VM was restored from its snapshot afterwards).

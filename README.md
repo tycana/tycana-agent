@@ -19,6 +19,9 @@ go run ./cmd/tycana inventory                       # packages, OS, kernels
 go run ./cmd/tycana inventory --format dpkg-query   # byte-identical to dpkg-query -W (see --help)
 go run ./cmd/tycana inventory --format rpm-query    # byte-identical to rpm -qa --qf (see --help)
 go run ./cmd/tycana history --since 2026-10-01      # what dpkg, apt, and dnf changed, and who asked
+go run ./cmd/tycana updates                         # pending updates, and what the host's autopilot installs
+go run ./cmd/tycana restart                         # services still running replaced code, kernel, reboot
+go run ./cmd/tycana baseline                        # configuration baseline and compliance score
 ```
 
 The package list is read straight from the package manager's database, never by running it:
@@ -29,11 +32,31 @@ ordinary user and inside the shipped unit's sandbox; the captured databases in `
 keep those checks running in CI. SQLite files are opened read-only through one small package,
 `internal/sqlitero`, the only place allowed to import the driver.
 
+### Baselines
+
+`tycana baseline` checks file modes and owners, kernel parameters, packages, services, the SSH
+server's configuration, mount options, and kernel modules against a built-in baseline for the
+host's release (Ubuntu 24.04, Debian 12, AlmaLinux 9 today). The baselines are generated
+offline from [ComplianceAsCode](https://github.com/ComplianceAsCode/content) content
+(BSD-3-Clause) by `tools/cacconv`, and each check keeps its ComplianceAsCode rule id.
+
+Each check gives the verdict OpenSCAP gives for the same rule. On the lab VMs every evaluated
+check agrees with OpenSCAP run as root, including a known-bad case with six settings broken by
+hand (`testdata/lab/*/baseline-*`, `TestLabAgreesWithOpenSCAP`). Rules whose check is custom
+OVAL are listed as not covered, with the reason: 36 to 39 percent of each source profile today.
+
+The agent reads without privilege. What it cannot read (a root-only file, an owner its user
+namespace cannot map, a mount option its sandbox may have added) is **unknown**, never
+**fail**. The score is passed over passed plus failed; unknown, not-applicable, excepted, and
+faulty checks are counted apart, so the number is never inflated by guesses. A local
+exceptions file (`--exceptions`) takes a check out of the score with an owner, a reason, and an
+expiry date.
+
 ## What it will do
 
 - Inventory every installed package and pending update, matched against vendor security feeds.
 - Detect hosts and services that need a restart, and tell you when the fix actually took effect.
-- Track drift from a declared baseline.
+- Track drift from a declared baseline over time, with signed snapshots.
 - Keep an exception register auditors accept: owner, reason, compensating control, expiry.
 - Export evidence: signed records, OpenVEX statements for findings that do not apply, and
   reports in the shapes compliance platforms and insurers ask for.
