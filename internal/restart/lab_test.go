@@ -71,6 +71,34 @@ var labCases = []struct {
 		},
 		counts: map[Status]int{Inferred: 11, Possible: 0, Unknown: 1, None: 4},
 	},
+	{
+		// AlmaLinux 9 after all 66 pending updates (glibc, systemd,
+		// dbus-broker, openssh, pcre2, python3, kernel). The scriptlets
+		// re-executed PID 1 and restarted journald, udevd and sshd.
+		dir: "alma9/restart",
+		want: map[string]Status{
+			"NetworkManager.service":     Inferred,
+			"auditd.service":             Inferred,
+			"chronyd.service":            Inferred,
+			"crond.service":              Inferred,
+			"dbus-broker.service":        Inferred,
+			"getty@tty1.service":         Inferred,
+			"gssproxy.service":           Inferred,
+			"irqbalance.service":         Inferred,
+			"polkit.service":             Inferred,
+			"rpcbind.service":            Inferred,
+			"serial-getty@hvc0.service":  Inferred,
+			"serial-getty@ttyS0.service": Inferred,
+			"session-6.scope":            Inferred,
+			"systemd-logind.service":     Inferred,
+			"tuned.service":              Inferred, // python3.9 itself was replaced
+			"user@1000.service":          Inferred,
+			"init.scope":                 Unknown,
+			"sshd.service":               None,
+			"systemd-journald.service":   None,
+		},
+		counts: map[Status]int{Inferred: 16, Possible: 0, Unknown: 1, None: 7},
+	},
 }
 
 // TestLab checks the property the product promises: a unit the agent

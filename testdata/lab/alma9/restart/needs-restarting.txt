@@ -1,0 +1,25 @@
+Core libraries or services have been updated since boot-up:
+  * dbus-broker
+  * glibc
+  * kernel
+  * microcode_ctl
+  * systemd
+
+Reboot is required to fully utilize these updates.
+More information: https://access.redhat.com/solutions/27943
+exit 1
+polkit.service
+serial-getty@hvc0.service
+dbus-broker.service
+systemd-logind.service
+rpcbind.service
+tuned.service
+gssproxy.service
+user@1000.service
+serial-getty@ttyS0.service
+getty@tty1.service
+chronyd.service
+NetworkManager.service
+irqbalance.service
+crond.service
+auditd.service

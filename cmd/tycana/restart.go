@@ -20,7 +20,8 @@ import (
 
 // restartOutput is "tycana restart --format json".
 type restartOutput struct {
-	Kernel *kernelRestart `json:"kernel,omitempty"`
+	Kernel *kernelRestart      `json:"kernel,omitempty"`
+	Reboot *restart.RebootHint `json:"reboot_hint,omitempty"`
 	restart.Report
 }
 
@@ -77,6 +78,7 @@ func runRestart(args []string, stdout, stderr io.Writer) int {
 		inv, _, err = inventory.Collect("/", now)
 		if err == nil {
 			out.Kernel = kernelState(inv.Kernel)
+			out.Reboot = rebootHint(inv)
 			snap, err = restart.Collect(context.Background(), now)
 		}
 	}
@@ -117,6 +119,28 @@ func readSnapshot(name string) (restart.Snapshot, error) {
 	return s, nil
 }
 
+// rebootHint applies the distribution's own reboot rule: dnf's
+// needs-restarting on rpm hosts, /run/reboot-required on dpkg hosts.
+func rebootHint(inv *inventory.Snapshot) *restart.RebootHint {
+	switch inv.PackageDB.Format {
+	case "rpm":
+		boot, err := restart.BootTime("/")
+		if err != nil {
+			return nil
+		}
+		pkgs := make([]restart.Installed, 0, len(inv.Packages))
+		for _, p := range inv.Packages {
+			pkgs = append(pkgs, restart.Installed{Name: p.Name, At: p.InstalledAt})
+		}
+		h := restart.NeedsRestarting("/", pkgs, boot)
+		return &h
+	case "deb":
+		h := restart.RebootRequired("/")
+		return &h
+	}
+	return nil
+}
+
 func kernelState(k kernel.Info) *kernelRestart {
 	return &kernelRestart{
 		Running:         k.Running.Release,
@@ -142,6 +166,16 @@ func writeRestartText(w io.Writer, out restartOutput) error {
 		}
 		if !k.EffectiveKnown {
 			fmt.Fprintln(w, "Live patches are loaded: the running kernel may carry fixes its release does not show.")
+		}
+	}
+	if h := out.Reboot; h != nil {
+		switch {
+		case h.Required && len(h.Packages) > 0:
+			fmt.Fprintf(w, "Reboot hint (%s): required, for %s.\n", h.Rule, strings.Join(h.Packages, ", "))
+		case h.Required:
+			fmt.Fprintf(w, "Reboot hint (%s): required.\n", h.Rule)
+		default:
+			fmt.Fprintf(w, "Reboot hint (%s): not required.\n", h.Rule)
 		}
 	}
 	if len(out.Findings) == 0 {
