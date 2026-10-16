@@ -3,6 +3,7 @@ package hostexec
 import (
 	"fmt"
 	"regexp"
+	"time"
 )
 
 // ID names a registered command.
@@ -24,6 +25,13 @@ const (
 	// DnfUpdateinfo lists the advisories for available updates from the
 	// system metadata cache.
 	DnfUpdateinfo ID = "dnf-updateinfo"
+	// SystemctlShowRunning prints, for every running service and scope,
+	// its name, main PID, the start time of its main process or scope,
+	// and its ExecStart= program. Times are UTC with microseconds.
+	SystemctlShowRunning ID = "systemctl-show-running"
+	// LoginctlShowSession prints the PAM service and scope of the named
+	// login sessions.
+	LoginctlShowSession ID = "loginctl-show-session"
 )
 
 // aptOpts keeps apt from taking the lock and from writing its binary
@@ -67,6 +75,21 @@ var registry = map[ID]Spec{
 		Args:          []string{"--cacheonly", "--quiet", "updateinfo", "list", "--available"},
 		ScratchVarTmp: true,
 	},
+	SystemctlShowRunning: {
+		Paths: []string{"/usr/bin/systemctl", "/bin/systemctl"},
+		Args: []string{"show", "--no-pager", "--timestamp=us+utc",
+			"--type=service,scope", "--state=running",
+			"--property=Id,MainPID,ExecMainStartTimestamp,ActiveEnterTimestamp,ExecStart",
+			"*"},
+		Timeout: 30 * time.Second,
+	},
+	LoginctlShowSession: {
+		Paths: []string{"/usr/bin/loginctl", "/bin/loginctl"},
+		// loginctl, unlike systemctl, ignores a comma list after --property.
+		Args:    []string{"show-session", "--no-pager", "--property=Id", "--property=Service", "--property=Scope"},
+		Extra:   sessionIDs,
+		Timeout: 30 * time.Second,
+	},
 }
 
 // Package-name grammars. A name never starts with "-", so it cannot be
@@ -74,7 +97,24 @@ var registry = map[ID]Spec{
 var (
 	// debName is a Debian package name with an optional architecture.
 	debName = regexp.MustCompile(`^[a-z0-9][a-z0-9+.-]+(:[a-z0-9-]+)?$`)
+	// sessionID is a logind session id: "4", "c2", "12".
+	sessionID = regexp.MustCompile(`^[A-Za-z0-9]{1,32}$`)
 )
+
+// maxSessions bounds one loginctl call.
+const maxSessions = 1000
+
+func sessionIDs(ids []string) error {
+	if len(ids) > maxSessions {
+		return fmt.Errorf("hostexec: %d session ids, at most %d", len(ids), maxSessions)
+	}
+	for _, id := range ids {
+		if !sessionID.MatchString(id) {
+			return fmt.Errorf("hostexec: %q is not a session id", id)
+		}
+	}
+	return nil
+}
 
 // maxNames bounds one call; callers batch above it.
 const maxNames = 2000

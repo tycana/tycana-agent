@@ -7,7 +7,8 @@
 //   - internal/hostexec may run host commands through the hardened wrapper
 //
 // The SQLite driver can write databases, so only internal/sqlitero, which
-// opens them read-only, may import it.
+// opens them read-only, may import it. internal/filetime may import
+// golang.org/x/sys/unix for one read-only call, statx.
 //
 // Test files are exempt (they write fixtures under t.TempDir). The check is
 // syntactic and alias-aware but not type-aware; it is a tripwire, not a
@@ -32,6 +33,7 @@ var allowed = map[string]map[string]bool{
 	"internal/state":    {"os": true},
 	"internal/hostexec": {"os": true, "os/exec": true, "syscall": true, "golang.org/x/sys/unix": true},
 	"internal/sqlitero": {"modernc.org/sqlite": true},
+	"internal/filetime": {"golang.org/x/sys/unix": true},
 }
 
 // forbiddenOS lists os.* functions that mutate the filesystem.

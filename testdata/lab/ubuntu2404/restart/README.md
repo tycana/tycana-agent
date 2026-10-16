@@ -14,3 +14,14 @@ services. Used to check M2 restart detection against what root can see.
 - `dpkg-log-run.txt`: dpkg.log lines of the run. `u-u.log`: the unattended-upgrades log.
 
 The login name of the lab user is replaced with `operator`.
+
+`snapshot.json` is the input of `tycana restart --snapshot` for the same moment, built
+after the reboot on 2026-10-16 (no package changed in between):
+
+- Units from `units.txt`. Monotonic start times are converted with the boot's
+  realtime/monotonic pair from the journal (`__REALTIME_TIMESTAMP` 1792161412419801,
+  `__MONOTONIC_TIMESTAMP` 1239204895: boot at 2026-10-16T14:16:13.214906Z).
+  `units.txt` lists services only, so `init.scope` (boot time) and `session-4.scope`
+  (logind "New session 4", 14:16:22.712800Z, PAM service `sshd`) are added by hand.
+- Programs and file birth times from the `TestLabCapture` tool in `internal/restart`,
+  run on the VM for every ExecStart program in `units.txt` and `/usr/sbin/sshd`.

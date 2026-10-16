@@ -23,6 +23,8 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		AptCachePolicy:         "/usr/bin/apt-cache -o Debug::NoLocking=true -o Dir::Cache::pkgcache= -o Dir::Cache::srcpkgcache= -o Dir::Bin::ischroot=/usr/bin/false policy [names]",
 		DnfCheckUpdate:         "/usr/bin/dnf --cacheonly --quiet check-update",
 		DnfUpdateinfo:          "/usr/bin/dnf --cacheonly --quiet updateinfo list --available",
+		SystemctlShowRunning:   "/usr/bin/systemctl show --no-pager --timestamp=us+utc --type=service,scope --state=running --property=Id,MainPID,ExecMainStartTimestamp,ActiveEnterTimestamp,ExecStart *",
+		LoginctlShowSession:    "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
 	}
 	if len(registry) != len(want) {
 		t.Errorf("registry has %d commands, test lists %d", len(registry), len(want))
@@ -34,6 +36,19 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		}
 		if got != want[id] {
 			t.Errorf("%s:\n got %s\nwant %s", id, got, want[id])
+		}
+	}
+}
+
+func TestSessionIDs(t *testing.T) {
+	for _, ok := range [][]string{{"4"}, {"c2", "12"}} {
+		if err := sessionIDs(ok); err != nil {
+			t.Errorf("%q: %v", ok, err)
+		}
+	}
+	for _, bad := range [][]string{{"--all"}, {"4", "-p"}, {""}, {"a b"}, {"../x"}} {
+		if err := sessionIDs(bad); err == nil {
+			t.Errorf("%q accepted", bad)
 		}
 	}
 }
