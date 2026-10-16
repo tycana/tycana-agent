@@ -1,0 +1,5 @@
+Captured 2026-10-16T12:44:01Z from Lima VM tycana-debian12 by scripts/lab-dpkg.sh.
+Host: Debian GNU/Linux 12 (bookworm), kernel 6.1.0-53-cloud-amd64, Debian 'dpkg' package management program version 1.21.23 (amd64).
+root/ holds copies of the files the agent reads; boot/vmlinuz-* are empty placeholders.
+Requested-By user names in var/log/apt/history.log are replaced with 'operator'; nothing else is edited.
+expected/ holds the native tools' output on the same host at the same moment.

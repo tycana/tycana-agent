@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"testing/fstest"
 	"time"
@@ -247,7 +248,18 @@ func TestZoneFallbacksAndDST(t *testing.T) {
 // matching dpkg change in the same transaction, and replaying dpkg.log
 // ends in exactly the state and version the database holds.
 func TestLabHistoryAgreesWithDatabase(t *testing.T) {
-	root := "../../testdata/lab/ubuntu2404/root"
+	dirs, err := filepath.Glob("../../testdata/lab/*/root/var/lib/dpkg/status")
+	if err != nil || len(dirs) == 0 {
+		t.Fatalf("dpkg fixtures: %v, %v", dirs, err)
+	}
+	for _, status := range dirs {
+		root := filepath.Dir(filepath.Dir(filepath.Dir(filepath.Dir(status))))
+		t.Run(filepath.Base(filepath.Dir(root)), func(t *testing.T) { labHistoryAgrees(t, root) })
+	}
+}
+
+func labHistoryAgrees(t *testing.T, root string) {
+	t.Helper()
 	h, err := Collect(root)
 	if err != nil {
 		t.Fatal(err)
@@ -256,8 +268,12 @@ func TestLabHistoryAgreesWithDatabase(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if h.Zone.Name != "America/New_York" || len(h.Transactions) < 7 || len(h.Changes) < 20 {
+	ubuntu := strings.Contains(root, "ubuntu2404")
+	if ubuntu && (h.Zone.Name != "America/New_York" || len(h.Transactions) < 7 || len(h.Changes) < 20) {
 		t.Fatalf("zone %q, %d transactions, %d changes", h.Zone.Name, len(h.Transactions), len(h.Changes))
+	}
+	if len(h.Transactions) == 0 || len(h.Changes) == 0 {
+		t.Fatalf("%d transactions, %d changes", len(h.Transactions), len(h.Changes))
 	}
 
 	for ti, tr := range h.Transactions {
@@ -296,6 +312,9 @@ func TestLabHistoryAgreesWithDatabase(t *testing.T) {
 		case ok && (p.State != c.EndState || p.Version.String() != c.EndVersion):
 			t.Errorf("%s: log ends %s %s, database has %s %s", key, c.EndState, c.EndVersion, p.State, p.Version)
 		}
+	}
+	if !ubuntu {
+		return
 	}
 	for _, k := range []string{KindInstall, KindUpgrade, KindDowngrade, KindRemove, KindPurge} {
 		if !kinds[k] {

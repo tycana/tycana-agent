@@ -1,0 +1,24 @@
+2026-10-16 08:43:15 startup archives unpack
+2026-10-16 08:43:15 install rsync:amd64 <none> 3.2.7-1+deb12u6
+2026-10-16 08:43:15 status half-installed rsync:amd64 3.2.7-1+deb12u6
+2026-10-16 08:43:15 status triggers-pending man-db:amd64 2.11.2-2
+2026-10-16 08:43:15 status unpacked rsync:amd64 3.2.7-1+deb12u6
+2026-10-16 08:43:15 startup packages configure
+2026-10-16 08:43:15 configure rsync:amd64 3.2.7-1+deb12u6 <none>
+2026-10-16 08:43:15 status unpacked rsync:amd64 3.2.7-1+deb12u6
+2026-10-16 08:43:15 status half-configured rsync:amd64 3.2.7-1+deb12u6
+2026-10-16 08:43:15 status installed rsync:amd64 3.2.7-1+deb12u6
+2026-10-16 08:43:15 trigproc man-db:amd64 2.11.2-2 <none>
+2026-10-16 08:43:15 status half-configured man-db:amd64 2.11.2-2
+2026-10-16 08:43:16 status installed man-db:amd64 2.11.2-2
+2026-10-16 08:44:00 startup packages remove
+2026-10-16 08:44:00 status installed bash-completion:all 1:2.11-6
+2026-10-16 08:44:00 remove bash-completion:all 1:2.11-6 <none>
+2026-10-16 08:44:00 status half-configured bash-completion:all 1:2.11-6
+2026-10-16 08:44:00 status half-installed bash-completion:all 1:2.11-6
+2026-10-16 08:44:00 status triggers-pending man-db:amd64 2.11.2-2
+2026-10-16 08:44:00 status config-files bash-completion:all 1:2.11-6
+2026-10-16 08:44:00 startup packages configure
+2026-10-16 08:44:00 trigproc man-db:amd64 2.11.2-2 <none>
+2026-10-16 08:44:00 status half-configured man-db:amd64 2.11.2-2
+2026-10-16 08:44:01 status installed man-db:amd64 2.11.2-2
