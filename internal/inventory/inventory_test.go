@@ -12,7 +12,7 @@ import (
 func TestCollectLabUbuntu2404(t *testing.T) {
 	dir := "../../testdata/lab/ubuntu2404"
 	now := time.Date(2026, 10, 15, 12, 0, 0, 0, time.FixedZone("x", -4*3600))
-	s, db, err := Collect(os.DirFS(filepath.Join(dir, "root")), now)
+	s, native, err := Collect(filepath.Join(dir, "root"), now)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +35,7 @@ func TestCollectLabUbuntu2404(t *testing.T) {
 	if s.PackageDB.Format != "deb" || s.PackageDB.NativeArch != "amd64" || s.PackageDB.JournalReplayed != 0 {
 		t.Errorf("PackageDB = %+v", s.PackageDB)
 	}
-	if n := bytes.Count(query, []byte("\n")); len(s.Packages) != n || len(db.Packages) != n {
+	if n := bytes.Count(query, []byte("\n")); len(s.Packages) != n || len(native.Dpkg.Packages) != n {
 		t.Errorf("%d packages, dpkg-query listed %d", len(s.Packages), n)
 	}
 	if s.Kernel.Running.Release != running || s.Kernel.NewestInstalled != running || !s.Kernel.EffectiveKnown {
@@ -74,7 +74,7 @@ func TestCollectNoPackageDB(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(root, "etc", "os-release"), []byte("ID=x\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := Collect(os.DirFS(root), time.Now()); err == nil || !strings.Contains(err.Error(), "no supported package database") {
+	if _, _, err := Collect(root, time.Now()); err == nil || !strings.Contains(err.Error(), "no supported package database") {
 		t.Errorf("err = %v", err)
 	}
 }

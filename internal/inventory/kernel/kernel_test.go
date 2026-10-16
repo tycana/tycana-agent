@@ -82,3 +82,26 @@ func TestCollectPlain(t *testing.T) {
 		t.Error("missing /proc: want error")
 	}
 }
+
+func TestRPMRelease(t *testing.T) {
+	cases := []struct {
+		name, version, release, arch string
+		want                         string
+		fallback                     bool
+	}{
+		{"kernel-core", "5.14.0", "687.36.1.el9_8", "x86_64", "5.14.0-687.36.1.el9_8.x86_64", false},
+		{"kernel-uek-core", "5.15.0", "310.1.el9uek", "x86_64", "5.15.0-310.1.el9uek.x86_64", false},
+		{"kernel-debug-core", "5.14.0", "687.el9", "aarch64", "5.14.0-687.el9.aarch64+debug", false},
+		{"kernel", "5.14.0", "687.36.1.el9_8", "x86_64", "5.14.0-687.36.1.el9_8.x86_64", true},
+		{"kernel-uek", "5.4.17", "2136.el8uek", "x86_64", "5.4.17-2136.el8uek.x86_64", true},
+		{"kernel-modules-core", "5.14.0", "687.36.1.el9_8", "x86_64", "", false},
+		{"kernel-headers", "5.14.0", "687.36.1.el9_8", "x86_64", "", false},
+		{"kernel-core", "5.14.0", "687.36.1.el9_8", "", "", false},
+	}
+	for _, c := range cases {
+		got, fb := RPMRelease(c.name, c.version, c.release, c.arch)
+		if got != c.want || fb != c.fallback {
+			t.Errorf("RPMRelease(%s) = %q, %v; want %q, %v", c.name, got, fb, c.want, c.fallback)
+		}
+	}
+}

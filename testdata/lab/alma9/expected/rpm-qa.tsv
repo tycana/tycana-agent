@@ -1,0 +1,392 @@
+hwdata	0	0.348	9.22.el9	noarch	hwdata-0.348-9.22.el9.src.rpm	1786337864	1774982828	10296814	c20da292f4c78ecd7d64e13b621fae72	Hardware identification and configuration data
+python3-setuptools-wheel	0	53.0.0	15.el9	noarch	python-setuptools-53.0.0-15.el9.src.rpm	1786337864	1758455175	562657	6dabf1be9c0bad3cff22de1ee5c4aa55	The setuptools wheel
+publicsuffix-list-dafsa	0	20210518	3.el9	noarch	publicsuffix-list-20210518-3.el9.src.rpm	1786337864	1649930311	68815	9049001bc986a7b3edc7bfab7f32187f	Cross-vendor public domain suffix database in DAFSA form
+pcre2-syntax	0	10.40	6.el9	noarch	pcre2-10.40-6.el9.src.rpm	1786337864	1727910892	234324	be0c82ff0f81fe9d5b19826b81fd360e	Documentation for PCRE2 regular expressions
+ncurses-base	0	6.2	12.20210508.el9	noarch	ncurses-6.2-12.20210508.el9.src.rpm	1786337864	1758446429	307293	c2dcbe72ecfb332701b74fe277803371	Descriptions of common terminals
+libssh-config	0	0.10.4	18.el9	noarch	libssh-0.10.4-18.el9.src.rpm	1786337864	1775442175	277	f15e1534d917472293db44ab95031a44	Configuration files for libssh
+libreport-filesystem	0	2.15.2	6.el9.alma	noarch	libreport-2.15.2-6.el9.alma.src.rpm	1786337864	1651490783	0	98bf4e89ac7fbfa33605601497df0624	Filesystem layout for libreport
+dnf-data	0	4.14.0	34.el9_8.alma.1	noarch	dnf-4.14.0-34.el9_8.alma.1.src.rpm	1786337864	1779306515	40101	d9981c2e55bbfde7ffb7904a3921192c	Common data and configuration files for DNF
+kbd-misc	0	2.4.0	11.el9	noarch	kbd-2.4.0-11.el9.src.rpm	1786337864	1741856966	2573480	2c498206a98aae489433c1ecb85ffba9	Data for kbd package
+kbd-legacy	0	2.4.0	11.el9	noarch	kbd-2.4.0-11.el9.src.rpm	1786337864	1741856966	557448	8e4e307be5579c006871c878e92d42ea	Legacy data for kbd package
+fonts-filesystem	1	2.0.5	7.el9.1	noarch	fonts-rpm-macros-2.0.5-7.el9.1.src.rpm	1786337864	1644638356	0	d9588fb5c537631aa12647b6d9af5064	Directories used by font packages
+dejavu-sans-fonts	0	2.37	18.el9	noarch	dejavu-fonts-2.37-18.el9.src.rpm	1786337864	1643502240	5930859	5313483c1b81434d249eff3a949df631	DejaVu Sans, a variable-width sans-serif font family
+langpacks-core-font-en	0	3.0	16.el9	noarch	langpacks-3.0-16.el9.src.rpm	1786337864	1644438506	351	b45170d4bae0bb1996b8b8c683c9765e	English core font meta-package
+coreutils-common	0	8.32	41.el9_8	x86_64	coreutils-8.32-41.el9_8.src.rpm	1786337864	1782347095	10880341	edb53f64d59d2a485a60e23e78c1d36a	coreutils common optional components
+almalinux-gpg-keys	0	9.8	1.el9	x86_64	almalinux-release-9.8-1.el9.src.rpm	1786337864	1779176001	3139	53df565d0c4c8903270d187b9ebce5bd	AlmaLinux RPM keys
+almalinux-release	0	9.8	1.el9	x86_64	almalinux-release-9.8-1.el9.src.rpm	1786337864	1779176001	28624	f43317058735cc8982ef70dec9a813da	AlmaLinux release files
+almalinux-repos	0	9.8	1.el9	x86_64	almalinux-release-9.8-1.el9.src.rpm	1786337864	1779176001	10864	7368a0b316f359643f2b7bafdf21a55d	AlmaLinux package repositories
+setup	0	2.13.7	10.el9	noarch	setup-2.13.7-10.el9.src.rpm	1786337864	1712168971	725932	d06854c9d05f32cd5221d209aecbbebc	A set of system configuration and setup files
+filesystem	0	3.16	5.el9	x86_64	filesystem-3.16-5.el9.src.rpm	1786337864	1727902829	106	83146689de3574b559045cdfa73e0322	The basic directory layout for a Linux system
+efi-filesystem	0	6	4.el9	noarch	efi-rpm-macros-6-4.el9.src.rpm	1786337864	1758092934	0	e15c1163c78b2b90b419c4928fda873c	The basic directory layout for EFI machines
+basesystem	0	11	13.el9	noarch	basesystem-11-13.el9.src.rpm	1786337864	1643412490	0	5fb7306840ce1307c9450ace93a9a78a	The skeleton package which defines a simple Red Hat Enterprise Linux 9 system
+ncurses-libs	0	6.2	12.20210508.el9	x86_64	ncurses-6.2-12.20210508.el9.src.rpm	1786337864	1758446456	994415	10324a6e0b9dd21ff388ddd8f0dda8b2	Ncurses libraries
+bash	0	5.1.8	9.el9	x86_64	bash-5.1.8-9.el9.src.rpm	1786337864	1714487592	7738730	abbcee9ad5f5b605c895928edf38a068	The GNU Bourne Again shell
+libgcc	0	11.5.0	14.el9.alma.1	x86_64	gcc-11.5.0-14.el9.alma.1.src.rpm	1786337864	1775332686	207028	6df15d824f903ba094ffe6ae021fc6b5	GCC version 11 shared support library
+glibc-langpack-en	0	2.34	275.el9_8	x86_64	glibc-2.34-275.el9_8.src.rpm	1786337864	1785751685	5955802	7239028f299a50917d0fe19810d31157	Locale data for English
+glibc-common	0	2.34	275.el9_8	x86_64	glibc-2.34-275.el9_8.src.rpm	1786337864	1785751685	1081358	d91bccf4a397004d8cf3841efec10b6c	Common binaries and locale data for glibc
+glibc	0	2.34	275.el9_8	x86_64	glibc-2.34-275.el9_8.src.rpm	1786337865	1785751685	6451649	3bb8f943d2592de48dc69065c67ce426	The GNU libc libraries
+zlib	0	1.2.11	40.el9	x86_64	zlib-1.2.11-40.el9.src.rpm	1786337865	1695720125	202921	06ae87f547967cdb2d0cbe1a8f7a0a3b	Compression and decompression library
+xz-libs	0	5.2.5	8.el9_0	x86_64	xz-5.2.5-8.el9_0.src.rpm	1786337865	1654677033	181589	26d1d44716e54a105e7083fedc4c3a18	Libraries for decoding LZMA compression
+libzstd	0	1.5.5	1.el9	x86_64	zstd-1.5.5-1.el9.src.rpm	1786337865	1741812953	773894	1455767d35300864d7120949dd275489	Zstd shared library
+libacl	0	2.4.0	1.el9_8	x86_64	acl-2.4.0-1.el9_8.src.rpm	1786337865	1784649511	44714	c0f9a14e8132b711d60e8e8746f01d3e	Dynamic library for access control list support
+libcap	0	2.48	10.el9_8.1	x86_64	libcap-2.48-10.el9_8.1.src.rpm	1786337865	1779271220	177487	274abd0a15a09fea3e266d577a1a10db	Library for getting and setting POSIX.1e capabilities
+popt	0	1.18	8.el9	x86_64	popt-1.18-8.el9.src.rpm	1786337865	1648240343	130376	d023c9ebf80dbada8fddb5a69471a0d9	C library for parsing command line parameters
+bzip2-libs	0	1.0.8	11.el9	x86_64	bzip2-1.0.8-11.el9.src.rpm	1786337865	1775338476	78116	8b59acfd052eec27526a31e1f34e50f4	Libraries for applications using bzip2
+libuuid	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337865	1775340891	37997	974a326a854c4e6b3b8d290fdd890987	Universally unique ID library
+libxcrypt	0	4.4.18	3.el9	x86_64	libxcrypt-4.4.18-3.el9.src.rpm	1786337865	1644465890	270724	03354b2659877cafec7273b5cd8f879c	Extended crypt library for descrypt, md5crypt, bcrypt, and others
+sqlite-libs	0	3.34.1	10.el9_8	x86_64	sqlite-3.34.1-10.el9_8.src.rpm	1786337865	1779296761	1373392	8998d079836d93e22be7b24cff26a731	Shared library for the sqlite3 embeddable SQL database engine.
+libstdc++	0	11.5.0	14.el9.alma.1	x86_64	gcc-11.5.0-14.el9.alma.1.src.rpm	1786337865	1775332686	2585665	fb9ec086dfc1797d0a173f2c41b0667d	GNU Standard C++ Library
+libcom_err	0	1.46.5	8.el9	x86_64	e2fsprogs-1.46.5-8.el9.src.rpm	1786337865	1758466961	68401	8efaf6f7874c7e52387bdd53384339f0	Common error description library
+elfutils-libelf	0	0.194	1.el9.alma.1	x86_64	elfutils-0.194-1.el9.alma.1.src.rpm	1786337865	1775349538	1172652	ad4e5fea437db3f4ac7ec319079c8a9d	Library to read and write ELF files
+libxml2	0	2.9.13	14.el9_8.2	x86_64	libxml2-2.9.13-14.el9_8.2.src.rpm	1786337865	1784065551	1959236	28f9f8f72dfd6bfa14781bafead896ae	Library providing XML and HTML support
+readline	0	8.1	4.el9	x86_64	readline-8.1-4.el9.src.rpm	1786337865	1644541287	492924	f4f3a3fa47cf00c5f36937b73da28db1	A library for editing typed command lines
+crypto-policies	0	20260224	1.gitea0f072.el9_8	noarch	crypto-policies-20260224-1.gitea0f072.el9_8.src.rpm	1786337865	1775349096	101102	e249818c4a96f017e0a869545b8da1d2	System-wide crypto policies
+libgpg-error	0	1.42	5.el9	x86_64	libgpg-error-1.42-5.el9.src.rpm	1786337865	1644449054	837064	e6b8dd1cf21caa5d740e91046442bf26	Library for error values used by GnuPG components
+libunistring	0	0.9.10	15.el9	x86_64	libunistring-0.9.10-15.el9.src.rpm	1786337865	1644462861	1643051	89974ee18eca0832a008f146ab722d15	GNU Unicode string library
+alternatives	0	1.24	2.el9	x86_64	chkconfig-1.24-2.el9.src.rpm	1786337865	1741776228	63489	8d63bb71331fe18d4bdf778e74b9a20e	A tool to maintain symbolic links determining default commands
+keyutils-libs	0	1.6.3	1.el9	x86_64	keyutils-1.6.3-1.el9.src.rpm	1786337865	1680722150	55267	7f796f310a80bc09e6a82f3c714391ae	Key utilities library
+libcap-ng	0	0.8.2	7.el9	x86_64	libcap-ng-0.8.2-7.el9.src.rpm	1786337865	1651425264	75196	b3b6c517f674b1a19c87a1561fd7e3c5	Alternate posix capabilities library
+audit-libs	0	3.1.5	8.el9	x86_64	audit-3.1.5-8.el9.src.rpm	1786337865	1775333529	338497	8428e08fe33e72d688801be63ce40f7a	Dynamic library for libaudit
+libmnl	0	1.0.4	16.el9_4	x86_64	libmnl-1.0.4-16.el9_4.src.rpm	1786337865	1725364165	56075	0e751c3c319ba0d1ec9150fede8ff913	A minimalistic Netlink library
+libtalloc	0	2.4.3	1.el9	x86_64	libtalloc-2.4.3-1.el9.src.rpm	1786337865	1758178397	65261	3f7ee919ba8862fe28dd5b5abef774b5	The talloc library
+lua-libs	0	5.4.4	4.el9	x86_64	lua-5.4.4-4.el9.src.rpm	1786337865	1695752897	287355	2430d6b63b04055dcf0ed3068e801da9	Libraries for lua
+libidn2	0	2.3.0	7.el9	x86_64	libidn2-2.3.0-7.el9.src.rpm	1786337865	1644440268	253476	1f6a3623b3f769250040f82e0df9b999	Library to support IDNA2008 internationalized domain names
+expat	0	2.5.0	6.el9_8.1	x86_64	expat-2.5.0-6.el9_8.1.src.rpm	1786337865	1780580815	313387	57d0603c99cfbd9112e5424a3e731420	An XML parser library
+json-c	0	0.14	11.el9	x86_64	json-c-0.14-11.el9.src.rpm	1786337865	1644568776	79042	e3bcf96305017ede260a388d95652a40	JSON implementation in C
+libffi	0	3.4.2	8.el9	x86_64	libffi-3.4.2-8.el9.src.rpm	1786337865	1695671656	65761	34887349d1d9f7578ffabc8273fa4558	A portable foreign function interface library
+libnl3	0	3.11.0	1.el9	x86_64	libnl3-3.11.0-1.el9.src.rpm	1786337865	1742213530	1125015	70551193670876ce7fb29548ddeedf13	Convenience library for kernel netlink sockets
+libsepol	0	3.6	3.el9	x86_64	libsepol-3.6-3.el9.src.rpm	1786337865	1758446100	829195	e1b3f342c691068244d374f65e5d81bb	SELinux binary policy manipulation library
+libsmartcols	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337865	1775340891	134787	47c64609538e49ebbf950e9b29a0f339	Formatting library for ls-like programs.
+lz4-libs	0	1.9.3	5.el9	x86_64	lz4-1.9.3-5.el9.src.rpm	1786337865	1644481114	145515	8557c4f0d9c63e5ebf77dcfe4dd2e9fb	Libaries for lz4
+pcre2	0	10.40	6.el9	x86_64	pcre2-10.40-6.el9.src.rpm	1786337865	1727906236	652282	38ce3ac9306548549c7da2643170fd51	Perl-compatible regular expression library
+libselinux	0	3.6	3.el9	x86_64	libselinux-3.6-3.el9.src.rpm	1786337865	1741822567	176845	c9caf74a5adc7055412dd44de15f5594	SELinux library and simple utilities
+sed	0	4.8	10.el9	x86_64	sed-4.8-10.el9.src.rpm	1786337865	1775334250	812415	757fa1c107bbe0dcac6c556d84614e8e	A GNU stream text editor
+findutils	1	4.8.0	7.el9	x86_64	findutils-4.8.0-7.el9.src.rpm	1786337865	1727903031	1757006	eb24fa02da2776029062c039b1a9fd87	The GNU versions of find utilities (find and xargs)
+libsemanage	0	3.6	5.el9_6	x86_64	libsemanage-3.6-5.el9_6.src.rpm	1786337865	1742298593	307182	a8cec69c4d60eb615422798b620da314	SELinux binary policy manipulation library
+libtevent	0	0.17.1	1.el9	x86_64	libtevent-0.17.1-1.el9.src.rpm	1786337865	1775718834	103599	13c7d85c36181de46b7c82b9a74d9b9d	The tevent library
+libgcrypt	0	1.10.0	13.el9_8	x86_64	libgcrypt-1.10.0-13.el9_8.src.rpm	1786337865	1785875843	1398402	46413fab7ac376afbab8ff3e6ef8a234	A general-purpose cryptography library
+file-libs	0	5.39	17.el9	x86_64	file-5.39-17.el9.src.rpm	1786337865	1775350610	8086636	131ab8fc6e24414b11928af2e87f5018	Libraries for applications using libmagic
+gdbm-libs	1	1.23	1.el9	x86_64	gdbm-1.23-1.el9.src.rpm	1786337865	1727905839	128586	0bb4c1349578acccd76882767dbc508d	Libraries files for gdbm
+gmp	1	6.2.0	13.el9	x86_64	gmp-6.2.0-13.el9.src.rpm	1786337865	1696934960	816844	608294d7e89348908bf207387ecbfeca	A GNU arbitrary precision library
+libattr	0	2.5.1	3.el9	x86_64	attr-2.5.1-3.el9.src.rpm	1786337865	1643373859	29445	7ce1bc0a98f4c0afd2d5d8576ca27133	Dynamic library for extended attribute support
+shadow-utils	2	4.9	16.el9	x86_64	shadow-utils-4.9-16.el9.src.rpm	1786337865	1775677739	3812493	23196d6f2fd10f81e9233a4271bc53d8	Utilities for managing accounts and shadow password files
+libedit	0	3.1	39.20210216cvs.el9	x86_64	libedit-3.1-39.20210216cvs.el9.src.rpm	1786337865	1775381669	251839	900f75805577572ec8eba3028028dac2	The NetBSD Editline library
+libtasn1	0	4.16.0	10.el9_8	x86_64	libtasn1-4.16.0-10.el9_8.src.rpm	1786337865	1782346984	183364	f8b9b635e32c6e2e3476eef328864385	The ASN.1 library used in GNUTLS
+p11-kit	0	0.26.4	1.el9_8	x86_64	p11-kit-0.26.4-1.el9_8.src.rpm	1786337865	1785766926	2974865	29dc34c3679d2aaef78ea3bb023d911f	Library for loading and sharing PKCS#11 modules
+libtdb	0	1.4.14	1.el9	x86_64	libtdb-1.4.14-1.el9.src.rpm	1786337865	1775715862	110833	b04f467fcf998d0d6977807f65d0c4d0	The tdb library
+p11-kit-trust	0	0.26.4	1.el9_8	x86_64	p11-kit-0.26.4-1.el9_8.src.rpm	1786337865	1785766926	583297	38c17598c000296f0aa8b1d9ee5adc30	System trust module from p11-kit
+file	0	5.39	17.el9	x86_64	file-5.39-17.el9.src.rpm	1786337865	1775350610	102544	ac8bde5be4d6c1ea55408f13691d0f7e	Utility for determining file types
+libassuan	0	2.5.5	3.el9	x86_64	libassuan-2.5.5-3.el9.src.rpm	1786337865	1644438878	171157	8ac858829e2934e515ec1ad98226e0f2	GnuPG IPC library
+libbpf	2	1.5.0	3.el9	x86_64	libbpf-1.5.0-3.el9.src.rpm	1786337865	1775379631	436268	8b28f8c8d5cc91391f1616ba2d0d2e0b	Libbpf library
+efivar-libs	0	38	3.el9	x86_64	efivar-38-3.el9.src.rpm	1786337865	1680865597	375298	30e44617ad6f27600a8460a7164a3a8a	Library to manage UEFI variables
+fuse-libs	0	2.9.9	17.el9	x86_64	fuse-2.9.9-17.el9.src.rpm	1786337865	1741807832	311934	6bd9ff3411659f9be4651a6e53bf54d5	File System in Userspace (FUSE) v2 libraries
+jansson	0	2.14	1.el9	x86_64	jansson-2.14-1.el9.src.rpm	1786337865	1648675143	87421	cff1de4a47d81b601c60df549f230777	C library for encoding, decoding and manipulating JSON data
+libbasicobjects	0	0.1.1	53.el9	x86_64	ding-libs-0.6.1-53.el9.src.rpm	1786337865	1665770863	58780	7a5c442dd87d300a91f378ebfc08177a	Basic object types for C
+libcbor	0	0.7.0	5.el9	x86_64	libcbor-0.7.0-5.el9.src.rpm	1786337865	1644894063	100001	b4f5ffa074748ce8e4579c2a2ed96510	A CBOR parsing library
+libcollection	0	0.7.0	53.el9	x86_64	ding-libs-0.6.1-53.el9.src.rpm	1786337865	1665770863	101248	e5fd3892dec95fd03db9905fba5880c4	Collection data-type for C
+libdhash	0	0.5.0	53.el9	x86_64	ding-libs-0.6.1-53.el9.src.rpm	1786337865	1665770863	63126	25fac92e345d25b34b5f5bedc4eed3b7	Dynamic hash table
+libgomp	0	11.5.0	14.el9.alma.1	x86_64	gcc-11.5.0-14.el9.alma.1.src.rpm	1786337865	1775332686	421717	6af2b877a96ffba39adfa4176eeb9720	GCC OpenMP v4.5 shared support library
+libref_array	0	0.1.5	53.el9	x86_64	ding-libs-0.6.1-53.el9.src.rpm	1786337865	1665770863	58910	64bd33981a712e1e176dc0d152d6b54b	A refcounted array for C
+libseccomp	0	2.5.2	2.el9	x86_64	libseccomp-2.5.2-2.el9.src.rpm	1786337865	1644458249	175269	98c287f27456bdc4196130779a910832	Enhanced seccomp library
+libsigsegv	0	2.13	4.el9	x86_64	libsigsegv-2.13-4.el9.src.rpm	1786337865	1644457015	50354	7012e4a7edf3bd5d99b21eec9fb21cff	Library for handling page faults in user mode
+libsss_idmap	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337865	1784835025	79254	0bbc0c73c48707e835ed7018cd6020fa	FreeIPA Idmap library
+lzo	0	2.10	7.el9	x86_64	lzo-2.10-7.el9.src.rpm	1786337865	1644481699	162723	56d286ef92825631efd35f3cc82e7be9	Data compression library with very fast (de)compression
+numactl-libs	0	2.0.19	3.el9	x86_64	numactl-2.0.19-3.el9.src.rpm	1786337865	1758452855	62110	329833a5bedc865dbe5e85f50a2d1c39	libnuma libraries
+pciutils-libs	0	3.7.0	7.el9	x86_64	pciutils-3.7.0-7.el9.src.rpm	1786337865	1741811227	80335	5bbef4bfb3094f599cb4e8537d98c639	Linux PCI library
+pcre	0	8.44	4.el9	x86_64	pcre-8.44-4.el9.src.rpm	1786337865	1727906000	537720	c545835f3e9dab2d0a1d5f8a1bef1897	Perl-compatible regular expression library
+grep	0	3.6	5.el9	x86_64	grep-3.6-5.el9.src.rpm	1786337865	1643660491	857864	a446fe7db66d7e8f0fcd097c20abd47c	Pattern matching utilities
+coreutils	0	8.32	41.el9_8	x86_64	coreutils-8.32-41.el9_8.src.rpm	1786337865	1782347095	5900138	1d7154cc33f4a0cfa8f2a103525da4c8	A set of basic GNU tools commonly used in shell scripts
+ca-certificates	0	2025.2.80_v9.0.305	91.el9	noarch	ca-certificates-2025.2.80_v9.0.305-91.el9.src.rpm	1786337865	1763547065	2791711	7835aefb5f908c26ebbb25b9e609c5ab	The Mozilla CA root certificate bundle
+systemd-libs	0	252	67.el9_8.4.alma.1	x86_64	systemd-252-67.el9_8.4.alma.1.src.rpm	1786337866	1782347056	1814800	b300a63d74f1d111ede90cc81aaf76b0	systemd libraries
+libblkid	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337866	1775340891	229729	2bc780c13a477191bf433f9c0c3e8760	Block device ID library
+libmount	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337866	1775340891	318333	e67aa6e3b380b7b31d839ebdd6e05b0b	Device mounting library
+kmod-libs	0	28	11.el9	x86_64	kmod-28-11.el9.src.rpm	1786337866	1758195672	133910	20a7c73ded8b3813fe3e3189dc31ab45	Libraries to handle kernel module loading and unloading
+util-linux-core	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337866	1775340891	1262855	74b049e606d8cf82ecaf91faaba49944	The most essential utilities from the util-linux suite.
+libfdisk	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337866	1775340891	367763	97c41d6e404e6be1c761ba28c3403bc9	Partitioning library for fdisk-like programs.
+dbus-libs	1	1.12.20	8.el9	x86_64	dbus-1.12.20-8.el9.src.rpm	1786337866	1695765039	372998	a18c756c01f8c9d1f01c119f83c209ff	Libraries for accessing D-BUS
+gzip	0	1.12	1.el9	x86_64	gzip-1.12-1.el9.src.rpm	1786337866	1665854720	377005	b5c23607ca0175f8586bb9f04bc0c094	The GNU data compression program
+kmod	0	28	11.el9	x86_64	kmod-28-11.el9.src.rpm	1786337866	1758195672	253975	e480435b73672516872948bee0ab34f8	Linux kernel module management utilities
+cracklib	0	2.9.6	28.el9	x86_64	cracklib-2.9.6-28.el9.src.rpm	1786337866	1775711932	249970	b063b5adca1393abe36f4ecd0318617e	A password-checking library
+libarchive	0	3.5.3	9.el9_7	x86_64	libarchive-3.5.3-9.el9_7.src.rpm	1786337866	1776375870	906150	ad802c017c07d45c568eab3122245de6	A library for handling streaming archive formats
+which	0	2.21	30.el9_6	x86_64	which-2.21-30.el9_6.src.rpm	1786337866	1754374769	81900	55186272c3a81b2172db432caf92a23f	Displays where a particular program in your path is located
+cracklib-dicts	0	2.9.6	28.el9	x86_64	cracklib-2.9.6-28.el9.src.rpm	1786337866	1775711932	9815154	0ba66693c65a326e8ee1313ea8891a6e	The standard CrackLib dictionaries
+libusbx	0	1.0.30	1.el9_8	x86_64	libusbx-1.0.30-1.el9_8.src.rpm	1786337866	1782346490	179667	d4d17b083b3aaaa63dfba2508f675d09	Library for accessing USB devices
+procps-ng	0	3.3.17	14.el9	x86_64	procps-ng-3.3.17-14.el9.src.rpm	1786337866	1714495364	1001451	a7b6e406c506351958264822833a8b98	System and process monitoring utilities
+python3-pip-wheel	0	21.3.1	2.el9_8	noarch	python-pip-21.3.1-2.el9_8.src.rpm	1786337866	1779526790	1232785	2297ec7004616378c65587fbf62aee63	The pip wheel
+python3	0	3.9.25	7.el9_8.2	x86_64	python3.9-3.9.25-7.el9_8.2.src.rpm	1786337866	1784115282	32836	c4246b1d4b81bcd7b8beef5e64a66640	Python 3.9 interpreter
+python3-libs	0	3.9.25	7.el9_8.2	x86_64	python3.9-3.9.25-7.el9_8.2.src.rpm	1786337866	1784115282	33029753	433cd76a32bae29c37607e718fa1f273	Python runtime libraries
+python3-six	0	1.15.0	9.el9	noarch	python-six-1.15.0-9.el9.src.rpm	1786337866	1648159914	106876	fa273eb1f0813691e963c09c16a5db5f	Python 2 and 3 compatibility utilities
+python3-dateutil	1	2.9.0.post0	1.el9_7	noarch	python-dateutil-2.9.0.post0-1.el9_7.src.rpm	1786337866	1762903841	744073	b52d02f50ffb16c30c2881ff5ad154af	Powerful extensions to the standard datetime module
+python3-systemd	0	234	19.el9	x86_64	python-systemd-234-19.el9.src.rpm	1786337866	1727899077	284628	02610510a2636ef3d13c99287c414ae1	Python module wrapping systemd functionality
+libevent	0	2.1.12	8.el9_4	x86_64	libevent-2.1.12-8.el9_4.src.rpm	1786337867	1725362762	928090	1d07d5bf7396f9ff79545bb48bd60870	Abstract asynchronous event notification library
+libsss_certmap	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337867	1784835025	151740	49871718fced2f3a8110d1459f2184b8	SSSD Certificate Mapping Library
+mokutil	2	0.7.2	4.el9	x86_64	mokutil-0.7.2-4.el9.src.rpm	1786337867	1775774038	100818	7d4a4ea02d3baee4f5a27b6966d603f4	Tool to manage UEFI Secure Boot MoK Keys
+xz	0	5.2.5	8.el9_0	x86_64	xz-5.2.5-8.el9_0.src.rpm	1786337867	1654677033	685939	faecaee7f9cd46fec9def1b27acc08d2	LZMA compression utilities
+squashfs-tools	0	4.4	10.git1.el9	x86_64	squashfs-tools-4.4-10.git1.el9.src.rpm	1786337867	1712151918	436347	411ca6d9721efb7a1f4ac69e8274272b	Utility for the creation of squashfs filesystems
+libutempter	0	1.2.1	6.el9	x86_64	libutempter-1.2.1-6.el9.src.rpm	1786337867	1644465610	59441	60d7a46e01fd1a708369f595c8fa9da6	A privileged helper for utmp/wtmp updates
+attr	0	2.5.1	3.el9	x86_64	attr-2.5.1-3.el9.src.rpm	1786337867	1643373859	166277	c26cc7291d9b25235dd5218bfee78eaf	Utilities for managing filesystem extended attributes
+mpfr	0	4.1.0	10.el9	x86_64	mpfr-4.1.0-10.el9.src.rpm	1786337867	1775343221	801155	d27d4b898456ba5ea5d6feda3decd500	C library for multiple-precision floating-point computations
+gawk	0	5.1.0	6.el9	x86_64	gawk-5.1.0-6.el9.src.rpm	1786337867	1648679084	1685614	fcd814904c14563f0fb1b26cd5abf615	The GNU version of the AWK text processing utility
+libselinux-utils	0	3.6	3.el9	x86_64	libselinux-3.6-3.el9.src.rpm	1786337867	1741822567	422851	9886a7705d3eec2bfafa2eacf2727b5f	SELinux libselinux utilities
+libnl3-cli	0	3.11.0	1.el9	x86_64	libnl3-3.11.0-1.el9.src.rpm	1786337867	1742213530	1093123	1932d933a596d1eeeb28fab4477f846d	Command line interface utils for libnl3
+libteam	0	1.31	16.el9_1	x86_64	libteam-1.31-16.el9_1.src.rpm	1786337867	1674503615	112084	2897e8438e784a6f9685e5efa7072fa1	Library for controlling team network device
+libcomps	0	0.1.18	1.el9	x86_64	libcomps-0.1.18-1.el9.src.rpm	1786337867	1644428859	215087	4f97877e8cb57940749e7837ef2aa885	Comps XML file manipulation library
+python3-libcomps	0	0.1.18	1.el9	x86_64	libcomps-0.1.18-1.el9.src.rpm	1786337867	1644428859	147090	af9ef0b9d92fa89aee17655d3d40c764	Python 3 bindings for libcomps library
+libpsl	0	0.21.1	5.el9	x86_64	libpsl-0.21.1-5.el9.src.rpm	1786337867	1644463051	78616	05be8f6d2c29044a80d9cf9d816afd6d	C library for the Publix Suffix List
+ethtool	2	6.15	2.el9	x86_64	ethtool-6.15-2.el9.src.rpm	1786337867	1760969663	1118063	5470da40df8e6bd851edbfcd72bcc971	Settings tool for Ethernet NICs
+keyutils	0	1.6.3	1.el9	x86_64	keyutils-1.6.3-1.el9.src.rpm	1786337867	1680722150	161876	7dd8334f3266659029913f3378e71ca4	Linux Key Management Utilities
+gettext-libs	0	0.21	8.el9	x86_64	gettext-0.21-8.el9.src.rpm	1786337867	1695797385	1023620	6634dd35f043488fcc760f68c7af7e4a	Libraries for gettext
+gettext	0	0.21	8.el9	x86_64	gettext-0.21-8.el9.src.rpm	1786337867	1695797385	5278479	53b12bcc8a893547f0d91b171f4abacb	GNU libraries and utilities for producing multi-lingual messages
+libksba	0	1.5.1	7.el9	x86_64	libksba-1.5.1-7.el9.src.rpm	1786337867	1727801425	394494	6dcfc802c79f0c7f1f8b3a0912756d93	CMS and X.509 library
+e2fsprogs-libs	0	1.46.5	8.el9	x86_64	e2fsprogs-1.46.5-8.el9.src.rpm	1786337867	1758466961	547247	ff0335d445cfac42b3f82e62a88fcd15	Ext2/3/4 file system specific shared libraries
+libss	0	1.46.5	8.el9	x86_64	e2fsprogs-1.46.5-8.el9.src.rpm	1786337867	1758466961	80751	e2c4990f7f4d293d2e1319de397c68d5	Command line interface parsing library
+groff-base	0	1.22.4	10.el9	x86_64	groff-1.22.4-10.el9.src.rpm	1786337867	1643712259	4040414	024f1564cc6f985c2b8fc4d025c4a995	Parts of the groff formatting system required to display manual pages
+snappy	0	1.1.8	8.el9	x86_64	snappy-1.1.8-8.el9.src.rpm	1786337867	1644547891	64177	45713240d546ca4ce37b18913a333720	Fast compression and decompression library
+acl	0	2.4.0	1.el9_8	x86_64	acl-2.4.0-1.el9_8.src.rpm	1786337867	1784649511	227585	b9db7125db7c3c42d54c903d58586fb9	Access control list utilities
+pigz	0	2.8	1.el9	x86_64	pigz-2.8-1.el9.src.rpm	1786337867	1741820786	165934	89831967f6d27c9ad9f9a9624265c1d6	Parallel implementation of gzip
+c-ares	0	1.19.1	2.el9_4	x86_64	c-ares-1.19.1-2.el9_4.src.rpm	1786337867	1718260904	285774	77d96baf39a204990b549af130587c58	A library that performs asynchronous DNS operations
+cpio	0	2.13	16.el9	x86_64	cpio-2.13-16.el9.src.rpm	1786337867	1643489457	1088179	20d7eb1219e79364f2b8f81bc0fe0a0c	A GNU archiving program
+diffutils	0	3.7	12.el9	x86_64	diffutils-3.7-12.el9.src.rpm	1786337867	1643480107	1467897	0a64e40e363d5df18c64c2dead50f7d6	GNU collection of diff utilities
+hostname	0	3.23	6.el9	x86_64	hostname-3.23-6.el9.src.rpm	1786337867	1644837723	46824	3e957e11a4dc81bfd5de2d7f0fee8b87	Utility to set/show the host name or domain name
+inih	0	49	6.el9	x86_64	inih-49-6.el9.src.rpm	1786337867	1665832493	26131	3c8b7eb236f91095b18004572a6962d4	Simple INI file parser library
+kernel-tools-libs	0	5.14.0	687.36.1.el9_8	x86_64	kernel-5.14.0-687.36.1.el9_8.src.rpm	1786337867	1786093231	30780	215ebfb096f83db56e6b70fa6d688836	Libraries for the kernels-tools
+less	0	590	6.el9	x86_64	less-590-6.el9.src.rpm	1786337867	1758458091	364656	2ad4fec39bff97c618495df04b6f190d	A text file browser similar to more, but better
+libbrotli	0	1.0.9	9.el9_7	x86_64	brotli-1.0.9-9.el9_7.src.rpm	1786337867	1770289647	782170	4107456cfc4de0346ce9395a905887ba	Library for brotli lossless compression algorithm
+libdaemon	0	0.14	23.el9	x86_64	libdaemon-0.14-23.el9.src.rpm	1786337867	1644432033	69935	bfc4e5da036090bcd454e686b9fc6635	Library for writing UNIX daemons
+teamd	0	1.31	16.el9_1	x86_64	libteam-1.31-16.el9_1.src.rpm	1786337867	1674503615	294335	e3c93357f73487ea0292e79f969a432c	Team network device control daemon
+libdb	0	5.3.28	57.el9_6	x86_64	libdb-5.3.28-57.el9_6.src.rpm	1786337867	1750774368	1897918	7bfc7fbf88113dac72b782fe2bd983a7	The Berkeley DB database library for C
+libeconf	0	0.4.1	7.el9_8	x86_64	libeconf-0.4.1-7.el9_8.src.rpm	1786337867	1780483738	45707	6d6789638acaa73f3f8710f292b5a47a	Enhanced config file parser library
+libpwquality	0	1.4.4	8.el9	x86_64	libpwquality-1.4.4-8.el9.src.rpm	1786337867	1644464254	416424	8887f61609c602b650ca3a7f5077bd71	A library for password generation and password quality checking
+pam	0	1.5.1	28.el9	x86_64	pam-1.5.1-28.el9.src.rpm	1786337867	1775346230	1907538	f6428156f8834fe0902658d7c590b45d	An extensible library which provides authentication for applications
+util-linux	0	2.37.4	25.el9	x86_64	util-linux-2.37.4-25.el9.src.rpm	1786337867	1775340891	11146991	9b031d369c04b8de694795709e9ec782	A collection of basic system utilities
+grub2-common	1	2.06	126.el9_8.alma.1	noarch	grub2-2.06-126.el9_8.alma.1.src.rpm	1786337867	1775468364	5480651	2325ea10081168b33a7b6ef8f4a9bc2f	grub2 common layout
+openssh	0	9.9p1	9.el9_8.alma.1	x86_64	openssh-9.9p1-9.el9_8.alma.1.src.rpm	1786337867	1785366437	1816032	ace50a8d7d9f20230263eba1a8f1ee5a	An open source implementation of SSH protocol version 2
+grub2-pc-modules	1	2.06	126.el9_8.alma.1	noarch	grub2-2.06-126.el9_8.alma.1.src.rpm	1786337867	1775467118	3544722	47fac233d18ae018c2063179f7d4adde	Modules used to build custom grub images
+kbd	0	2.4.0	11.el9	x86_64	kbd-2.4.0-11.el9.src.rpm	1786337867	1741853651	1569252	47dde149311e8609142fa71b3b91f4c3	Tools for configuring the console (keyboard, virtual terminals, etc.)
+libndp	0	1.9	1.el9	x86_64	libndp-1.9-1.el9.src.rpm	1786337867	1727802202	87681	b43f1706abff398d4bebf63e1c9b738c	Library for Neighbor Discovery Protocol
+libnfnetlink	0	1.0.1	23.el9_5	x86_64	libnfnetlink-1.0.1-23.el9_5.src.rpm	1786337867	1738641480	55203	05ded0d037e02af05a2e1c7ae86b33ed	Netfilter netlink userspace library
+libnetfilter_conntrack	0	1.0.9	1.el9	x86_64	libnetfilter_conntrack-1.0.9-1.el9.src.rpm	1786337867	1680724237	146618	fa3a8785fc90bdf2bdaaa5655b85dba3	Netfilter conntrack userspace library
+iptables-libs	0	1.8.10	11.el9_5	x86_64	iptables-1.8.10-11.el9_5.src.rpm	1786337867	1738640825	1833626	f2250851bf9873b4cea0e835c92de792	libxtables and iptables extensions userspace support
+libnghttp2	0	1.43.0	6.el9_8.1	x86_64	nghttp2-1.43.0-6.el9_8.1.src.rpm	1786337867	1776848390	169764	5b57dc79da458bc444918de06f879b35	A library implementing the HTTP/2 protocol
+libpath_utils	0	0.2.1	53.el9	x86_64	ding-libs-0.6.1-53.el9.src.rpm	1786337867	1665770863	63160	28e63993344a2fceccc705700f7f74c1	Filesystem Path Utilities
+libini_config	0	1.3.1	53.el9	x86_64	ding-libs-0.6.1-53.el9.src.rpm	1786337867	1665770863	163488	e865378a910e7dc8d4f9777aad73847a	INI file parser for C
+libpciaccess	0	0.16	7.el9	x86_64	libpciaccess-0.16-7.el9.src.rpm	1786337867	1727802743	49451	7235ed520b77e865ad268e2f9f9d235c	PCI access library
+libdrm	0	2.4.128	1.el9	x86_64	libdrm-2.4.128-1.el9.src.rpm	1786337867	1775380387	419760	3cf1d88be563f8aeb61bc4eb141296e9	Direct Rendering Manager runtime library
+libpipeline	0	1.5.3	4.el9	x86_64	libpipeline-1.5.3-4.el9.src.rpm	1786337867	1644459380	115269	a0f97370caaacc4d40e94a80688f2017	A pipeline manipulation library
+libsss_nss_idmap	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337867	1784835025	83894	6f764806db452799ac38e5808d0d9e01	Library for SID and certificate based lookups
+libsss_sudo	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337867	1784835025	54743	6032979c018a6125263cd81130df9e70	A library to allow communication between SUDO and SSSD
+libtool-ltdl	0	2.4.6	46.el9	x86_64	libtool-2.4.6-46.el9.src.rpm	1786337867	1727804946	71568	b2b0c536c6641f5f9385b906d25a5cbb	Runtime libraries for GNU Libtool Dynamic Module Loader
+libverto	0	0.3.2	3.el9	x86_64	libverto-0.3.2-3.el9.src.rpm	1786337867	1644467610	30381	7f11c70e36432c127987bfbe02b7bef0	Main loop abstraction library
+krb5-libs	0	1.21.1	10.el9_8	x86_64	krb5-1.21.1-10.el9_8.src.rpm	1786337867	1779320805	2503194	3f9ae6306649a557225a49fff940b305	The non-admin shared libraries used by Kerberos 5
+cyrus-sasl-lib	0	2.1.27	22.el9	x86_64	cyrus-sasl-2.1.27-22.el9.src.rpm	1786337867	1758800767	2380456	88e08518f6a93d32158a4c3e8ad4caaa	Shared libraries needed by applications which use Cyrus SASL
+openldap	0	2.6.8	4.el9	x86_64	openldap-2.6.8-4.el9.src.rpm	1786337867	1741868893	1087281	15fc0b70aae1ee3a492cca80324ab36d	LDAP support libraries
+libssh	0	0.10.4	18.el9	x86_64	libssh-0.10.4-18.el9.src.rpm	1786337867	1775383786	535755	4e4d2471ecde8d15fc8b14fb408ce852	A library implementing the SSH protocol
+tpm2-tss	0	3.2.3	1.el9	x86_64	tpm2-tss-3.2.3-1.el9.src.rpm	1786337868	1727905351	2232000	66aacb2b3f16817275f284c9e2c2ff68	TPM2.0 Software Stack
+ima-evm-utils	0	1.6.2	2.el9	x86_64	ima-evm-utils-1.6.2-2.el9.src.rpm	1786337868	1758445867	169160	6d7b997fa2b1acf227bb32dc7bf3729b	IMA/EVM support utilities
+rpm-libs	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337868	1775353601	773068	1a70a15d6d3fad55fb9a62b39e8cde5a	Libraries for manipulating RPM packages
+rpm	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337868	1775353601	2750478	0216f9f051470ac22380b58e7c18cbf4	The RPM package management system
+policycoreutils	0	3.6	5.el9	x86_64	policycoreutils-3.6-5.el9.src.rpm	1786337868	1775346710	722184	9626ba73fdd0da1b90d30d26d824df51	SELinux policy core utilities
+selinux-policy	0	38.1.75	2.el9_8	noarch	selinux-policy-38.1.75-2.el9_8.src.rpm	1786337868	1775335531	25931	f8a7ef12e019b3acc5c5a6bd23952e85	SELinux policy configuration
+selinux-policy-targeted	0	38.1.75	2.el9_8	noarch	selinux-policy-38.1.75-2.el9_8.src.rpm	1786337868	1775335531	19102914	a89d16398439c088bd9d41f347790649	SELinux targeted policy
+libsolv	0	0.7.24	6.el9_8	x86_64	libsolv-0.7.24-6.el9_8.src.rpm	1786337873	1784061815	912746	6d2fa14655e3aa0d69ff467c60ca30f1	Package dependency solver
+sssd-client	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337873	1784835025	372872	7412c67edcbff48d15fbea33ed9af816	SSSD Client libraries for NSS and PAM
+libyaml	0	0.2.5	7.el9	x86_64	libyaml-0.2.5-7.el9.src.rpm	1786337873	1644469446	138315	e9d15235172c2755d98ec8a901f09a0e	YAML 1.1 parser and emitter written in C
+lmdb-libs	0	0.9.29	3.el9	x86_64	lmdb-0.9.29-3.el9.src.rpm	1786337873	1644479342	108552	8f5b98d05504ecfe10903c8b23c4daad	Shared libraries for lmdb
+libldb	0	4.23.5	10.el9_8	x86_64	samba-4.23.5-10.el9_8.src.rpm	1786337873	1781097011	557237	d2d8e72c78acd9ff071f353ea7582c61	A schema-less, ldap like, API and database
+nettle	0	3.10.1	1.el9	x86_64	nettle-3.10.1-1.el9.src.rpm	1786337873	1741845579	1169768	b7f8d6efcdf2bba548c76687bf30eb60	A low-level cryptographic library
+gnutls	0	3.8.10	8.el9_8	x86_64	gnutls-3.8.10-8.el9_8.src.rpm	1786337873	1786102884	4138847	9826554a6dd261e06323f3be65be185a	A TLS protocol implementation
+glib2	0	2.68.4	19.el9_8.2	x86_64	glib2-2.68.4-19.el9_8.2.src.rpm	1786337873	1784591659	13443486	bf9dcb0d305325658c9d0bea36b9690b	A library of handy utility functions
+NetworkManager-libnm	1	1.54.3	4.el9_8	x86_64	NetworkManager-1.54.3-4.el9_8.src.rpm	1786337873	1785880818	10605611	8bb283cf1c3ab926638d0e609178ddd1	Libraries for adding NetworkManager support to applications.
+json-glib	0	1.6.6	1.el9	x86_64	json-glib-1.6.6-1.el9.src.rpm	1786337873	1644431042	555900	f86d3a49dbe740c783b4ac6ffd614548	Library for JavaScript Object Notation format
+libmodulemd	0	2.13.0	2.el9	x86_64	libmodulemd-2.13.0-2.el9.src.rpm	1786337873	1644449406	733967	922bb17f538dc4083e65e6ac097ae552	Module metadata manipulation library
+python3-dbus	0	1.2.18	2.el9	x86_64	dbus-python-1.2.18-2.el9.src.rpm	1786337873	1643481418	502948	31c9f0ea3aa558a0719572f5ed44aba8	D-Bus bindings for python3
+shared-mime-info	0	2.1	5.el9	x86_64	shared-mime-info-2.1-5.el9.src.rpm	1786337873	1680823226	5187670	475f10dda11a33946e2a113e354c55b9	Shared MIME information database
+libxmlb	0	0.3.24	1.el9	x86_64	libxmlb-0.3.24-1.el9.src.rpm	1786337873	1775737557	290579	84dcc95536bf9dc2f2edd78c1d9a8240	Library for querying compressed XML metadata
+libuser	0	0.63	17.el9	x86_64	libuser-0.63-17.el9.src.rpm	1786337873	1758451993	2033841	aa15f831bfbc3df32e91544e1b74f2e2	A user and group account administration library
+polkit-libs	0	0.117	14.el9	x86_64	polkit-0.117-14.el9.src.rpm	1786337873	1758448046	29450953	55444fd0c212dfb1170928abc68a0766	Libraries for polkit
+npth	0	1.6	8.el9	x86_64	npth-1.6-8.el9.src.rpm	1786337873	1645791541	50619	3b35ca6e537948cb8cb49e1ca3790bd2	The New GNU Portable Threads library
+gnupg2	0	2.3.3	5.el9_7	x86_64	gnupg2-2.3.3-5.el9_7.src.rpm	1786337873	1768512785	9227613	36cdb3a21900199ec00a84885e8c59bf	Utility for secure communication and data storage
+gpgme	0	1.15.1	6.el9	x86_64	gpgme-1.15.1-6.el9.src.rpm	1786337873	1648668818	576033	20f2994f0957eed21152ce820dc88acc	GnuPG Made Easy - high level crypto API
+libjcat	0	0.1.6	3.el9	x86_64	libjcat-0.1.6-3.el9.src.rpm	1786337873	1644611817	185515	922d5b40f266c9dd84110dbc138b3652	Library for reading Jcat files
+librepo	0	1.19.0	1.el9	x86_64	librepo-1.19.0-1.el9.src.rpm	1786337873	1775709336	229241	32e5ea84bae3870856b5a76dbddbb1de	Repodata downloading library
+libdnf	0	0.69.0	18.el9.alma.1	x86_64	libdnf-0.69.0-18.el9.alma.1.src.rpm	1786337873	1776196861	2147181	fc4d0b2b2f832dd0a670f2f1d01f0792	Library providing simplified C and Python API to libsolv
+python3-libdnf	0	0.69.0	18.el9.alma.1	x86_64	libdnf-0.69.0-18.el9.alma.1.src.rpm	1786337873	1776196861	3799852	9c122cec836dae30a64217182caae201	Python 3 bindings for the libdnf library.
+python3-hawkey	0	0.69.0	18.el9.alma.1	x86_64	libdnf-0.69.0-18.el9.alma.1.src.rpm	1786337873	1776196861	313160	ad5988786edcaa5d4887bda037e84efc	Python 3 bindings for the hawkey library
+python3-gpg	0	1.15.1	6.el9	x86_64	gpgme-1.15.1-6.el9.src.rpm	1786337874	1648668818	1404173	c4601c7fc021ac2b78d3aeb61b98af1b	gpgme bindings for Python 3
+rpm-sign-libs	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337874	1775353601	27636	4dd99fb60b5fa2acfd18653ee909051b	Libraries for signing RPM packages
+oniguruma	0	6.9.6	1.el9.6	x86_64	oniguruma-6.9.6-1.el9.6.src.rpm	1786337874	1727898983	763442	849953cd862b7bef5108041ad89b6721	Regular expressions library
+jq	0	1.6	19.el9_8.2	x86_64	jq-1.6-19.el9_8.2.src.rpm	1786337874	1779270931	422085	53416cea66108afb41e9d2523af34414	Command-line JSON processor
+protobuf-c	0	1.3.3	13.el9	x86_64	protobuf-c-1.3.3-13.el9.src.rpm	1786337874	1695758865	63188	b0258e1558f1adbcfcd2fa09cd4ff943	C bindings for Google's Protocol Buffers
+psmisc	0	23.4	3.el9	x86_64	psmisc-23.4-3.el9.src.rpm	1786337874	1648223632	719458	71ab5f1ba2d4dd36ae89809e7c41b6e0	Utilities for managing processes on your system
+iproute	0	6.17.0	2.el9	x86_64	iproute-6.17.0-2.el9.src.rpm	1786337874	1775377832	2267939	bfcbdb8c097577786050fd2927e5af7b	Advanced IP routing and network device configuration tools
+sg3_utils-libs	0	1.47	10.el9_8.1	x86_64	sg3_utils-1.47-10.el9_8.1.src.rpm	1786337874	1785880962	287029	f5ff58b35d9bd881e1c49463928b508c	Shared library for sg3_utils
+slang	0	2.3.2	11.el9	x86_64	slang-2.3.2-11.el9.src.rpm	1786337874	1644555317	1326186	ef4391132f790fa924ab5926a97d0cfe	Shared library for the S-Lang extension language
+newt	0	0.52.21	11.el9	x86_64	newt-0.52.21-11.el9.src.rpm	1786337874	1644498412	217394	b1dde463af4a05d11a6854ef25027938	A library for text mode user interfaces
+userspace-rcu	0	0.12.1	6.el9	x86_64	userspace-rcu-0.12.1-6.el9.src.rpm	1786337874	1644947238	418170	1fdfb26c7f31117dcffe832dfed99480	RCU (read-copy-update) implementation in user-space
+libestr	0	0.1.11	4.el9	x86_64	libestr-0.1.11-4.el9.src.rpm	1786337874	1665827750	46231	a47c6de8ec47f6b796b3f68b9dbda5a6	String handling essentials library
+libfastjson	0	0.99.9	5.el9	x86_64	libfastjson-0.99.9-5.el9.src.rpm	1786337874	1695670868	75010	e84f513403a8f3fa80d47dd76d0c67b9	A JSON implementation in C
+liburing	0	2.12	1.el9	x86_64	liburing-2.12-1.el9.src.rpm	1786337874	1775384838	113437	3ea3d052c981d3dde65b3bdbba324cf2	Linux-native io_uring I/O access library
+langpacks-core-en	0	3.0	16.el9	noarch	langpacks-3.0-16.el9.src.rpm	1786337874	1644438506	398	09a210716a6a70e9b4146865e5f51686	English langpacks core meta-package
+systemd-rpm-macros	0	252	67.el9_8.4.alma.1	noarch	systemd-252-67.el9_8.4.alma.1.src.rpm	1786337874	1782346822	10405	58ec7dfdeec9b9fe0fa7e426136fb504	Macros that define paths and scriptlets related to systemd
+dbus	1	1.12.20	8.el9	x86_64	dbus-1.12.20-8.el9.src.rpm	1786337874	1695765039	0	d0edbea7011398f04d0fe9730f1d7856	D-BUS message bus
+systemd-pam	0	252	67.el9_8.4.alma.1	x86_64	systemd-252-67.el9_8.4.alma.1.src.rpm	1786337874	1782347056	522726	2f79cca4112657811874bf32f1399ab9	systemd PAM module
+systemd	0	252	67.el9_8.4.alma.1	x86_64	systemd-252-67.el9_8.4.alma.1.src.rpm	1786337874	1782347056	12875532	49396a943fb58d24efb20fe304c673eb	System and Service Manager
+dbus-common	1	1.12.20	8.el9	noarch	dbus-1.12.20-8.el9.src.rpm	1786337874	1695763323	11394	bae88bf95fdeab1240fc8b04af8666ec	D-BUS message bus configuration
+dbus-broker	0	28	7.el9	x86_64	dbus-broker-28-7.el9.src.rpm	1786337874	1665767462	396466	2b9ec3491790b01982af17a13cd77881	Linux D-Bus Message Broker
+cronie-anacron	0	1.5.7	16.el9	x86_64	cronie-1.5.7-16.el9.src.rpm	1786337874	1775714368	46435	cea7a0c60150c1079eb3bba63c878a23	Utility for running regular jobs
+cronie	0	1.5.7	16.el9	x86_64	cronie-1.5.7-16.el9.src.rpm	1786337874	1775714368	308473	8fff5b0be94c16e265097826fcaa1a2e	Cron daemon for executing programs at set times
+crontabs	0	1.11	27.20190603git.el9_0	noarch	crontabs-1.11-27.20190603git.el9_0.src.rpm	1786337874	1649706869	21331	b9453f96b8ae4d8e30cbee56e9968b02	Root crontab files used to schedule the execution of programs
+iputils	0	20210202	15.el9_7	x86_64	iputils-20210202-15.el9_7.src.rpm	1786337874	1760964269	509714	4866c58be6befc024baa8596ab57e1e2	Network monitoring tools including ping
+authselect-libs	0	1.2.6	3.el9	x86_64	authselect-1.2.6-3.el9.src.rpm	1786337874	1741789263	1034624	ee69892eeadfae40730b8efef38cd097	Utility library used by the authselect tool
+device-mapper-libs	9	1.02.207	4.el9_8.1	x86_64	lvm2-2.03.33-4.el9_8.1.src.rpm	1786337874	1780483889	432009	8d3a61901092f3185851c8b1b3306328	Device-mapper shared library
+device-mapper	9	1.02.207	4.el9_8.1	x86_64	lvm2-2.03.33-4.el9_8.1.src.rpm	1786337874	1780483889	361872	8f42d44fd2dfa80332ead630ad522483	Device mapper utility
+grub2-tools-minimal	1	2.06	126.el9_8.alma.1	x86_64	grub2-2.06-126.el9_8.alma.1.src.rpm	1786337874	1775479924	3667733	50d08e2f70ea70669210999fa4fa73e9	Support tools for GRUB.
+cryptsetup-libs	0	2.8.1	3.el9	x86_64	cryptsetup-2.8.1-3.el9.src.rpm	1786337874	1775343689	2749935	7720e68e33ec3a29883e62966af4639d	Cryptsetup shared library
+systemd-udev	0	252	67.el9_8.4.alma.1	x86_64	systemd-252-67.el9_8.4.alma.1.src.rpm	1786337874	1782347056	11579375	bc49193d673f03847416055dc985cbd0	Rule-based device node and kernel event manager
+NetworkManager	1	1.54.3	4.el9_8	x86_64	NetworkManager-1.54.3-4.el9_8.src.rpm	1786337875	1785880818	6852498	698512dd2957862341fea2d5332c21f5	Network connection manager and user applications
+libfido2	0	1.13.0	2.el9	x86_64	libfido2-1.13.0-2.el9.src.rpm	1786337875	1711998047	246734	855aa33e60f74ad444b6e8375fabe38d	FIDO2 library
+os-prober	0	1.77	12.el9_5	x86_64	os-prober-1.77-12.el9_5.src.rpm	1786337875	1738661531	114427	24627a48091478d70912288a62341f5c	Probes disks on the system for installed operating systems
+kpartx	0	0.8.7	45.el9	x86_64	device-mapper-multipath-0.8.7-45.el9.src.rpm	1786337875	1775348636	76795	975d74fefa247fd4cc5d2cffcc4e4591	Partition device manager for device-mapper devices
+elfutils-default-yama-scope	0	0.194	1.el9.alma.1	noarch	elfutils-0.194-1.el9.alma.1.src.rpm	1786337875	1775353378	1810	3b62ca41a89bd7d4adac1a21184306b1	Default yama attach scope sysctl setting
+elfutils-libs	0	0.194	1.el9.alma.1	x86_64	elfutils-0.194-1.el9.alma.1.src.rpm	1786337875	1775349538	755869	098ce2c4e4fb1dd1537ff7ff64d9f15d	Libraries to handle compiled objects
+elfutils-debuginfod-client	0	0.194	1.el9.alma.1	x86_64	elfutils-0.194-1.el9.alma.1.src.rpm	1786337875	1775349538	81154	866bf2804cc36d4e49c1f6620c460e21	Library and command line client for build-id HTTP ELF/DWARF server
+binutils-gold	0	2.35.2	72.el9	x86_64	binutils-2.35.2-72.el9.src.rpm	1786337875	1775336087	2128619	1fafbc3232ae63ce850df5d27401cc09	The GOLD linker, a faster alternative to the BFD linker
+binutils	0	2.35.2	72.el9	x86_64	binutils-2.35.2-72.el9.src.rpm	1786337875	1775336087	25215083	ff8ee2bf3da1147e1c1b74289efe1bbd	A GNU collection of binary utilities
+rpm-build-libs	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337875	1775353601	198446	9bdddce371d008a20fa14fd0a4e17d3b	Libraries for building RPM packages
+python3-rpm	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337875	1775353601	197630	ea9de2618088f01b9ebe70b047adac7c	Python 3 bindings for apps which will manipulate RPM packages
+python3-dnf	0	4.14.0	34.el9_8.alma.1	noarch	dnf-4.14.0-34.el9_8.alma.1.src.rpm	1786337875	1779306515	1979928	6a0838fa5efc28f1a0ca511c5e7b56f1	Python 3 interface to DNF
+dnf	0	4.14.0	34.el9_8.alma.1	noarch	dnf-4.14.0-34.el9_8.alma.1.src.rpm	1786337875	1779306515	2425588	b372f37d981d4f284e78413e0b13f0f8	Package manager
+python3-dnf-plugins-core	0	4.3.0	26.el9	noarch	dnf-plugins-core-4.3.0-26.el9.src.rpm	1786337875	1776257068	1040942	9b36781921f53e6c9eb0483cc282e099	Core Plugins for DNF
+fwupd	0	2.0.19	2.el9_8.alma.1	x86_64	fwupd-2.0.19-2.el9_8.alma.1.src.rpm	1786337875	1776069272	11273738	16ae71cbc285d482dcbbda06f627f68a	Firmware update daemon
+libkcapi	0	1.4.0	2.el9	x86_64	libkcapi-1.4.0-2.el9.src.rpm	1786337875	1711998686	100812	7e73fe462accb54861bc664a4ca2a0ab	User space interface to the Linux Kernel Crypto API
+libkcapi-hmaccalc	0	1.4.0	2.el9	x86_64	libkcapi-1.4.0-2.el9.src.rpm	1786337875	1711998686	37061	03006d0b436ab199d157687c8703e5f2	Drop-in replacements for hmaccalc provided by the libkcapi package
+dracut	0	057	117.git20260625.el9_8	x86_64	dracut-057-117.git20260625.el9_8.src.rpm	1786337875	1782813356	1353884	eaea4e6bf8efda839300db3f75cb1b5d	Initramfs generator using udev
+kernel-modules-core	0	5.14.0	687.36.1.el9_8	x86_64	kernel-5.14.0-687.36.1.el9_8.src.rpm	1786337876	1786093231	30252452	cc1f5c2ec90be9c37841aa0074a2c30f	Core kernel modules to match the core kernel
+kernel-core	0	5.14.0	687.36.1.el9_8	x86_64	kernel-5.14.0-687.36.1.el9_8.src.rpm	1786337877	1786093231	71690377	6e43e1affb0966848b56f3d879718819	The Linux kernel
+grub2-tools	1	2.06	126.el9_8.alma.1	x86_64	grub2-2.06-126.el9_8.alma.1.src.rpm	1786337877	1775479924	9108544	c21e79f5488e9b130c2196e1bee407c6	Support tools for GRUB.
+grubby	0	8.40	69.el9	x86_64	grubby-8.40-69.el9.src.rpm	1786337877	1776185438	65867	38cef11e84b5af80883d6da9af0c42cd	Command line tool for updating bootloader configs
+grub2-efi-x64	1	2.06	126.el9_8.alma.1	x86_64	grub2-2.06-126.el9_8.alma.1.src.rpm	1786337877	1775479924	5177930	891d7feb79b8a81a69476c8233abaa36	GRUB for EFI systems.
+kernel-modules	0	5.14.0	687.36.1.el9_8	x86_64	kernel-5.14.0-687.36.1.el9_8.src.rpm	1786337877	1786093231	39697472	7ef059e2f4f8dc651f234acec9cfcfb8	kernel modules to match the core kernel
+dracut-network	0	057	117.git20260625.el9_8	x86_64	dracut-057-117.git20260625.el9_8.src.rpm	1786337883	1782813356	212504	23f2e28b7f1d04a0e9f979a9133155cc	dracut modules to build a dracut initramfs with network support
+dracut-squash	0	057	117.git20260625.el9_8	x86_64	dracut-057-117.git20260625.el9_8.src.rpm	1786337883	1782813356	3273	61abfd8f2c0b8c47309b12572b9c9542	dracut module to build an initramfs with most files in a squashfs image
+logrotate	0	3.18.0	12.el9	x86_64	logrotate-3.18.0-12.el9.src.rpm	1786337883	1758456246	152646	c858cf3aeca7f5df6226e2d57d1ea6f0	Rotates, compresses, removes and mails system log files
+rsyslog-logrotate	0	8.2510.0	2.el9	x86_64	rsyslog-8.2510.0-2.el9.src.rpm	1786337883	1776199324	226	9e7e5cb7cd6645595780ba2e51af407e	Log rotation for rsyslog
+rsyslog	0	8.2510.0	2.el9	x86_64	rsyslog-8.2510.0-2.el9.src.rpm	1786337883	1776199324	2875139	8cfbcf9a49e53d479e3af2f39380a101	Enhanced system logging and kernel message trapping daemon
+sssd-common	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337883	1784835025	5831429	9355da972ec6ee1360a7feff0f696d3f	Common files for the SSSD
+sssd-kcm	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786337884	1784835025	239700	825c459d79c2a72e1d4e72088000c8c7	An implementation of a Kerberos KCM server
+kexec-tools	0	2.0.29	17.el9	x86_64	kexec-tools-2.0.29-17.el9.src.rpm	1786337884	1775671876	1383166	a9b89649a426fa27cc1777c6a53682c6	The kexec/kdump userspace component
+kernel	0	5.14.0	687.36.1.el9_8	x86_64	kernel-5.14.0-687.36.1.el9_8.src.rpm	1786337884	1786093231	0	27e59ac444ab14b8052163ed8e41b152	The Linux kernel
+shim-x64	0	16.1	7.el9.alma.1	x86_64	shim-16.1-7.el9.alma.1.src.rpm	1786337884	1776409858	5196528	0f0b7218fa3f7fc42d4be2bf4d823e01	First-stage UEFI bootloader
+crypto-policies-scripts	0	20260224	1.gitea0f072.el9_8	noarch	crypto-policies-20260224-1.gitea0f072.el9_8.src.rpm	1786337884	1775349096	272783	edb1574f802461a0547d6e8d8df5c39e	Tool to switch between crypto policies
+grub2-pc	1	2.06	126.el9_8.alma.1	x86_64	grub2-2.06-126.el9_8.alma.1.src.rpm	1786337884	1775479924	31	95a5b7f3c190d4a3b818b364e8724291	Bootloader with support for Linux, Multiboot, and more
+dracut-config-generic	0	057	117.git20260625.el9_8	x86_64	dracut-057-117.git20260625.el9_8.src.rpm	1786337884	1782813356	14	b501b2ba6452850f529803e0571c0d87	dracut configuration to turn off hostonly image generation
+dnf-plugins-core	0	4.3.0	26.el9	noarch	dnf-plugins-core-4.3.0-26.el9.src.rpm	1786337884	1776257068	22535	4be9b93b01d6c8f578e3025f9ab15941	Core Plugins for DNF
+yum	0	4.14.0	34.el9_8.alma.1	noarch	dnf-4.14.0-34.el9_8.alma.1.src.rpm	1786337884	1779306515	80773	0eb4af815fa99f60afe4c7f5ea28d06c	Package manager
+openssh-clients	0	9.9p1	9.el9_8.alma.1	x86_64	openssh-9.9p1-9.el9_8.alma.1.src.rpm	1786337884	1785366437	2816090	32a2b78b9170074e6ecbb0172708becc	An open source SSH client applications
+NetworkManager-team	1	1.54.3	4.el9_8	x86_64	NetworkManager-1.54.3-4.el9_8.src.rpm	1786337884	1785880818	57103	2c20d687614139f2cb835a063c2cb235	Team device plugin for NetworkManager
+NetworkManager-tui	1	1.54.3	4.el9_8	x86_64	NetworkManager-1.54.3-4.el9_8.src.rpm	1786337884	1785880818	863736	9d5aab8fc6a0e29da4edf828445902b2	NetworkManager curses-based UI
+parted	0	3.5	3.el9	x86_64	parted-3.5-3.el9.src.rpm	1786337884	1741809561	2528699	991d1736a429252bec7767628c71c590	The GNU disk partition manipulation program
+xfsprogs	0	6.4.0	7.el9	x86_64	xfsprogs-6.4.0-7.el9.src.rpm	1786337884	1758459647	3587929	eb0b20d280d72a0c45865e81462f38d1	Utilities for managing the XFS filesystem
+authselect	0	1.2.6	3.el9	x86_64	authselect-1.2.6-3.el9.src.rpm	1786337884	1741789263	163597	9e88f313e2c08af817483e5d60605da3	Configures authentication and identity sources from supported profiles
+audit	0	3.1.5	8.el9	x86_64	audit-3.1.5-8.el9.src.rpm	1786337884	1775333529	683574	bb34d1308f49c41d877018929d9b4861	User space tools for kernel auditing
+chrony	0	4.8	1.el9	x86_64	chrony-4.8-1.el9.src.rpm	1786337884	1775695775	696203	522e31baa982bb3a3b8dfea6fef27e8d	An NTP client/server
+microcode_ctl	4	20260210	1.el9_8	noarch	microcode_ctl-20260210-1.el9_8.src.rpm	1786337884	1775756905	23921197	59c682392b032103d8349643cb8f0fb5	CPU microcode updates for Intel x86 processors
+openssh-server	0	9.9p1	9.el9_8.alma.1	x86_64	openssh-9.9p1-9.el9_8.alma.1.src.rpm	1786337885	1785366437	1527434	680513f511e0cd6a307d5587b16f8f9a	An open source SSH server daemon
+qemu-guest-agent	17	10.1.0	17.el9_8.5.alma.1	x86_64	qemu-kvm-10.1.0-17.el9_8.5.alma.1.src.rpm	1786337885	1784653292	1956865	adb7d424c950b9ade5fa8a537049c53a	QEMU guest agent
+langpacks-en	0	3.0	16.el9	noarch	langpacks-3.0-16.el9.src.rpm	1786337885	1644438506	400	c7ca3bd4faf66a74c4d46cb1254512e4	English langpacks meta-package
+sg3_utils	0	1.47	10.el9_8.1	x86_64	sg3_utils-1.47-10.el9_8.1.src.rpm	1786337885	1785880962	2761110	9032333dec84a651e88b2ba2d7990172	Utilities for devices that use SCSI command sets
+iproute-tc	0	6.17.0	2.el9	x86_64	iproute-6.17.0-2.el9.src.rpm	1786337885	1775377832	937449	672de0519a0ab9317e1d90d9b07a92fa	Linux Traffic Control utility
+passwd	0	0.80	12.el9	x86_64	passwd-0.80-12.el9.src.rpm	1786337885	1649947505	441727	95eb8c883b8da077937d26f81dc444f5	An utility for setting or changing passwords using PAM
+initscripts-rename-device	0	10.11.8	4.el9	x86_64	initscripts-10.11.8-4.el9.src.rpm	1786337885	1741808818	15871	11cfe6ffaee48945c72b16a3cda44fa1	Udev helper utility that provides network interface naming
+irqbalance	2	1.9.4	5.el9	x86_64	irqbalance-1.9.4-5.el9.src.rpm	1786337885	1775666390	130795	775994b2a4a37f9d1892c8156749738d	IRQ balancing daemon
+rpm-plugin-selinux	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337885	1775353601	15876	65e993fbdd3f279ea15577c1ba1ff4d2	Rpm plugin for SELinux functionality
+rpm-plugin-audit	0	4.16.1.3	40.el9	x86_64	rpm-4.16.1.3-40.el9.src.rpm	1786337885	1775353601	15955	97141676c7420f56d8a9149d5b57e6e7	Rpm plugin for logging audit events on package operations
+sudo	0	1.9.17p2	3.el9_8	x86_64	sudo-1.9.17p2-3.el9_8.src.rpm	1786337885	1779326543	5464706	23dd6189936a7afbb264379d28b90451	Allows restricted root access for specified users
+man-db	0	2.9.3	9.el9	x86_64	man-db-2.9.3-9.el9.src.rpm	1786337885	1758459340	2563729	6c31a5142e1a4dab17e427b4058969a7	Tools for searching and reading man pages
+kernel-tools	0	5.14.0	687.36.1.el9_8	x86_64	kernel-5.14.0-687.36.1.el9_8.src.rpm	1786337885	1786093231	961190	d8bfc6c094c5dbc1f9e90c347bb0298b	Assortment of tools for the Linux kernel
+e2fsprogs	0	1.46.5	8.el9	x86_64	e2fsprogs-1.46.5-8.el9.src.rpm	1786337885	1758466961	4441301	6be1db2300f6cee171dfb5430ff84d91	Utilities for managing ext2, ext3, and ext4 file systems
+python3-libselinux	0	3.6	3.el9	x86_64	libselinux-3.6-3.el9.src.rpm	1786337886	1741822567	622719	87d79e878aab5a8441550d2e89a84e15	SELinux python 3 bindings for libselinux
+pciutils	0	3.7.0	7.el9	x86_64	pciutils-3.7.0-7.el9.src.rpm	1786337886	1741811227	221583	bd45a4aebfa357510951779cb0e51ab1	PCI bus related utilities
+prefixdevname	0	0.1.0	8.el9	x86_64	prefixdevname-0.1.0-8.el9.src.rpm	1786337886	1648221066	1526465	7378f250e16b034865ff9ede52d5a1d9	Udev helper utility that provides network interface naming using user defined prefix
+efibootmgr	0	16	12.el9	x86_64	efibootmgr-16-12.el9.src.rpm	1786337886	1643519567	96659	de2b472fb366942099d982015e6e433f	EFI Boot Manager
+tar	2	1.34	11.el9	x86_64	tar-1.34-11.el9.src.rpm	1786337886	1775339750	3159904	20fca0e792bd80c5139697a4c10243ad	GNU file archiving program
+vim-minimal	2	8.2.2637	26.el9_8.13	x86_64	vim-8.2.2637-26.el9_8.13.src.rpm	1786337886	1785362818	1459266	381abe41fe5591f0229c2a280f540838	A minimal version of the VIM editor
+lshw	0	B.02.20	4.el9	x86_64	lshw-B.02.20-4.el9.src.rpm	1786337886	1775759365	897260	3c9ee27ea604e70d54bd0120728bbb28	Hardware lister
+dosfstools	0	4.2	3.el9	x86_64	dosfstools-4.2-3.el9.src.rpm	1786337886	1643481667	429871	1bbe8d9164c04fc71e840638014cf58c	Utilities for making and checking MS-DOS FAT filesystems on Linux
+libsysfs	0	2.1.1	11.el9	x86_64	sysfsutils-2.1.1-11.el9.src.rpm	1786337886	1758465834	76172	5a3c0f5ece830dd7237129ec6d635acf	Shared library for interfacing with sysfs
+lsscsi	0	0.32	6.el9	x86_64	lsscsi-0.32-6.el9.src.rpm	1786337886	1644567306	132211	98f1fe68eb390eff7760c4e909fe3631	List SCSI devices (or hosts) and associated information
+ncurses	0	6.2	12.20210508.el9	x86_64	ncurses-6.2-12.20210508.el9.src.rpm	1786337886	1758446456	624684	a7561b5b6e649c659c388fedf95afa84	Ncurses support utilities
+rootfiles	0	8.1	35.el9	noarch	rootfiles-8.1-35.el9.src.rpm	1786337886	1758471979	1216	5f15209bc6c0b40155c018fb3dbf9dfb	The basic required files for the root user's directory
+gpg-pubkey	0	b86b3716	61e69f29	(none)	(none)	1786338009	1642503977	0	(none)	AlmaLinux OS 9 <packager@almalinux.org> public key
+python3-setuptools	0	53.0.0	15.el9	noarch	python-setuptools-53.0.0-15.el9.src.rpm	1786338010	1758455175	4329444	7737cd97f50e899ace2f008f137266b0	Easily build and distribute Python 3 packages
+python3-distro	0	1.5.0	7.el9	noarch	python-distro-1.5.0-7.el9.src.rpm	1786338010	1648194734	156760	320eb0e6c2effb7ead2a5cd5bef337f8	Linux Distribution - a Linux OS platform information API
+python3-idna	0	2.10	7.el9_4.1	noarch	python-idna-2.10-7.el9_4.1.src.rpm	1786338010	1718268997	525633	124070534041b87bea023e03a8f6b4b5	Internationalized Domain Names in Applications (IDNA)
+python3-setools	0	4.4.4	1.el9	x86_64	setools-4.4.4-1.el9.src.rpm	1786338010	1712160757	2400222	b5980ea3fed4464b8fd7e66af38b373c	Policy analysis tools for SELinux
+python3-pyyaml	0	5.4.1	6.el9	x86_64	PyYAML-5.4.1-6.el9.src.rpm	1786338010	1648648294	689115	f402197b93d2575a5da8a81b48a2fdc6	YAML parser and emitter for Python
+python3-pysocks	0	1.7.1	12.el9	noarch	python-pysocks-1.7.1-12.el9.src.rpm	1786338010	1649291139	90512	4edc930396ccda88556a6fe9cda2ebf6	A Python SOCKS client module
+python3-urllib3	0	1.26.5	8.el9_8	noarch	python-urllib3-1.26.5-8.el9_8.src.rpm	1786338010	1782346496	764635	6d58121c601960fe9360b23651875386	Python3 HTTP library with thread-safe connection pooling and file post
+python3-chardet	0	4.0.0	5.el9	noarch	python-chardet-4.0.0-5.el9.src.rpm	1786338010	1648214758	1480116	1039a70f973e06c1911aa8c95cf84d06	Character encoding auto-detection in Python
+python3-requests	0	2.25.1	10.el9_6	noarch	python-requests-2.25.1-10.el9_6.src.rpm	1786338010	1754279844	414889	746ca4d0fa95918a6b11a97285a1b735	HTTP library, written in Python, for human beings
+dhcp-common	12	4.4.2	20.b1.el9	noarch	dhcp-4.4.2-20.b1.el9.src.rpm	1786338010	1775717699	341740	792d36e7f1e700356962840a0cb299d3	Common files used by ISC dhcp client, server and relay agent
+python3-pytz	0	2021.1	5.el9	noarch	pytz-2021.1-5.el9.src.rpm	1786338010	1695776652	180371	69c6ed7907d55ad243f7e927d329482f	World Timezone Definitions for Python
+python3-babel	0	2.9.1	2.el9	noarch	babel-2.9.1-2.el9.src.rpm	1786338010	1643405988	28258458	b897b9ef4b9ff359f53cfe0afc4b9e82	Library for internationalizing Python applications
+python3-pyserial	0	3.4	12.el9	noarch	pyserial-3.4-12.el9.src.rpm	1786338010	1648195798	681247	41dfd3f93b038d9fe828e7786cd23f0f	Python serial port access library
+python3-pyrsistent	0	0.17.3	8.el9	x86_64	python-pyrsistent-0.17.3-8.el9.src.rpm	1786338010	1644622682	376418	e67fd72c1a578e204e9c90dedb29bb03	Persistent/Functional/Immutable data structures
+python3-prettytable	0	0.7.2	27.el9	noarch	python-prettytable-0.7.2-27.el9.src.rpm	1786338010	1644538175	170473	5c0074b781426bb61b087bf1144b7982	Python library to display tabular data in tables
+python3-oauthlib	0	3.1.1	5.el9	noarch	python-oauthlib-3.1.1-5.el9.src.rpm	1786338010	1680810912	909785	6950d1f6702b167d94d9f1767c5d926a	An implementation of the OAuth request-signing logic
+python3-netifaces	0	0.10.6	15.el9	x86_64	python-netifaces-0.10.6-15.el9.src.rpm	1786338010	1644534716	44183	db0370ef64e2224341e47a37aed76948	Python 3 library to retrieve information about network interfaces
+python3-markupsafe	0	1.1.1	12.el9	x86_64	python-markupsafe-1.1.1-12.el9.src.rpm	1786338010	1644533963	61898	d0723e19a86b793f7e91cc108085e269	Implements a XML/HTML/XHTML Markup safe string for Python 3
+python3-jinja2	0	2.11.3	8.el9_5	noarch	python-jinja2-2.11.3-8.el9_5.src.rpm	1786338010	1743435558	1103757	cfc891ee829a3629b1bb051e78992c43	General purpose template engine for python3
+python3-libsemanage	0	3.6	5.el9_6	x86_64	libsemanage-3.6-5.el9_6.src.rpm	1786338010	1742298593	424827	d3d079c4ec0757bcf429fe58a4db8a7e	semanage python 3 bindings for libsemanage
+python3-jsonpointer	0	2.0	4.el9	noarch	python-jsonpointer-2.0-4.el9.src.rpm	1786338010	1644537556	35073	f08ba03a05b41367383e8816c5e8d2d0	Resolve JSON Pointers in Python
+python3-jsonpatch	0	1.21	16.el9	noarch	python-jsonpatch-1.21-16.el9.src.rpm	1786338010	1644537199	56338	b69539ffebf73e45dac981c06e9f5c06	Applying JSON Patches in Python 3
+python3-configobj	0	5.0.6	25.el9	noarch	python-configobj-5.0.6-25.el9.src.rpm	1786338010	1645017842	349175	27d962e7005b9cd749cbf894d4727962	Config file reading, writing, and validation
+python3-audit	0	3.1.5	8.el9	x86_64	audit-3.1.5-8.el9.src.rpm	1786338010	1775333529	348054	7abd2e29cd6fed6984af563e81e09db4	Python3 bindings for libaudit
+python3-attrs	0	20.3.0	7.el9	noarch	python-attrs-20.3.0-7.el9.src.rpm	1786338010	1648213262	281851	5d5b25258867a66b470034fc1349c5b9	Python attributes without boilerplate
+python3-jsonschema	0	3.2.0	13.el9	noarch	python-jsonschema-3.2.0-13.el9.src.rpm	1786338010	1644537735	424158	641d6c9acbeb639b95e2cf17e060c4f4	Implementation of JSON Schema validation for Python
+libmaxminddb	0	1.5.2	4.el9	x86_64	libmaxminddb-1.5.2-4.el9.src.rpm	1786338010	1727801675	65020	5b4b98223b21e93413a0e966a4f3c589	C library for the MaxMind DB file format
+geolite2-country	0	20191217	6.el9	noarch	geolite2-20191217-6.el9.src.rpm	1786338010	1649787148	4033110	fc99f52b94a7681c482da7bd9d773c65	Free IP geolocation country database
+geolite2-city	0	20191217	6.el9	noarch	geolite2-20191217-6.el9.src.rpm	1786338010	1649787148	62712603	3dfdb90c5a5597da68567277829a7f97	Free IP geolocation city database
+ipcalc	0	1.0.0	5.el9	x86_64	ipcalc-1.0.0-5.el9.src.rpm	1786338010	1648205358	84063	d4437a7415b293305ca1f564f41b8eab	IP network address calculator
+dhcp-client	12	4.4.2	20.b1.el9	x86_64	dhcp-4.4.2-20.b1.el9.src.rpm	1786338010	1775717175	2065290	347db3d879754258baccd2af3b00a6e3	Provides the ISC DHCP client daemon and dhclient-script
+gdisk	0	1.0.7	5.el9	x86_64	gdisk-1.0.7-5.el9.src.rpm	1786338010	1643586263	713181	141d4cde919c4347437863d1e0757d90	An fdisk-like partitioning tool for GPT disks
+checkpolicy	0	3.6	1.el9	x86_64	checkpolicy-3.6-1.el9.src.rpm	1786338010	1712138856	1546678	e47f4ffd11c6c07f7c18913785e48d7a	SELinux policy compiler
+python3-policycoreutils	0	3.6	5.el9	noarch	policycoreutils-3.6-5.el9.src.rpm	1786338011	1775387137	5613484	b342b4f5b27b3df0515bd5a11126b2fe	SELinux policy core python3 interfaces
+cloud-init	0	24.4	8.el9_8.1.alma.1	noarch	cloud-init-24.4-8.el9_8.1.alma.1.src.rpm	1786338011	1782399020	4579496	7039088c9906571d19f2b0479eb8deaf	Cloud instance init scripts
+cloud-utils-growpart	0	0.33	1.el9	x86_64	cloud-utils-0.33-1.el9.src.rpm	1786338011	1680831926	76718	c64e35057d65bf48990dbed72ba6ab4d	Script for growing a partition
+libtirpc	0	1.3.3	9.el9	x86_64	libtirpc-1.3.3-9.el9.src.rpm	1786338032	1727804789	207306	f1f028b50ba7ec158d3d6d6995c99690	Transport Independent RPC Library
+libnfsidmap	1	2.5.4	42.el9_8	x86_64	nfs-utils-2.5.4-42.el9_8.src.rpm	1786338032	1775664819	186971	fe8ed51386fda2abe60f880ec3084b87	NFSv4 User and Group ID Mapping Library
+dmidecode	1	3.6	2.el9	x86_64	dmidecode-3.6-2.el9.src.rpm	1786338032	1775719953	276467	cb39ca4f0c59f250e4b5feada4a4ad27	Tool to analyse BIOS DMI data
+virt-what	0	1.27	2.el9	x86_64	virt-what-1.27-2.el9.src.rpm	1786338032	1758455300	79331	a65f2ee666ce4540a1449b8f36b6adbf	Detect if we are running in a virtual machine
+rpcbind	0	1.2.6	7.el9	x86_64	rpcbind-1.2.6-7.el9.src.rpm	1786338032	1712152431	113816	9eedcefd05d3a3c4d454c0c619bbd15d	Universal Addresses to RPC Program Number Mapper
+quota-nls	1	4.09	4.el9	noarch	quota-4.09-4.el9.src.rpm	1786338033	1741812727	280116	0a6139a83b79d6be6b2e4908f5221e7e	Gettext catalogs for disk quota tools
+quota	1	4.09	4.el9	x86_64	quota-4.09-4.el9.src.rpm	1786338033	1741812258	732269	d1dcc203fd0a210ddf51d87cc28e09bc	System administration tools for monitoring users' disk usage
+python3-pyudev	0	0.22.0	6.el9	noarch	python-pyudev-0.22.0-6.el9.src.rpm	1786338033	1644538489	323513	fa9f3f12a0214aaac577f37ab6ea28e1	A libudev binding
+python3-linux-procfs	0	0.7.4	2.el9	noarch	python-linux-procfs-0.7.4-2.el9.src.rpm	1786338033	1775747166	78829	534ad0d1d38ae2a29ebafd64c5687bbd	Linux /proc abstraction classes
+python3-inotify	0	0.9.6	25.el9	noarch	python-inotify-0.9.6-25.el9.src.rpm	1786338033	1648192605	249473	453ce96803d255fc7319619bcd502d95	Monitor filesystem events with Python under Linux
+polkit	0	0.117	14.el9	x86_64	polkit-0.117-14.el9.src.rpm	1786338033	1758448046	441289	ef7ba7abd44179fddd06af3438b3df14	An authorization framework
+libibverbs	0	61.0	2.el9	x86_64	rdma-core-61.0-2.el9.src.rpm	1786338033	1775352912	1347434	20ee8ec7282d3bcf99bba73ca4d45293	A library and drivers for direct userspace use of RDMA (InfiniBand/iWARP/RoCE) hardware
+libpcap	14	1.10.0	4.el9	x86_64	libpcap-1.10.0-4.el9.src.rpm	1786338033	1644456278	403492	04924f456ad56c9b11dda0a48478818e	A system-independent interface for user-level packet capture
+libev	0	4.33	6.el9	x86_64	libev-4.33-6.el9.src.rpm	1786338033	1741809946	107530	8ba53b2bd938b7286a0da26cb89db040	High-performance event loop/event model with lots of features
+libverto-libev	0	0.3.2	3.el9	x86_64	libverto-0.3.2-3.el9.src.rpm	1786338033	1644467610	16252	d6a34c5ac2dbb234fbd009f989a27ab2	libev module for libverto
+gssproxy	0	0.8.4	7.el9	x86_64	gssproxy-0.8.4-7.el9.src.rpm	1786338033	1727910562	264667	2c6b4ea79a07e5539d3215b959a24607	GSSAPI Proxy
+hdparm	0	9.62	2.el9	x86_64	hdparm-9.62-2.el9.src.rpm	1786338033	1648189206	197569	d3e9bf3dab26af685d2f0adc585c8f07	A utility for displaying and/or setting hard disk parameters
+gobject-introspection	0	1.68.0	11.el9	x86_64	gobject-introspection-1.68.0-11.el9.src.rpm	1786338033	1680813030	936649	2b7ef909aed07efec08f7a2915c4cf62	Introspection system for GObject-based libraries
+python3-gobject-base-noarch	0	3.40.1	6.el9	noarch	pygobject3-3.40.1-6.el9.src.rpm	1786338033	1666529022	706541	06cbf7c00aae59704d5238bbbafd706e	Python 3 bindings for GObject Introspection base (not architecture dependent)
+python3-gobject-base	0	3.40.1	6.el9	x86_64	pygobject3-3.40.1-6.el9.src.rpm	1786338033	1666529013	545019	5854ce366f4b0d5f8216d564509603ae	Python 3 bindings for GObject Introspection base package
+tuned	0	2.27.0	2.el9_8	noarch	tuned-2.27.0-2.el9_8.src.rpm	1786338033	1784652839	1309932	e996e3c96a55818d50a2d618063ba5a8	A dynamic adaptive system tuning daemon
+nfs-utils	1	2.5.4	42.el9_8	x86_64	nfs-utils-2.5.4-42.el9_8.src.rpm	1786338033	1775664819	1262209	c710f75872d84ff4d394e5643f135a77	NFS utilities and supporting clients and daemons for the kernel NFS server
+tcpdump	14	4.99.0	9.el9	x86_64	tcpdump-4.99.0-9.el9.src.rpm	1786338033	1712157360	1489619	26a71b32e6d0a6fea40ee36ae2556a28	A network traffic monitoring tool
+sssd-nfs-idmap	0	2.9.8	4.el9_8.1	x86_64	sssd-2.9.8-4.el9_8.1.src.rpm	1786338033	1784835025	48090	e224bdd990298d203d9ca30c4fd3ecd6	SSSD plug-in for NFSv4 rpc.idmapd
+rsync	0	3.2.5	7.el9_8.2	x86_64	rsync-3.2.5-7.el9_8.2.src.rpm	1786338033	1781634640	801489	b6e960fa2f9da4b05dc7ddf4631e35cd	A program for synchronizing files over a network
+epel-release	0	9	9.el9	noarch	epel-release-9-9.el9.src.rpm	1792153052	1738051508	26551	151affd8e25fdb90d78520cfd6bdaa63	Extra Packages for Enterprise Linux repository configuration
+libnftnl	0	1.2.6	4.el9_4	x86_64	libnftnl-1.2.6-4.el9_4.src.rpm	1792153053	1725366733	242674	daf739873d6005bb26d33488c2196b6f	Library for low-level interaction with nftables Netlink's API over libmnl
+iptables-nft	0	1.8.10	11.el9_5	x86_64	iptables-1.8.10-11.el9_5.src.rpm	1792153053	1738640825	551282	72ca5fd9d1e51af60960d58face2f83a	nftables compatibility for iptables, arptables and ebtables
+nano	0	5.6.1	7.el9	x86_64	nano-5.6.1-7.el9.src.rpm	1792153252	1741835543	2834128	e3c4f97b1582281fa86252aaf9529589	A small text editor
+tzdata	0	2026b	1.el9	noarch	tzdata-2026b-1.el9.src.rpm	1792153254	1779809246	1922383	566a230d93d14eabdcc8f91727b8b8d0	Timezone data
+bc	0	1.07.1	14.el9	x86_64	bc-1.07.1-14.el9.src.rpm	1792153254	1643230194	231265	383313c353068d9c1b1fce02ed74bb33	GNU's bc (a numeric processing language) and dc (a calculator)
+openssl-libs	1	3.5.8	2.el9_8	x86_64	openssl-3.5.8-2.el9_8.src.rpm	1792153967	1791477186	7490787	057f518c35cc2d1a008c2e9d2e86a85e	A general purpose cryptography library with TLS implementation
+openssl-fips-provider	1	3.5.8	2.el9_8	x86_64	openssl-3.5.8-2.el9_8.src.rpm	1792153967	1791477186	2595674	c48a2bf2b2a51dedfd7c781b7b6ac3f6	The FIPS Provider module
+libcurl	0	7.76.1	40.el9_8.8	x86_64	curl-7.76.1-40.el9_8.8.src.rpm	1792153967	1791779147	667582	36d2d8d7febe0851a60f3aa287739734	A library for getting files from web servers
+curl	0	7.76.1	40.el9_8.8	x86_64	curl-7.76.1-40.el9_8.8.src.rpm	1792153967	1791779147	684513	5ada1b12878086aa14cb83f34a04f284	A utility for getting files from remote servers (FTP, HTTP, and others)
+openssl	1	3.5.8	2.el9_8	x86_64	openssl-3.5.8-2.el9_8.src.rpm	1792153967	1791477186	2283348	444d33ee100bd39a72cf3fab7ad613e2	Utilities from the general purpose cryptography library with TLS implementation

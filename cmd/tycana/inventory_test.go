@@ -10,6 +10,7 @@ import (
 
 	"tycana.ai/agent/internal/inventory"
 	"tycana.ai/agent/internal/inventory/dpkg"
+	"tycana.ai/agent/internal/inventory/rpm"
 )
 
 func fakeRoot(t *testing.T) string {
@@ -87,11 +88,20 @@ func TestInventoryErrors(t *testing.T) {
 }
 
 func TestLabScriptFormatInSync(t *testing.T) {
-	script, err := os.ReadFile("../../scripts/lab-dpkg.sh")
-	if err != nil {
-		t.Fatal(err)
+	for script, format := range map[string]string{"lab-dpkg.sh": dpkg.QueryFormat, "lab-rpm.sh": rpm.QueryFormat} {
+		b, err := os.ReadFile("../../scripts/" + script)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(b), "FORMAT='"+format+"'") {
+			t.Errorf("scripts/%s FORMAT differs from the package's QueryFormat %q", script, format)
+		}
 	}
-	if !strings.Contains(string(script), "FORMAT='"+dpkg.QueryFormat+"'") {
-		t.Errorf("scripts/lab-dpkg.sh FORMAT differs from dpkg.QueryFormat %q", dpkg.QueryFormat)
+}
+
+func TestInventoryWrongNativeFormat(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"inventory", "--root", fakeRoot(t), "--format", "rpm-query"}, &out, &errb); code != 1 || !strings.Contains(errb.String(), "is deb, not rpm") {
+		t.Errorf("rpm-query on a deb host: exit %d, stderr %q", code, errb.String())
 	}
 }

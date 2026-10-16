@@ -1,0 +1,143 @@
+Transaction ID : 1
+Begin time     : Fri Oct 16 12:17:32 2026
+Begin rpmdb    : 951e2109fadad76f36b02685aefae1f5929d1eb6d524fe573b4b16e52a6d6ab5
+End time       : Fri Oct 16 12:17:33 2026 (1 seconds)
+End rpmdb      : 60778a93b0f4873cb7d43602000c5132804cb9b525ce3ac1eb4fdbacd6a9c4db
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : install -y --setopt=install_weak_deps=False epel-release
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Install epel-release-9-9.el9.noarch @extras
+Scriptlet output:
+   1 Many EPEL packages require the CodeReady Builder (CRB) repository.
+   2 It is recommended that you run /usr/bin/crb enable to enable the CRB repository.
+
+Transaction ID : 2
+Begin time     : Fri Oct 16 12:17:33 2026
+Begin rpmdb    : 60778a93b0f4873cb7d43602000c5132804cb9b525ce3ac1eb4fdbacd6a9c4db
+End time       : Fri Oct 16 12:17:34 2026 (1 seconds)
+End rpmdb      : 4213aa6498ce5e95a5cba54249dff39604b39ddcffb9f73d6e6bd5b587b14aae
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : install -y --setopt=install_weak_deps=False iptables
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Install iptables-nft-1.8.10-11.el9_5.x86_64 @baseos
+    Install libnftnl-1.2.6-4.el9_4.x86_64       @baseos
+
+Transaction ID : 3
+Begin time     : Fri Oct 16 12:20:51 2026
+Begin rpmdb    : 4213aa6498ce5e95a5cba54249dff39604b39ddcffb9f73d6e6bd5b587b14aae
+End time       : Fri Oct 16 12:20:51 2026 (0 seconds)
+End rpmdb      : 878e92f8ade4c9262eb0e14c75cd8ff4c6d15b03964d9ae8c79838a83808b075
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : -y -q install nano tree bc
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Install bc-1.07.1-14.el9.x86_64  @baseos
+    Install nano-5.6.1-7.el9.x86_64  @baseos
+    Install tree-1.8.0-10.el9.x86_64 @baseos
+
+Transaction ID : 4
+Begin time     : Fri Oct 16 12:20:52 2026
+Begin rpmdb    : 878e92f8ade4c9262eb0e14c75cd8ff4c6d15b03964d9ae8c79838a83808b075
+End time       : Fri Oct 16 12:20:52 2026 (0 seconds)
+End rpmdb      : 02cc8efcec6895fcbb2cf2f05891fe08d2d526c3570f3cb964b7ae1626343a05
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : -y -q remove tree
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Removed tree-1.8.0-10.el9.x86_64 @@System
+
+Transaction ID : 5
+Begin time     : Fri Oct 16 12:20:52 2026
+Begin rpmdb    : 02cc8efcec6895fcbb2cf2f05891fe08d2d526c3570f3cb964b7ae1626343a05
+End time       : Fri Oct 16 12:20:53 2026 (1 seconds)
+End rpmdb      : 41dae251e1220e790554dbdad5ad0040da80024c219818e33e1e137246d7660f
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : -y -q reinstall nano
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Reinstall   nano-5.6.1-7.el9.x86_64 @baseos
+    Reinstalled nano-5.6.1-7.el9.x86_64 @@System
+
+Transaction ID : 6
+Begin time     : Fri Oct 16 12:20:53 2026
+Begin rpmdb    : 41dae251e1220e790554dbdad5ad0040da80024c219818e33e1e137246d7660f
+End time       : Fri Oct 16 12:20:54 2026 (1 seconds)
+End rpmdb      : c4689d2af07422a1bff0ce9225c1f8da91f4dec75f3b6b6122bc649f19437f43
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : -y -q downgrade tzdata
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Downgrade  tzdata-2026b-1.el9.noarch   @baseos
+    Downgraded tzdata-2026c-1.el9_8.noarch @@System
+
+Transaction ID : 7
+Begin time     : Fri Oct 16 12:20:54 2026
+Begin rpmdb    : 5e5cb68d90b0d4a15835030cb31186b9fe63c6474e793eab38ec7cec2a950042
+End time       : Fri Oct 16 12:20:55 2026 (1 seconds)
+End rpmdb      : cf700c996f77bff4578436b98574988b08f6ce97d057628c15e7e06e849aec7e
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : -y -q install bc
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Install bc-1.07.1-14.el9.x86_64 @baseos
+
+Transaction ID : 8
+Begin time     : Fri Oct 16 12:32:46 2026
+Begin rpmdb    : cf700c996f77bff4578436b98574988b08f6ce97d057628c15e7e06e849aec7e
+End time       : Fri Oct 16 12:32:47 2026 (1 seconds)
+End rpmdb      : 11a573bcf5e196c993ca6dbc5e19d2f070a109d644e7681e0dabdca86b33d49e
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : -y -q upgrade curl
+Persistence    : Persist
+Comment        : 
+Packages Altered:
+    Upgrade  curl-7.76.1-40.el9_8.8.x86_64                @baseos
+    Upgraded curl-7.76.1-40.el9.x86_64                    @@System
+    Upgrade  libcurl-7.76.1-40.el9_8.8.x86_64             @baseos
+    Upgraded libcurl-7.76.1-40.el9.x86_64                 @@System
+    Upgrade  openssl-1:3.5.8-2.el9_8.x86_64               @baseos
+    Upgraded openssl-1:3.5.5-6.el9_8.x86_64               @@System
+    Upgrade  openssl-fips-provider-1:3.5.8-2.el9_8.x86_64 @baseos
+    Upgraded openssl-fips-provider-1:3.5.5-6.el9_8.x86_64 @@System
+    Upgrade  openssl-libs-1:3.5.8-2.el9_8.x86_64          @baseos
+    Upgraded openssl-libs-1:3.5.5-6.el9_8.x86_64          @@System
+
+Transaction ID : 9
+Begin time     : Fri Oct 16 12:32:47 2026
+Begin rpmdb    : 11a573bcf5e196c993ca6dbc5e19d2f070a109d644e7681e0dabdca86b33d49e
+End time       : Fri Oct 16 12:32:47 2026 (0 seconds)
+End rpmdb      : 11a573bcf5e196c993ca6dbc5e19d2f070a109d644e7681e0dabdca86b33d49e
+User           : operator
+Return-Code    : Success
+Releasever     : 9
+Command Line   : 
+Persistence    : Unknown
+Comment        : 
+Packages Altered:
+    Reason Change libnftnl-1.2.6-4.el9_4.x86_64 @baseos
+

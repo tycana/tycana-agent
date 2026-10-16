@@ -1,0 +1,7 @@
+Captured 2026-10-16T12:33:45Z from Lima VM tycana-alma9 by scripts/lab-rpm.sh.
+Host: AlmaLinux 9.8 (Olive Jaguar), kernel 5.14.0-687.36.1.el9_8.x86_64, RPM version 4.16.1.3, dnf 4.14.0.
+root/ holds copies of the files the agent reads; boot/vmlinuz-* are empty placeholders.
+var/lib/rpm/rpmdb.sqlite.gz is the Packages table of the host's rpmdb.sqlite, gzipped: the only table the agent reads, headers unmodified.
+var/lib/dnf/history.sqlite is a VACUUM INTO copy of the host's dnf history (write-ahead log folded in, nothing else changed).
+The User line in expected/dnf-history-info.txt is replaced with 'operator'; nothing else is edited.
+expected/ holds the native tools' output on the same host at the same moment (C locale, UTC).

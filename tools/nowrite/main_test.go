@@ -15,13 +15,13 @@ func TestBad(t *testing.T) {
 		msgs = append(msgs, f.msg)
 	}
 	joined := strings.Join(msgs, "\n")
-	for _, want := range []string{"os.WriteFile", "os.Remove", `import "os/exec"`} {
+	for _, want := range []string{"os.WriteFile", "os.Remove", `import "os/exec"`, `import "modernc.org/sqlite"`} {
 		if !strings.Contains(joined, want) {
 			t.Errorf("missing finding %q in:\n%s", want, joined)
 		}
 	}
-	if len(got) != 3 {
-		t.Errorf("want 3 findings, got %d:\n%s", len(got), joined)
+	if len(got) != 4 {
+		t.Errorf("want 4 findings, got %d:\n%s", len(got), joined)
 	}
 }
 

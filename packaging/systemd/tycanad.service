@@ -45,8 +45,15 @@ ProtectControlGroups=yes
 ProtectClock=yes
 ProtectHostname=yes
 # The observer must read package databases and unit state; these are world-readable.
-ReadOnlyPaths=/var/lib/dpkg /var/lib/rpm /usr/lib/sysimage/rpm /var/lib/apt /var/cache/dnf /run/systemd
-InaccessiblePaths=-/root -/home -/etc/shadow -/etc/gshadow -/etc/ssh
+# "-" marks paths a host may not have: without it systemd fails the unit's
+# namespace (status 226/NAMESPACE) on every host missing one of them, as
+# AlmaLinux 9 did for the dpkg paths on 2026-10-16.
+ReadOnlyPaths=-/var/lib/dpkg -/var/lib/rpm -/usr/lib/sysimage/rpm -/var/lib/apt -/var/lib/dnf -/var/cache/dnf -/run/systemd
+# /etc/shadow and /etc/gshadow are not listed: they are unreadable to the
+# dynamic user already (mode 0000 or root:shadow 0640), and listing them
+# fails the namespace on systemd 252 with SELinux enforcing (AlmaLinux 9,
+# "Permission denied" mounting over a mode-0000 file, 2026-10-16).
+InaccessiblePaths=-/root -/home -/etc/ssh
 
 # Kernel surface.
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6

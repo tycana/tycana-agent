@@ -6,6 +6,9 @@
 //   - internal/state    may create and modify files in the agent's own state dir
 //   - internal/hostexec may run host commands through the hardened wrapper
 //
+// The SQLite driver can write databases, so only internal/sqlitero, which
+// opens them read-only, may import it.
+//
 // Test files are exempt (they write fixtures under t.TempDir). The check is
 // syntactic and alias-aware but not type-aware; it is a tripwire, not a
 // proof. Run it from the module root: go run ./tools/nowrite
@@ -28,6 +31,7 @@ import (
 var allowed = map[string]map[string]bool{
 	"internal/state":    {"os": true},
 	"internal/hostexec": {"os": true, "os/exec": true, "syscall": true, "golang.org/x/sys/unix": true},
+	"internal/sqlitero": {"modernc.org/sqlite": true},
 }
 
 // forbiddenOS lists os.* functions that mutate the filesystem.
@@ -45,6 +49,7 @@ var forbiddenImports = map[string]string{
 	"syscall":               "raw syscalls belong in internal/hostexec",
 	"golang.org/x/sys/unix": "raw syscalls belong in internal/hostexec",
 	"io/ioutil":             "deprecated; and it hides file writes",
+	"modernc.org/sqlite":    "the SQLite driver can write databases; only internal/sqlitero may import it",
 	"os/signal":             "", // allowed everywhere; listed to document the decision
 }
 

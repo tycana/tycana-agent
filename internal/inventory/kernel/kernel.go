@@ -150,6 +150,44 @@ func DebianRelease(name string) string {
 	return rel
 }
 
+// rpmKernelImages maps rpm package names that carry a kernel image to the
+// suffix uname -r appends for that variant. The empty suffix is the plain
+// kernel. UNVERIFIED on a live host: kernel-debug-core ("+debug") and the
+// rt/64k variants are from Fedora and RHEL packaging, not yet observed in
+// the lab; kernel-uek-core is checked on tycana-oel9.
+var rpmKernelImages = map[string]string{
+	"kernel-core":       "",
+	"kernel-uek-core":   "",
+	"kernel-rt-core":    "",
+	"kernel-64k-core":   "",
+	"kernel-debug-core": "+debug",
+}
+
+// rpmKernelFallbacks are packages that carry the image themselves on
+// distributions without a -core subpackage (RHEL 7, Oracle UEK 6). They
+// count only when no -core package names the same release.
+var rpmKernelFallbacks = map[string]bool{"kernel": true, "kernel-uek": true}
+
+// RPMRelease maps an rpm kernel package to the kernel release it
+// installs: kernel-core 5.14.0-687.36.1.el9_8 x86_64 gives
+// 5.14.0-687.36.1.el9_8.x86_64. fallback is true for "kernel" and
+// "kernel-uek", which carry the image only on older distributions; the
+// caller drops them when a -core package names the same release. Other
+// packages (kernel-modules, kernel-headers, meta packages) give "".
+func RPMRelease(name, version, release, arch string) (rel string, fallback bool) {
+	if version == "" || release == "" || arch == "" {
+		return "", false
+	}
+	suffix, ok := rpmKernelImages[name]
+	if ok {
+		return version + "-" + release + "." + arch + suffix, false
+	}
+	if rpmKernelFallbacks[name] {
+		return version + "-" + release + "." + arch, true
+	}
+	return "", false
+}
+
 func readLine(fsys fs.FS, name string) (string, error) {
 	f, err := fsys.Open(name)
 	if err != nil {
