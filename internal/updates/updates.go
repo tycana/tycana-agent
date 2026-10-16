@@ -40,6 +40,11 @@ type Report struct {
 	Manager  string    `json:"manager"` // "apt" or "dnf"
 	Updates  []Update  `json:"updates"`
 	Removals []Removal `json:"removals,omitempty"`
+	// Autopilot is what the host's own automatic updater will do with
+	// these updates (PredictAutopilot).
+	Autopilot *Autopilot `json:"autopilot,omitempty"`
+
+	apt *aptData // apt's version tables, for the autopilot prediction
 }
 
 // Update is one package with a newer version available.

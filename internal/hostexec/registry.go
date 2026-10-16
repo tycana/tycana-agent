@@ -32,7 +32,21 @@ const (
 	// LoginctlShowSession prints the PAM service and scope of the named
 	// login sessions.
 	LoginctlShowSession ID = "loginctl-show-session"
+	// AptConfigDump prints apt's merged configuration, which holds the
+	// settings of unattended-upgrades and APT::Periodic.
+	AptConfigDump ID = "apt-config-dump"
+	// SystemctlShowUpdaterTimers prints the state and next run of the
+	// timers that start unattended-upgrades and dnf-automatic.
+	SystemctlShowUpdaterTimers ID = "systemctl-show-updater-timers"
 )
+
+// UpdaterTimers are the timers SystemctlShowUpdaterTimers reports, in
+// order.
+var UpdaterTimers = []string{
+	"apt-daily.timer", "apt-daily-upgrade.timer",
+	"dnf-automatic.timer", "dnf-automatic-install.timer",
+	"dnf-automatic-download.timer", "dnf-automatic-notifyonly.timer",
+}
 
 // aptOpts keeps apt from taking the lock and from writing its binary
 // caches when a run would otherwise regenerate them.
@@ -81,6 +95,18 @@ var registry = map[ID]Spec{
 			"--type=service,scope", "--state=running",
 			"--property=Id,MainPID,ExecMainStartTimestamp,ActiveEnterTimestamp,ExecStart",
 			"*"},
+		Timeout: 30 * time.Second,
+	},
+	AptConfigDump: {
+		Paths:   []string{"/usr/bin/apt-config"},
+		Args:    []string{"dump"},
+		Timeout: 30 * time.Second,
+	},
+	SystemctlShowUpdaterTimers: {
+		Paths: []string{"/usr/bin/systemctl", "/bin/systemctl"},
+		Args: append([]string{"show", "--no-pager", "--timestamp=us+utc",
+			"--property=Id,LoadState,UnitFileState,ActiveState,NextElapseUSecRealtime,LastTriggerUSec"},
+			UpdaterTimers...),
 		Timeout: 30 * time.Second,
 	},
 	LoginctlShowSession: {

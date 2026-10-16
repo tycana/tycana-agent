@@ -24,7 +24,10 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		DnfCheckUpdate:         "/usr/bin/dnf --cacheonly --quiet check-update",
 		DnfUpdateinfo:          "/usr/bin/dnf --cacheonly --quiet updateinfo list --available",
 		SystemctlShowRunning:   "/usr/bin/systemctl show --no-pager --timestamp=us+utc --type=service,scope --state=running --property=Id,MainPID,ExecMainStartTimestamp,ActiveEnterTimestamp,ExecStart *",
-		LoginctlShowSession:    "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
+		AptConfigDump:          "/usr/bin/apt-config dump",
+		SystemctlShowUpdaterTimers: "/usr/bin/systemctl show --no-pager --timestamp=us+utc --property=Id,LoadState,UnitFileState,ActiveState,NextElapseUSecRealtime,LastTriggerUSec " +
+			"apt-daily.timer apt-daily-upgrade.timer dnf-automatic.timer dnf-automatic-install.timer dnf-automatic-download.timer dnf-automatic-notifyonly.timer",
+		LoginctlShowSession: "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
 	}
 	if len(registry) != len(want) {
 		t.Errorf("registry has %d commands, test lists %d", len(registry), len(want))

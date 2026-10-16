@@ -1,0 +1,41 @@
+NextElapseUSecRealtime=Sat 2026-10-17 04:15:45 UTC
+LastTriggerUSec=Thu 2026-10-15 00:56:37 UTC
+Id=apt-daily.timer
+LoadState=loaded
+ActiveState=active
+UnitFileState=enabled
+
+NextElapseUSecRealtime=Fri 2026-10-16 14:33:49 UTC
+LastTriggerUSec=Fri 2026-10-15 10:12:02 UTC
+Id=apt-daily-upgrade.timer
+LoadState=loaded
+ActiveState=active
+UnitFileState=enabled
+
+NextElapseUSecRealtime=
+LastTriggerUSec=
+Id=dnf-automatic.timer
+LoadState=not-found
+ActiveState=inactive
+UnitFileState=
+
+NextElapseUSecRealtime=
+LastTriggerUSec=
+Id=dnf-automatic-install.timer
+LoadState=not-found
+ActiveState=inactive
+UnitFileState=
+
+NextElapseUSecRealtime=
+LastTriggerUSec=
+Id=dnf-automatic-download.timer
+LoadState=not-found
+ActiveState=inactive
+UnitFileState=
+
+NextElapseUSecRealtime=
+LastTriggerUSec=
+Id=dnf-automatic-notifyonly.timer
+LoadState=not-found
+ActiveState=inactive
+UnitFileState=

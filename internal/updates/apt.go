@@ -77,6 +77,7 @@ func collectApt(ctx context.Context, run runner, nativeArch string, held []strin
 	for _, p := range pkgs {
 		byName[p.query] = p
 	}
+	r.apt = &aptData{policies: byName, nativeArch: nativeArch}
 	for i, u := range r.Updates {
 		if p, ok := byName[policyName(u, nativeArch)]; ok {
 			r.Updates[i].Security = p.securityFix(u.Candidate)
@@ -264,6 +265,10 @@ type policyVersion struct {
 	Installed     bool
 	PhasedPercent int
 	Origins       []Origin
+	// Sources are the package files that offer the version, as
+	// "URL dist/component arch": the keys of the global policy's release
+	// table (parseReleases).
+	Sources []string
 }
 
 // "     2.77.1+ubuntu24.04 500 (phased 30%)" and " *** 2.76.3 100"
@@ -309,6 +314,7 @@ func parsePolicy(out []byte) ([]policyPkg, error) {
 			if !slices.Contains(ver.Origins, Origin{Suite: suite}) {
 				ver.Origins = append(ver.Origins, Origin{Suite: suite})
 			}
+			ver.Sources = append(ver.Sources, m[1]+" "+m[2]+" "+m[3])
 		default:
 			return nil, fmt.Errorf("unrecognized line %q", line)
 		}

@@ -21,7 +21,7 @@ Usage:
 Commands:
   inventory   list installed packages, OS, and kernel state (--format json|dpkg-query)
   history     package changes from dpkg and apt logs (--since DATE, --format json)
-  updates     updates waiting on this host, as apt or dnf computes them (--format json)
+  updates     updates waiting on this host, and what its own autopilot installs (--format json)
   restart     services still using replaced files, and a waiting kernel (--format json)
   version     print build information (--json for machine-readable output)
   help        print this help

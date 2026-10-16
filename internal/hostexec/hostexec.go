@@ -22,11 +22,14 @@ const (
 )
 
 // Env is the complete environment of every command. Nothing is inherited.
+// TZ=UTC: systemctl prints timer times in local time whatever its
+// --timestamp= option says.
 var Env = []string{
 	"PATH=/usr/sbin:/usr/bin:/sbin:/bin",
 	"LC_ALL=C",
 	"LANG=C",
 	"HOME=/nonexistent",
+	"TZ=UTC",
 }
 
 // ErrOutputTooLarge reports that a command wrote more than its cap; it

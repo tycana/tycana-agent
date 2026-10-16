@@ -1,0 +1,2 @@
+Allowed origins are: origin=Debian,codename=bookworm,label=Debian, origin=Debian,codename=bookworm,label=Debian-Security, origin=Debian,codename=bookworm-security,label=Debian-Security
+Packages that will be upgraded: libexpat1 libpcre2-8-0 libpng16-16 libpython3.11-minimal libpython3.11-stdlib libssl3 openssl perl-base python3.11 python3.11-minimal

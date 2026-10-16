@@ -86,6 +86,10 @@ func runUpdates(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "tycana updates: %v\n", err)
 		return 1
 	}
+	if err := updates.PredictAutopilot(ctx, &r, distroID(snap.OS.ID), snap.OS.VersionCodename); err != nil {
+		fmt.Fprintf(stderr, "tycana updates: autopilot: %v\n", err)
+		return 1
+	}
 	if *format == "json" {
 		enc := json.NewEncoder(stdout)
 		enc.SetIndent("", "  ")
@@ -121,6 +125,7 @@ func writeUpdatesText(w io.Writer, r updates.Report) error {
 	if len(r.Removals) > 0 {
 		fmt.Fprintf(w, "%d packages would be removed by a full upgrade.\n", len(r.Removals))
 	}
+	writeAutopilotText(w, r.Autopilot)
 	if len(r.Updates) == 0 {
 		return nil
 	}
@@ -150,6 +155,65 @@ func writeUpdatesText(w io.Writer, r updates.Report) error {
 		fmt.Fprintf(tw, "remove\t\t%s\t%s\t-\t\n", rm.Name, rm.Installed)
 	}
 	return tw.Flush()
+}
+
+// writeAutopilotText says what the host's own updater will do.
+func writeAutopilotText(w io.Writer, a *updates.Autopilot) {
+	if a == nil {
+		return
+	}
+	fmt.Fprintln(w)
+	switch {
+	case !a.Installed:
+		fmt.Fprintf(w, "Autopilot: %s is not installed. Nothing installs updates on its own.\n", a.Tool)
+		return
+	case a.Runs && !a.NextRun.IsZero():
+		fmt.Fprintf(w, "Autopilot: %s runs next at %s UTC (%s).\n", a.Tool, a.NextRun.Format("2006-01-02 15:04"), a.Timer)
+	case a.Runs:
+		fmt.Fprintf(w, "Autopilot: %s runs (%s).\n", a.Tool, a.Timer)
+	default:
+		fmt.Fprintf(w, "Autopilot: %s will not run: %s.\n", a.Tool, strings.Join(a.Why, "; "))
+	}
+	sec := 0
+	for _, p := range a.Install {
+		if p.Security {
+			sec++
+		}
+	}
+	verb := "It installs"
+	if !a.Runs {
+		verb = "If it ran, it would install"
+	}
+	fmt.Fprintf(w, "%s %d of these updates (%d with a security fix) and leaves %d, judged on today's package lists.\n",
+		verb, len(a.Install), sec, len(a.Skip))
+	if len(a.Origins) > 0 {
+		fmt.Fprintf(w, "Allowed origins: %s.\n", strings.Join(a.Origins, "; "))
+	}
+	if a.UpgradeType != "" {
+		fmt.Fprintf(w, "Upgrade type: %s.\n", a.UpgradeType)
+	}
+	fmt.Fprintf(w, "Automatic reboot: %s.\n", a.Reboot)
+	if a.Runs {
+		for _, why := range a.Why {
+			fmt.Fprintf(w, "Note: %s.\n", why)
+		}
+	}
+}
+
+// distroID is unattended-upgrades' ${distro_id}: lsb_release's ID, which
+// is os-release's ID with a capital first letter for the distributions it
+// supports.
+func distroID(id string) string {
+	switch id {
+	case "ubuntu":
+		return "Ubuntu"
+	case "debian":
+		return "Debian"
+	}
+	if id == "" {
+		return ""
+	}
+	return strings.ToUpper(id[:1]) + id[1:]
 }
 
 // dnfUser names the user dnf will run as: hostexec runs commands as

@@ -35,3 +35,30 @@ func TestWriteUpdatesText(t *testing.T) {
 		}
 	}
 }
+
+func TestWriteAutopilotText(t *testing.T) {
+	var out bytes.Buffer
+	writeAutopilotText(&out, &updates.Autopilot{
+		Tool: "unattended-upgrades", Installed: true, Why: []string{"apt-daily-upgrade.timer is masked"},
+		Origins: []string{"Ubuntu:noble-security"}, Reboot: "never",
+		Install: []updates.Planned{{Name: "libssl3t64", Security: true}, {Name: "tzdata"}},
+		Skip:    []updates.Skipped{{Name: "snapd", Reason: "no newer version from an allowed origin"}},
+	})
+	for _, want := range []string{
+		"Autopilot: unattended-upgrades will not run: apt-daily-upgrade.timer is masked.\n",
+		"If it ran, it would install 2 of these updates (1 with a security fix) and leaves 1, judged on today's package lists.\n",
+		"Automatic reboot: never.\n",
+	} {
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("missing %q in:\n%s", want, out.String())
+		}
+	}
+	out.Reset()
+	writeAutopilotText(&out, &updates.Autopilot{Tool: "dnf-automatic"})
+	if !strings.Contains(out.String(), "dnf-automatic is not installed. Nothing installs updates on its own.") {
+		t.Errorf("not installed:\n%s", out.String())
+	}
+	if distroID("ubuntu") != "Ubuntu" || distroID("debian") != "Debian" || distroID("") != "" {
+		t.Error("distroID")
+	}
+}
