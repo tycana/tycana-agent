@@ -58,6 +58,86 @@ func TestLabAlmaNeedsRestarting(t *testing.T) {
 	}
 }
 
+// TestLabOracleUEK: on Oracle Linux 9 only kernel-uek-core was updated.
+// dnf needs-restarting -r asked for a reboot; the agent's built-in Red Hat
+// list does not know kernel-uek-core and said "not required" (2026-10-16).
+// With the host's own list it agrees with dnf.
+func TestLabOracleUEK(t *testing.T) {
+	dir := filepath.Join("..", "..", "testdata", "lab", "oel9", "reboot")
+	pkgs := readInstallTimes(t, filepath.Join(dir, "installtime.txt"))
+	root := t.TempDir()
+	b, err := os.ReadFile(filepath.Join(dir, "proc-stat-btime"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeFile(t, root, "/proc/stat", b)
+	boot, err := BootTime(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if h := NeedsRestarting(root, pkgs, boot); h.Required || h.ListSource != "built-in" {
+		t.Errorf("built-in list: %+v (the recorded miss)", h)
+	}
+	src, err := os.ReadFile(filepath.Join(dir, "needs_restarting-excerpt.py"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeFile(t, root, "/usr/lib/python3.9/site-packages/dnf-plugins/needs_restarting.py", src)
+	h := NeedsRestarting(root, pkgs, boot)
+	want := dnfReboot(t, filepath.Join(dir, "needs-restarting.txt"))
+	if !h.Required || h.ListSource != "host" || !slices.Equal(h.Packages, want) {
+		t.Errorf("agent %+v, dnf %q", h, want)
+	}
+}
+
+func TestHostNeedRebootIsData(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, root, "/usr/lib/python3.12/site-packages/dnf-plugins/needs_restarting.py",
+		[]byte("x = 1\nNEED_REBOOT = ['kernel', \"glibc\",\n   '$(reboot)', '../x', 'kernel']\nY = ['ignored']\n"))
+	if got := hostNeedReboot(root); !slices.Equal(got, []string{"kernel", "glibc"}) {
+		t.Errorf("%q", got)
+	}
+	if got := hostNeedReboot(t.TempDir()); got != nil {
+		t.Errorf("no plugin: %q", got)
+	}
+}
+
+func readInstallTimes(t *testing.T, name string) []Installed {
+	t.Helper()
+	f, err := os.Open(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = f.Close() }()
+	var pkgs []Installed
+	sc := bufio.NewScanner(f)
+	for sc.Scan() {
+		n, at, _ := strings.Cut(sc.Text(), " ")
+		s, err := strconv.ParseInt(at, 10, 64)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pkgs = append(pkgs, Installed{Name: n, At: time.Unix(s, 0)})
+	}
+	return pkgs
+}
+
+// dnfReboot reads the package names "dnf needs-restarting -r" printed.
+func dnfReboot(t *testing.T, name string) []string {
+	t.Helper()
+	out, err := os.ReadFile(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, line := range strings.Split(string(out), "\n") {
+		if n, ok := strings.CutPrefix(line, "  * "); ok {
+			names = append(names, n)
+		}
+	}
+	return names
+}
+
 func TestNeedsRestartingD(t *testing.T) {
 	root := t.TempDir()
 	writeFile(t, root, "/etc/dnf/plugins/needs-restarting.d/local.conf", []byte("openssl-libs\n../evil\n\nzlib\n"))

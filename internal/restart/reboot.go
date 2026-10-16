@@ -27,12 +27,18 @@ type RebootHint struct {
 	Packages []string `json:"packages,omitempty"`
 	// Boot is the kernel boot time the rule compared against.
 	Boot time.Time `json:"boot,omitzero"`
+	// ListSource says where the needs-restarting package list came from:
+	// "host" (the installed dnf plugin, which distributions extend: Oracle
+	// adds kernel-uek and kernel-uek-core) or "built-in".
+	ListSource string `json:"list_source,omitempty"`
 }
 
 // needReboot is NEED_REBOOT of dnf-plugins-core 4.3.0
 // (dnf-plugins/needs_restarting.py, AlmaLinux 9), after Red Hat's
-// https://access.redhat.com/solutions/27943. Files in
-// /etc/dnf/plugins/needs-restarting.d/ add names, one per line.
+// https://access.redhat.com/solutions/27943. It is the fallback: the
+// agent reads the list from the installed plugin (hostNeedReboot), because
+// distributions change it. Files in /etc/dnf/plugins/needs-restarting.d/
+// add names, one per line.
 var needReboot = []string{
 	"kernel", "kernel-rt", "glibc", "linux-firmware",
 	"systemd", "dbus", "dbus-broker", "dbus-daemon",
@@ -53,8 +59,12 @@ type Installed struct {
 // dnf takes the boot time from systemd's UnitsLoadStartTimestamp, a few
 // seconds after the kernel's; the agent uses the kernel's.
 func NeedsRestarting(root string, pkgs []Installed, boot time.Time) RebootHint {
-	names := slices.Concat(needReboot, needsRestartingD(root))
-	h := RebootHint{Rule: "needs-restarting", Boot: boot}
+	h := RebootHint{Rule: "needs-restarting", Boot: boot, ListSource: "built-in"}
+	base := needReboot
+	if host := hostNeedReboot(root); len(host) > 0 {
+		base, h.ListSource = host, "host"
+	}
+	names := slices.Concat(base, needsRestartingD(root))
 	for _, p := range pkgs {
 		if slices.Contains(names, p.Name) && p.At.After(boot) && !slices.Contains(h.Packages, p.Name) {
 			h.Packages = append(h.Packages, p.Name)
@@ -63,6 +73,41 @@ func NeedsRestarting(root string, pkgs []Installed, boot time.Time) RebootHint {
 	slices.Sort(h.Packages)
 	h.Required = len(h.Packages) > 0
 	return h
+}
+
+// needsRestartingPy is where dnf-plugins-core installs the plugin.
+const needsRestartingPy = "usr/lib/python3*/site-packages/dnf-plugins/needs_restarting.py"
+
+// needRebootList matches the list literal in the plugin source.
+var needRebootList = regexp.MustCompile(`(?s)\nNEED_REBOOT = \[([^\]]*)\]`)
+var quoted = regexp.MustCompile(`['"]([^'"]*)['"]`)
+
+// hostNeedReboot reads NEED_REBOOT from the installed plugin. The file is
+// data: only quoted strings that are valid package names are taken, and
+// nothing in it is executed. nil when the plugin or the list is absent.
+func hostNeedReboot(root string) []string {
+	matches, _ := filepath.Glob(filepath.Join(root, needsRestartingPy))
+	slices.Sort(matches)
+	for _, m := range matches {
+		b, err := readSmall(m)
+		if err != nil {
+			continue
+		}
+		lit := needRebootList.FindSubmatch(b)
+		if lit == nil {
+			continue
+		}
+		var names []string
+		for _, q := range quoted.FindAllSubmatch(lit[1], -1) {
+			if n := string(q[1]); rpmName.MatchString(n) && !slices.Contains(names, n) {
+				names = append(names, n)
+			}
+		}
+		if len(names) > 0 {
+			return names
+		}
+	}
+	return nil
 }
 
 func needsRestartingD(root string) []string {
