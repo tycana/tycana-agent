@@ -1,0 +1,9 @@
+NEEDRESTART-VER: 3.6
+NEEDRESTART-KCUR: 6.8.0-142-generic
+NEEDRESTART-KEXP: 6.8.0-147-generic
+NEEDRESTART-KSTA: 3
+NEEDRESTART-SVC: dbus.service
+NEEDRESTART-SVC: systemd-logind.service
+NEEDRESTART-SVC: unattended-upgrades.service
+NEEDRESTART-SESS: operator @ session #4
+NEEDRESTART-SESS: operator @ user manager service

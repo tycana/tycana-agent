@@ -1,0 +1,7 @@
+681	/system.slice/dbus.service	/usr/bin/dbus-daemon	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0 
+741	/system.slice/systemd-logind.service	/usr/lib/systemd/systemd-logind (deleted)	/usr/lib/systemd/systemd-logind /usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/systemd/libsystemd-shared-255.so 
+850	/system.slice/unattended-upgrades.service	/usr/bin/python3.12	/usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0 /usr/lib/x86_64-linux-gnu/libudev.so.1.7.8 
+1574	/user.slice/user-1000.slice/session-4.scope	/usr/sbin/sshd (deleted)	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/security/pam_systemd.so /usr/sbin/sshd 
+1621	/user.slice/user-1000.slice/session-4.scope	/usr/sbin/sshd (deleted)	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/security/pam_systemd.so /usr/sbin/sshd 
+863	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd	/usr/lib/x86_64-linux-gnu/libcrypto.so.3 
+866	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd-executor (deleted)	/usr/lib/systemd/systemd-executor /usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/security/pam_systemd.so /usr/lib/x86_64-linux-gnu/systemd/libsystemd-core-255.so /usr/lib/x86_64-linux-gnu/systemd/libsystemd-shared-255.so 

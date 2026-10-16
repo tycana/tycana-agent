@@ -1,0 +1,8 @@
+2026-10-16 10:33:50,465 WARNING Could not figure out development release: Distribution data outdated. Please check for an update for distro-info-data. See /usr/share/doc/distro-info-data/README.Debian for details.
+2026-10-16 10:33:50,466 INFO Starting unattended upgrades script
+2026-10-16 10:33:50,466 INFO Allowed origins are: o=Ubuntu,a=noble, o=Ubuntu,a=noble-security, o=UbuntuESMApps,a=noble-apps-security, o=UbuntuESM,a=noble-infra-security
+2026-10-16 10:33:50,466 INFO Initial blacklist: 
+2026-10-16 10:33:50,466 INFO Initial whitelist (not strict): 
+2026-10-16 10:34:08,065 INFO Packages that will be upgraded: bind9-dnsutils bind9-host bind9-libs dracut-install libarchive13t64 libevent-core-2.1-7t64 libfreetype6 libheif-plugin-aomdec libheif-plugin-aomenc libheif1 libnss-systemd libpam-systemd libpng16-16t64 libsgutils2-1.46-2 libssl3t64 libsystemd-shared libsystemd0 libudev1 libx11-6 libx11-data libxml2 libxpm4 linux-headers-generic linux-headers-virtual linux-image-virtual linux-libc-dev linux-tools-common linux-virtual openssh-client openssh-server openssh-sftp-server openssl python3-jwt python3-requests python3-urllib3 sg3-utils sg3-utils-udev sudo systemd systemd-dev systemd-resolved systemd-sysv systemd-timesyncd tzdata udev
+2026-10-16 10:34:08,065 INFO Writing dpkg log to /var/log/unattended-upgrades/unattended-upgrades-dpkg.log
+2026-10-16 10:35:23,401 INFO All upgrades installed

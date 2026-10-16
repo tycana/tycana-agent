@@ -1,0 +1,104 @@
+MainPID=680
+ExecMainStartTimestampMonotonic=7277333
+ExecStart={ path=/usr/sbin/cron ; argv[]=/usr/sbin/cron -f -P $EXTRA_OPTS ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=cron.service
+
+MainPID=681
+ExecMainStartTimestampMonotonic=7282059
+ExecStart={ path=/usr/bin/dbus-daemon ; argv[]=@dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=dbus.service
+
+MainPID=18161
+ExecMainStartTimestampMonotonic=1139929077
+ExecStart={ path=/usr/libexec/fwupd/fwupd ; argv[]=/usr/libexec/fwupd/fwupd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=fwupd.service
+
+MainPID=859
+ExecMainStartTimestampMonotonic=7742047
+ExecStart={ path=/sbin/agetty ; argv[]=/sbin/agetty -o -p -- \u --noclear - $TERM ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=getty@tty1.service
+
+MainPID=690
+ExecMainStartTimestampMonotonic=7337494
+ExecStart={ path=/usr/local/bin/lima-guestagent ; argv[]=/usr/local/bin/lima-guestagent daemon --socket-owner 1000 --runtime-dir=/run/lima-guestagent ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=lima-guestagent.service
+
+MainPID=7181
+ExecMainStartTimestampMonotonic=1083924575
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=ModemManager.service
+
+MainPID=7147
+ExecMainStartTimestampMonotonic=1083858124
+ExecStart={ path=/sbin/multipathd ; argv[]=/sbin/multipathd -d -s ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=multipathd.service
+
+MainPID=13284
+ExecMainStartTimestampMonotonic=1118712199
+ExecStart={ path=/usr/libexec/packagekitd ; argv[]=/usr/libexec/packagekitd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=packagekit.service
+
+MainPID=7146
+ExecMainStartTimestampMonotonic=1083849279
+ExecStart={ path=/usr/lib/polkit-1/polkitd ; argv[]=/usr/lib/polkit-1/polkitd --no-debug ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=polkit.service
+
+MainPID=7174
+ExecMainStartTimestampMonotonic=1083922100
+ExecStart={ path=/usr/sbin/rsyslogd ; argv[]=/usr/sbin/rsyslogd -n -iNONE ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=rsyslog.service
+
+MainPID=830
+ExecMainStartTimestampMonotonic=7688057
+ExecStart={ path=/sbin/agetty ; argv[]=/sbin/agetty -o -p -- \u --keep-baud 115200,57600,38400,9600 - $TERM ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=serial-getty@hvc0.service
+
+MainPID=843
+ExecMainStartTimestampMonotonic=7691988
+ExecStart={ path=/sbin/agetty ; argv[]=/sbin/agetty -o -p -- \u --keep-baud 115200,57600,38400,9600 - $TERM ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=serial-getty@ttyS0.service
+
+MainPID=8049
+ExecMainStartTimestampMonotonic=1096734216
+ExecStart={ path=/usr/lib/systemd/systemd-journald ; argv[]=/usr/lib/systemd/systemd-journald ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=systemd-journald.service
+
+MainPID=741
+ExecMainStartTimestampMonotonic=7441166
+ExecStart={ path=/usr/lib/systemd/systemd-logind ; argv[]=/usr/lib/systemd/systemd-logind ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=systemd-logind.service
+
+MainPID=8073
+ExecMainStartTimestampMonotonic=1096885102
+ExecStart={ path=/usr/lib/systemd/systemd-networkd ; argv[]=/usr/lib/systemd/systemd-networkd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=systemd-networkd.service
+
+MainPID=8052
+ExecMainStartTimestampMonotonic=1096743216
+ExecStart={ path=/usr/lib/systemd/systemd-resolved ; argv[]=/usr/lib/systemd/systemd-resolved ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=systemd-resolved.service
+
+MainPID=8053
+ExecMainStartTimestampMonotonic=1096747198
+ExecStart={ path=/usr/lib/systemd/systemd-timesyncd ; argv[]=/usr/lib/systemd/systemd-timesyncd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=systemd-timesyncd.service
+
+MainPID=8057
+ExecMainStartTimestampMonotonic=1096776125
+ExecStart={ path=/usr/lib/systemd/systemd-udevd ; argv[]=/usr/lib/systemd/systemd-udevd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=systemd-udevd.service
+
+MainPID=8054
+ExecMainStartTimestampMonotonic=1096750385
+ExecStart={ path=/usr/libexec/udisks2/udisksd ; argv[]=/usr/libexec/udisks2/udisksd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=udisks2.service
+
+MainPID=850
+ExecMainStartTimestampMonotonic=7701072
+ExecStart={ path=/usr/share/unattended-upgrades/unattended-upgrade-shutdown ; argv[]=/usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=unattended-upgrades.service
+
+MainPID=863
+ExecMainStartTimestampMonotonic=7774168
+ExecStart={ path=/usr/lib/systemd/systemd ; argv[]=/usr/lib/systemd/systemd --user ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Id=user@1000.service
