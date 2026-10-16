@@ -57,13 +57,15 @@ var registry = map[ID]Spec{
 		Extra: packageNames(debName),
 	},
 	DnfCheckUpdate: {
-		Paths:  []string{"/usr/bin/dnf"},
-		Args:   []string{"--cacheonly", "--quiet", "check-update"},
-		OKExit: []int{100},
+		Paths:         []string{"/usr/bin/dnf"},
+		Args:          []string{"--cacheonly", "--quiet", "check-update"},
+		OKExit:        []int{100},
+		ScratchVarTmp: true,
 	},
 	DnfUpdateinfo: {
-		Paths: []string{"/usr/bin/dnf"},
-		Args:  []string{"--cacheonly", "--quiet", "updateinfo", "list", "--available"},
+		Paths:         []string{"/usr/bin/dnf"},
+		Args:          []string{"--cacheonly", "--quiet", "updateinfo", "list", "--available"},
+		ScratchVarTmp: true,
 	},
 }
 

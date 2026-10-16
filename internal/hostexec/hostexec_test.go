@@ -138,3 +138,22 @@ func TestNotInstalled(t *testing.T) {
 		t.Error("Run accepted an unregistered ID")
 	}
 }
+
+func TestScratchWriteNeedsPrivateVarTmp(t *testing.T) {
+	spec := Spec{Paths: []string{"/usr/bin/true"}, ScratchVarTmp: true}
+	_, err := run(context.Background(), spec, nil)
+	if privateVarTmp() {
+		if err != nil {
+			t.Fatalf("/var/tmp is private, run refused: %v", err)
+		}
+		return
+	}
+	if !errors.Is(err, ErrScratchWrite) {
+		t.Fatalf("shared /var/tmp: want ErrScratchWrite, got %v", err)
+	}
+	AllowScratch = true
+	defer func() { AllowScratch = false }()
+	if _, err := run(context.Background(), spec, nil); err != nil {
+		t.Fatalf("AllowScratch set: %v", err)
+	}
+}

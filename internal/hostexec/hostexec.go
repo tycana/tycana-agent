@@ -36,6 +36,15 @@ var ErrOutputTooLarge = errors.New("hostexec: output exceeded the size cap")
 // ErrNotInstalled reports that none of a Spec's paths exists on this host.
 var ErrNotInstalled = errors.New("hostexec: command not installed")
 
+// ErrScratchWrite reports a command that would leave files in the host's
+// /var/tmp. It runs only when /var/tmp is private to the agent (the unit's
+// PrivateTmp=) or when the operator set AllowScratch.
+var ErrScratchWrite = errors.New("hostexec: command writes a scratch directory in /var/tmp, which is not private here")
+
+// AllowScratch lets commands with Spec.ScratchVarTmp run when /var/tmp is
+// shared with the host. Only the CLI sets it, from an explicit flag.
+var AllowScratch bool
+
 // Spec describes one command the agent may run.
 type Spec struct {
 	// Paths are absolute candidates; the first that exists is used.
@@ -48,6 +57,10 @@ type Spec struct {
 	// OKExit lists exit statuses that are results, not failures. Empty
 	// means only 0.
 	OKExit []int
+	// ScratchVarTmp marks a command that, run without root, creates its
+	// own directory in /var/tmp (dnf does, for logs and locks, and no
+	// option moves it). See ErrScratchWrite.
+	ScratchVarTmp bool
 	// Timeout and MaxStdout default to DefaultTimeout and DefaultMaxStdout.
 	Timeout   time.Duration
 	MaxStdout int
@@ -107,6 +120,9 @@ func run(ctx context.Context, spec Spec, extra []string) (Result, error) {
 	path, err := resolve(spec.Paths)
 	if err != nil {
 		return Result{}, err
+	}
+	if spec.ScratchVarTmp && !AllowScratch && !privateVarTmp() {
+		return Result{}, ErrScratchWrite
 	}
 	timeout := spec.Timeout
 	if timeout == 0 {
@@ -193,6 +209,25 @@ func trusted(path string, fi os.FileInfo) error {
 		return fmt.Errorf("hostexec: %s is not owned by root", path)
 	}
 	return nil
+}
+
+// privateVarTmp reports whether /var/tmp is systemd's PrivateTmp= mount:
+// in /proc/self/mountinfo its mount point is /var/tmp and its root a
+// "systemd-private-" directory, as on tycana-alma9 under the unit.
+func privateVarTmp() bool {
+	b, err := os.ReadFile("/proc/self/mountinfo")
+	if err != nil {
+		return false
+	}
+	private := false
+	for _, line := range bytes.Split(b, []byte("\n")) {
+		f := bytes.Fields(line)
+		if len(f) > 4 && string(f[4]) == "/var/tmp" {
+			// The last mount on a point is the visible one.
+			private = bytes.Contains(f[3], []byte("/systemd-private-"))
+		}
+	}
+	return private
 }
 
 func firstLine(b []byte) []byte {

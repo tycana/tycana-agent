@@ -54,6 +54,16 @@ type Update struct {
 	// PhasedPercent is the share of hosts the update is released to, when
 	// the distribution phases it.
 	PhasedPercent int `json:"phased_percent,omitempty"`
+	// Advisories are the vendor advisories the update resolves (dnf).
+	Advisories []Advisory `json:"advisories,omitempty"`
+}
+
+// Advisory is one vendor advisory, as the package manager's updateinfo
+// metadata names it.
+type Advisory struct {
+	ID       string `json:"id"`                 // "ALSA-2026:58572", "RHSA-2026:1234"
+	Type     string `json:"type"`               // "security", "bugfix", "enhancement"
+	Severity string `json:"severity,omitempty"` // "Important", "Moderate"
 }
 
 // Origin is one archive suite that offers the candidate version.
