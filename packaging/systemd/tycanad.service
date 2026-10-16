@@ -34,7 +34,10 @@ PrivateTmp=yes
 PrivateDevices=yes
 PrivateUsers=yes
 ProtectProc=invisible
-ProcSubset=pid
+# ProcSubset=pid would hide /proc/sys, which the observer reads for the
+# running kernel (M1) and sysctl baseline checks (M3). /proc/sys stays
+# read-only through ProtectKernelTunables. Verified with
+# scripts/lab-sandbox.sh on tycana-ubuntu2404, 2026-10-15.
 ProtectKernelTunables=yes
 ProtectKernelModules=yes
 ProtectKernelLogs=yes
