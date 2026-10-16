@@ -325,7 +325,8 @@ func TestScoreAndExceptions(t *testing.T) {
 	}
 	now := time.Date(2026, 10, 16, 12, 0, 0, 0, time.UTC)
 	s := score(res, 3, DefaultTarget)
-	if s.Percent != 94.7 || s.Met || s.Passed != 18 || s.Failed != 1 || s.Unknown != 1 || s.NotCovered != 3 {
+	if s.Percent != 94.7 || s.Met || s.Passed != 18 || s.Failed != 1 || s.Unknown != 1 || s.NotCovered != 3 ||
+		s.Rules != 24 || s.Coverage != 87.5 {
 		t.Errorf("score %+v", s)
 	}
 	applyExceptions(res, []Exception{{Check: "b", Reason: "r", Owner: "o", Expires: "2026-10-16"}}, now)

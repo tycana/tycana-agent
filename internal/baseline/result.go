@@ -60,9 +60,12 @@ type Report struct {
 	Score      Score       `json:"score"`
 }
 
-// Score is the compliance score: passed checks over evaluated checks.
-// Evaluated means Pass or Fail. Excepted, not-applicable, unknown, and
-// faulty checks are outside both numbers and counted separately.
+// Score is passed checks over evaluated checks, with the coverage of the
+// source profile beside it. Evaluated means Pass or Fail. Excepted,
+// not-applicable, unknown, and faulty checks are outside both numbers and
+// counted separately. Percent is not a compliance score for the profile:
+// it says nothing about the NotCovered rules, so a report must show
+// Coverage with it (Mark, 2026-10-16).
 type Score struct {
 	Passed        int `json:"passed"`
 	Failed        int `json:"failed"`
@@ -71,6 +74,14 @@ type Score struct {
 	Unknown       int `json:"unknown"`
 	Errors        int `json:"errors"`
 	NotCovered    int `json:"not_covered"`
+	// Rules is the number of rules in the source profile: the checks
+	// of the baseline plus NotCovered.
+	Rules int `json:"rules"`
+	// Coverage is checks / Rules * 100, rounded down to one decimal
+	// place. It counts profile rules, not benchmark recommendations; one
+	// recommendation can need several rules, so coverage of the benchmark
+	// is lower (47-49% for the M3 presets, measured 2026-10-16).
+	Coverage float64 `json:"coverage_percent"`
 	// Percent is Passed / (Passed + Failed) * 100, rounded down to one
 	// decimal place. It is 0 when nothing was evaluated.
 	Percent float64 `json:"percent"`
@@ -85,7 +96,10 @@ type Score struct {
 const DefaultTarget = 95
 
 func score(results []Result, notCovered int, target float64) Score {
-	s := Score{NotCovered: notCovered, Target: target}
+	s := Score{NotCovered: notCovered, Rules: len(results) + notCovered, Target: target}
+	if s.Rules > 0 {
+		s.Coverage = float64(len(results)*1000/s.Rules) / 10
+	}
 	for _, r := range results {
 		switch r.Status {
 		case Pass:

@@ -23,7 +23,7 @@ Commands:
   history     package changes from dpkg and apt logs (--since DATE, --format json)
   updates     updates waiting on this host, and what its own autopilot installs (--format json)
   restart     services still using replaced files, and a waiting kernel (--format json)
-  baseline    configuration baseline and compliance score (--format json, --list)
+  baseline    configuration baseline: coverage and score (--format json, --list)
   version     print build information (--json for machine-readable output)
   help        print this help
 

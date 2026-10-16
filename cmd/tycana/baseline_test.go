@@ -22,7 +22,7 @@ func TestWriteBaselineText(t *testing.T) {
 			{ID: "d_exc", Status: baseline.Excepted, Found: baseline.Fail,
 				Exception: &baseline.Exception{Reason: "legacy app", Owner: "ops", Expires: "2027-01-31"}},
 		},
-		Score: baseline.Score{Passed: 1, Failed: 1, Unknown: 1, Excepted: 1, NotCovered: 150, Percent: 50, Target: 95},
+		Score: baseline.Score{Passed: 1, Failed: 1, Unknown: 1, Excepted: 1, NotCovered: 150, Rules: 156, Coverage: 3.8, Percent: 50, Target: 95},
 	}
 	var out bytes.Buffer
 	if err := writeBaselineText(&out, r, false); err != nil {
@@ -30,7 +30,8 @@ func TestWriteBaselineText(t *testing.T) {
 	}
 	s := out.String()
 	for _, want := range []string{
-		"Ubuntu 24.04 level 1 server baseline: 50.0% (1 of 2 evaluated checks pass), below the 95% target.\n",
+		"Ubuntu 24.04 level 1 server baseline: partial assessment. Tycana has checks for 6 of the 156 rules in the source profile (3.8%); 150 rules are not checked.\n",
+		"Score of the checked rules: 50.0% (1 of 2 evaluated checks pass), below the 95% target.\n",
 		"1 excepted, 0 not applicable, 1 unknown",
 		"150 source rules not covered",
 		"ComplianceAsCode 4ab60a5b8964 (ubuntu2404)",

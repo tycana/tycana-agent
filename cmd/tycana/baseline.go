@@ -23,7 +23,7 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 	format := fs.String("format", "text", "output format: text or json")
 	file := fs.String("file", "", "evaluate this baseline file instead of the built-in preset")
 	excFile := fs.String("exceptions", "", "exceptions file (version 1)")
-	target := fs.Float64("target", baseline.DefaultTarget, "target compliance score in percent")
+	target := fs.Float64("target", baseline.DefaultTarget, "target percent of evaluated checks that pass")
 	all := fs.Bool("all", false, "list every check, not only the ones that did not pass")
 	list := fs.Bool("list", false, "list the built-in baselines and exit")
 	fs.Usage = func() {
@@ -33,7 +33,8 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 			"generated from ComplianceAsCode content. Only reads; changes nothing.\n\n"+
 			"A check the agent cannot read without privilege is \"unknown\", never \"fail\".\n"+
 			"The score is passed / (passed + failed); excepted, not applicable, unknown,\n"+
-			"and faulty checks are counted apart.\n\n")
+			"and faulty checks are counted apart. The score covers only the checks that\n"+
+			"Tycana has; the report first gives how much of the source profile that is.\n\n")
 		fs.PrintDefaults()
 	}
 	if err := fs.Parse(args); err != nil {
@@ -139,8 +140,14 @@ func writeBaselineText(w io.Writer, r baseline.Report, all bool) error {
 	if s.Met {
 		met = "meets"
 	}
-	fmt.Fprintf(w, "%s: %.1f%% (%d of %d evaluated checks pass), %s the %.0f%% target.\n",
-		r.Title, s.Percent, s.Passed, s.Passed+s.Failed, met, s.Target)
+	if s.NotCovered > 0 {
+		fmt.Fprintf(w, "%s: partial assessment. Tycana has checks for %d of the %d rules in the source profile (%.1f%%); %d rules are not checked.\n",
+			r.Title, s.Rules-s.NotCovered, s.Rules, s.Coverage, s.NotCovered)
+	} else {
+		fmt.Fprintf(w, "%s: Tycana has checks for all %d rules in the source profile.\n", r.Title, s.Rules)
+	}
+	fmt.Fprintf(w, "Score of the checked rules: %.1f%% (%d of %d evaluated checks pass), %s the %.0f%% target.\n",
+		s.Percent, s.Passed, s.Passed+s.Failed, met, s.Target)
 	fmt.Fprintf(w, "Not in the score: %d excepted, %d not applicable, %d unknown (cannot read without privilege or through the sandbox), %d faulty content, %d source rules not covered.\n",
 		s.Excepted, s.NotApplicable, s.Unknown, s.Errors, s.NotCovered)
 	fmt.Fprintf(w, "Source: %s %s (%s), %s.\n\n", r.Source.Project, short(r.Source.Commit), r.Source.Product, r.Source.License)
