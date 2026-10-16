@@ -46,6 +46,13 @@ capture)
   rm -rf "$dest" && mkdir -p "$dest/root" "$dest/expected"
   remote "cd / && tar cf - etc/os-release usr/lib/os-release var/lib/dpkg/status var/lib/dpkg/arch 2>/dev/null; true" \
     | tar xf - -C "$dest/root"
+  # Logs and the zone they were written in (etc/localtime is a symlink; take its target too).
+  remote 'cd / && tar cf - var/log/dpkg.log* var/log/apt/history.log* etc/localtime etc/timezone \
+      "$(readlink -f /etc/localtime | cut -c2-)" 2>/dev/null; true' | tar xf - -C "$dest/root"
+  # apt records the invoking login (the laptop user under Lima); this repo is public.
+  for f in "$dest"/root/var/log/apt/history.log*; do
+    case "$f" in *.gz) echo "warning: $f not sanitized" >&2;; *) sed -i -E 's/^(Requested-By: )[^ ]+ \(/\1operator (/' "$f";; esac
+  done
   # /proc files report size 0, so tar would store them empty; read them instead.
   mkdir -p "$dest/root/proc/sys/kernel" "$dest/root/boot"
   for f in osrelease version; do remote "cat /proc/sys/kernel/$f" > "$dest/root/proc/sys/kernel/$f"; done
@@ -57,6 +64,7 @@ capture)
     echo "Captured $(date -u +%Y-%m-%dT%H:%M:%SZ) from Lima VM $vm by scripts/lab-dpkg.sh."
     echo "Host: $(remote '. /etc/os-release; echo $PRETTY_NAME'), kernel $(cat "$dest/expected/uname-r.txt"), $(remote 'dpkg --version | head -1' | sed 's/\.$//')."
     echo "root/ holds copies of the files the agent reads; boot/vmlinuz-* are empty placeholders."
+    echo "Requested-By user names in var/log/apt/history.log are replaced with 'operator'; nothing else is edited."
     echo "expected/ holds the native tools' output on the same host at the same moment."
   } > "$dest/MANIFEST"
   ls -l "$dest/root/var/lib/dpkg" "$dest/expected"

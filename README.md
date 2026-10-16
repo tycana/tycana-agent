@@ -12,6 +12,18 @@ whatever they already use; the agent then verifies the result and issues a signe
 Status: pre-release. Nothing to install yet. When there is, verify it first: see
 [VERIFY.md](VERIFY.md). The safety model is in [docs/SAFETY.md](docs/SAFETY.md).
 
+What works today, on Debian and Ubuntu, as an ordinary user:
+
+```sh
+go run ./cmd/tycana inventory                       # packages, OS, kernels
+go run ./cmd/tycana inventory --format dpkg-query   # byte-identical to dpkg-query -W (see --help)
+go run ./cmd/tycana history --since 2026-10-01      # what dpkg and apt changed, and who asked
+```
+
+The package list is read straight from dpkg's database, not by running dpkg, and is checked
+against `dpkg-query` and `dpkg -l` on lab hosts (`scripts/lab-dpkg.sh`, fixtures in
+`testdata/lab/`). RPM-based distributions come next.
+
 ## What it will do
 
 - Inventory every installed package and pending update, matched against vendor security feeds.

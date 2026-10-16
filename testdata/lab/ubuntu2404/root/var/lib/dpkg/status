@@ -1401,12 +1401,12 @@ Package: curl
 Status: install ok installed
 Priority: optional
 Section: web
-Installed-Size: 523
+Installed-Size: 524
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Architecture: amd64
 Multi-Arch: foreign
-Version: 8.5.0-2ubuntu10.15
-Depends: libc6 (>= 2.34), libcurl4t64 (= 8.5.0-2ubuntu10.15), zlib1g (>= 1:1.1.4)
+Version: 8.5.0-2ubuntu10.16
+Depends: libc6 (>= 2.34), libcurl4t64 (= 8.5.0-2ubuntu10.16), zlib1g (>= 1:1.1.4)
 Description: command line tool for transferring data with URL syntax
  curl is a command line tool for transferring data with URL syntax, supporting
  DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3,
@@ -3233,29 +3233,6 @@ Description: tune hard disk parameters for high performance
 Homepage: http://sourceforge.net/projects/hdparm/
 Original-Maintainer: Alexandre Mestiashvili <mestia@debian.org>
 
-Package: hello
-Status: install ok installed
-Priority: optional
-Section: devel
-Installed-Size: 104
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Architecture: amd64
-Version: 2.10-3build1
-Replaces: hello-debhelper (<< 2.9), hello-traditional
-Depends: libc6 (>= 2.38)
-Breaks: hello-debhelper (<< 2.9)
-Conflicts: hello-traditional
-Description: example package based on GNU hello
- The GNU hello program produces a familiar, friendly greeting.  It
- allows non-programmers to use a classic computer science tool which
- would otherwise be unavailable to them.
- .
- Seriously, though: this is an example of how to do a Debian package.
- It is the Debian version of the GNU Project's `hello world' program
- (which is itself an example for the GNU Project).
-Homepage: https://www.gnu.org/software/hello/
-Original-Maintainer: Santiago Vila <sanvila@debian.org>
-
 Package: hostname
 Essential: yes
 Status: install ok installed
@@ -4983,17 +4960,17 @@ Package: libcurl3t64-gnutls
 Status: install ok installed
 Priority: optional
 Section: libs
-Installed-Size: 908
+Installed-Size: 909
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Architecture: amd64
 Multi-Arch: same
 Source: curl
-Version: 8.5.0-2ubuntu10.15
+Version: 8.5.0-2ubuntu10.16
 Replaces: libcurl3-gnutls
-Provides: libcurl3-gnutls (= 8.5.0-2ubuntu10.15)
+Provides: libcurl3-gnutls (= 8.5.0-2ubuntu10.16)
 Depends: libbrotli1 (>= 0.6.0), libc6 (>= 2.36), libgnutls30t64 (>= 3.8.2), libgssapi-krb5-2 (>= 1.17), libidn2-0 (>= 2.0.0), libldap2 (>= 2.6.2), libnettle8t64, libnghttp2-14 (>= 1.50.0), libpsl5t64 (>= 0.16.0), librtmp1 (>= 2.3), libssh-4 (>= 0.9.0), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)
 Recommends: ca-certificates
-Breaks: libcurl3-gnutls (<< 8.5.0-2ubuntu10.15)
+Breaks: libcurl3-gnutls (<< 8.5.0-2ubuntu10.16)
 Description: easy-to-use client-side URL transfer library (GnuTLS flavour)
  libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
  FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S,
@@ -5016,17 +4993,17 @@ Package: libcurl4t64
 Status: install ok installed
 Priority: optional
 Section: libs
-Installed-Size: 927
+Installed-Size: 928
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Architecture: amd64
 Multi-Arch: same
 Source: curl
-Version: 8.5.0-2ubuntu10.15
+Version: 8.5.0-2ubuntu10.16
 Replaces: libcurl3, libcurl4
-Provides: libcurl4 (= 8.5.0-2ubuntu10.15)
+Provides: libcurl4 (= 8.5.0-2ubuntu10.16)
 Depends: libbrotli1 (>= 0.6.0), libc6 (>= 2.34), libgssapi-krb5-2 (>= 1.17), libidn2-0 (>= 2.0.0), libldap2 (>= 2.6.2), libnghttp2-14 (>= 1.50.0), libpsl5t64 (>= 0.16.0), librtmp1 (>= 2.3), libssh-4 (>= 0.9.0), libssl3t64 (>= 3.0.0), libzstd1 (>= 1.5.5), zlib1g (>= 1:1.1.4)
 Recommends: ca-certificates
-Breaks: libcurl4 (<< 8.5.0-2ubuntu10.15)
+Breaks: libcurl4 (<< 8.5.0-2ubuntu10.16)
 Conflicts: libcurl3
 Description: easy-to-use client-side URL transfer library (OpenSSL flavour)
  libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
@@ -15283,11 +15260,11 @@ Package: tzdata
 Status: install ok installed
 Priority: important
 Section: libs
-Installed-Size: 1387
+Installed-Size: 1381
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Architecture: all
 Multi-Arch: foreign
-Version: 2026c-0ubuntu0.24.04.1
+Version: 2024a-2ubuntu1
 Replaces: tzdata-legacy (= 2023c-8ubuntu1)
 Provides: tzdata-trixie
 Depends: debconf (>= 0.5) | debconf-2.0

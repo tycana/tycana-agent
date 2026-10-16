@@ -20,6 +20,7 @@ Usage:
 
 Commands:
   inventory   list installed packages, OS, and kernel state (--format json|dpkg-query)
+  history     package changes from dpkg and apt logs (--since DATE, --format json)
   version     print build information (--json for machine-readable output)
   help        print this help
 
@@ -36,6 +37,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	switch args[0] {
+	case "history":
+		return runHistory(args[1:], stdout, stderr)
 	case "inventory":
 		return runInventory(args[1:], stdout, stderr)
 	case "version":
