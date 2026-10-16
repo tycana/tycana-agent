@@ -1,0 +1,6 @@
+1370	/user.slice/user-1000.slice/session-4.scope	/usr/sbin/sshd	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/security/pam_systemd.so 
+1417	/user.slice/user-1000.slice/session-4.scope	/usr/sbin/sshd	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/security/pam_systemd.so 
+689	/system.slice/dbus.service	/usr/bin/dbus-daemon	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 
+713	/system.slice/systemd-logind.service	/usr/lib/systemd/systemd-logind	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 
+727	/system.slice/rsyslog.service	/usr/sbin/rsyslogd	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 
+819	/user.slice/user-1000.slice/user@1000.service/init.scope	/usr/lib/systemd/systemd-executor	/usr/lib/x86_64-linux-gnu/libnss_systemd.so.2 /usr/lib/x86_64-linux-gnu/security/pam_systemd.so 

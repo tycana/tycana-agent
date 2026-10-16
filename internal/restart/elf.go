@@ -68,6 +68,9 @@ type Program struct {
 	// Closure lists canonical paths: the program (or interpreter), its
 	// loader, and every DT_NEEDED object, recursively.
 	Closure []string `json:"closure,omitempty"`
+	// Sonames lists the DT_NEEDED names the closure resolved. A module
+	// loaded at run time names its host library this way (Module.Host).
+	Sonames []string `json:"sonames,omitempty"`
 	// Unresolved lists DT_NEEDED names found in no search directory.
 	Unresolved []string `json:"unresolved,omitempty"`
 	// Error says why the closure is missing or incomplete.
@@ -101,7 +104,7 @@ func (r *Resolver) Program(p string) Program {
 		prog.Error = err.Error()
 		return prog
 	}
-	prog.Closure, prog.Unresolved, err = r.closure(canon, main)
+	prog.Closure, prog.Sonames, prog.Unresolved, err = r.closure(canon, main)
 	if err != nil {
 		prog.Error = err.Error()
 	}
@@ -111,10 +114,9 @@ func (r *Resolver) Program(p string) Program {
 // closure walks DT_NEEDED breadth-first from the main object, the way
 // glibc's loader searches: RPATH (when the object has no RUNPATH, also
 // the main program's), RUNPATH, the ld.so.conf directories, the defaults.
-func (r *Resolver) closure(mainPath string, main *object) ([]string, []string, error) {
+func (r *Resolver) closure(mainPath string, main *object) (closure, sonames, unresolved []string, err error) {
 	seen := map[string]bool{mainPath: true}
 	out := []string{mainPath}
-	var unresolved []string
 	if main.interp != "" {
 		if p, err := r.canonical(main.interp); err == nil {
 			seen[p] = true
@@ -144,18 +146,19 @@ func (r *Resolver) closure(mainPath string, main *object) ([]string, []string, e
 				continue
 			}
 			loaded[name] = true
+			sonames = append(sonames, name)
 			if seen[p] {
 				continue
 			}
 			if len(out) >= maxClosure {
-				return out, unresolved, fmt.Errorf("closure larger than %d objects", maxClosure)
+				return out, sonames, unresolved, fmt.Errorf("closure larger than %d objects", maxClosure)
 			}
 			seen[p] = true
 			out = append(out, p)
 			queue = append(queue, item{p, obj})
 		}
 	}
-	return out, unresolved, nil
+	return out, sonames, unresolved, nil
 }
 
 // find locates the object for a DT_NEEDED name needed by the object at

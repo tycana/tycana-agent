@@ -16,7 +16,7 @@ func TestRestartFromSnapshot(t *testing.T) {
 	}
 	s := out.String()
 	for _, want := range []string{
-		"4 units use a file replaced since they started (inferred); 2 unknown; 17 with no evidence.\n",
+		"4 units use a file replaced since they started (inferred); 0 possible; 2 unknown; 17 with no evidence.\n",
 		"inferred  dbus.service",
 		"replaced: /usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0",
 		"a script run by /usr/bin/python3.12",

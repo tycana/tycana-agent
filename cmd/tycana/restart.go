@@ -131,8 +131,8 @@ func writeRestartText(w io.Writer, out restartOutput) error {
 	for _, f := range out.Findings {
 		count[f.Status]++
 	}
-	fmt.Fprintf(w, "%d units use a file replaced since they started (inferred); %d unknown; %d with no evidence.\n",
-		count[restart.Inferred], count[restart.Unknown], count[restart.None])
+	fmt.Fprintf(w, "%d units use a file replaced since they started (inferred); %d possible; %d unknown; %d with no evidence.\n",
+		count[restart.Inferred], count[restart.Possible], count[restart.Unknown], count[restart.None])
 	if k := out.Kernel; k != nil {
 		switch {
 		case k.RebootNeeded:
@@ -162,6 +162,13 @@ func writeRestartText(w io.Writer, out restartOutput) error {
 				paths[i] = r.Path
 			}
 			detail = "replaced: " + strings.Join(paths, " ")
+		}
+		if f.Status == restart.Possible {
+			paths := make([]string, len(f.Modules))
+			for i, m := range f.Modules {
+				paths[i] = m.Path
+			}
+			detail = "modules replaced: " + strings.Join(paths, " ")
 		}
 		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\n", f.Status, f.Unit, started, detail)
 	}

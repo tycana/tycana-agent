@@ -11,56 +11,84 @@ import (
 	"testing"
 )
 
-// TestLabUbuntu2404 replays the restart state of tycana-ubuntu2404 after
-// its own unattended-upgrades run on 2026-10-16 (testdata README) against
-// the root ground truth captured at the same moment: the units whose
-// processes mapped a deleted file in /proc/<pid>/maps.
+// labCases replay restart states of tycana-ubuntu2404 on 2026-10-16
+// (README in each directory) against the root ground truth captured at
+// the same moment: the units whose processes mapped a deleted file in
+// /proc/<pid>/maps.
 //
-// The property under test is the one the product promises: a unit the
-// agent calls "inferred" is stale, and a stale unit is never "none".
-func TestLabUbuntu2404(t *testing.T) {
-	dir := filepath.Join("..", "..", "testdata", "lab", "ubuntu2404", "restart")
-	snap := readSnapshotFile(t, filepath.Join(dir, "snapshot.json"))
-	stale := groundTruth(t, filepath.Join(dir, "deleted-maps.tsv"))
+// want records the measured result for backlog item B1 (the brief on the
+// optional scanner). A change here changes what the brief reports.
+var labCases = []struct {
+	dir    string
+	want   map[string]Status
+	counts map[Status]int
+}{
+	{
+		// After the VM's own unattended-upgrades run: libraries the
+		// services link directly were replaced.
+		dir: "restart",
+		want: map[string]Status{
+			"dbus.service":                Inferred,
+			"systemd-logind.service":      Inferred,
+			"session-4.scope":             Inferred,
+			"user@1000.service":           Inferred,
+			"unattended-upgrades.service": Unknown, // python3: libsystemd and libudev via modules
+			"init.scope":                  Unknown,
+		},
+		counts: map[Status]int{Inferred: 4, Possible: 0, Unknown: 2, None: 17},
+	},
+	{
+		// Only NSS and PAM modules were replaced: no stale unit links
+		// them, so none can be inferred; every stale unit is possible.
+		dir: "restart-modules",
+		want: map[string]Status{
+			"dbus.service":           Possible,
+			"systemd-logind.service": Possible,
+			"rsyslog.service":        Possible,
+			"session-4.scope":        Possible,
+			"user@1000.service":      Possible,
+		},
+		counts: map[Status]int{Inferred: 0, Possible: 19, Unknown: 2, None: 3},
+	},
+}
 
-	got := map[string]Status{}
-	for _, f := range Analyze(snap).Findings {
-		got[f.Unit] = f.Status
-		switch {
-		case f.Status == Inferred && !stale[f.Unit]:
-			t.Errorf("%s: inferred, but no process of it mapped a deleted file", f.Unit)
-		case f.Status == None && stale[f.Unit]:
-			t.Errorf("%s: none, but root saw it map a deleted file", f.Unit)
-		}
-	}
-	for u := range stale {
-		if _, ok := got[u]; !ok {
-			t.Errorf("%s: stale per root, absent from the snapshot", u)
-		}
-	}
-	// The measured result, recorded for backlog item B1. A change here
-	// changes what the brief reports.
-	want := map[string]Status{
-		"dbus.service":                Inferred,
-		"systemd-logind.service":      Inferred,
-		"session-4.scope":             Inferred,
-		"user@1000.service":           Inferred,
-		"unattended-upgrades.service": Unknown, // python3: libsystemd and libudev via modules
-		"init.scope":                  Unknown,
-	}
-	for u, w := range want {
-		if got[u] != w {
-			t.Errorf("%s: %s, want %s", u, got[u], w)
-		}
-	}
-	n := 0
-	for _, s := range got {
-		if s == None {
-			n++
-		}
-	}
-	if n != 17 {
-		t.Errorf("%d units none, want 17", n)
+// TestLab checks the property the product promises: a unit the agent
+// calls "inferred" is stale, and a stale unit is never "none".
+func TestLab(t *testing.T) {
+	for _, c := range labCases {
+		t.Run(c.dir, func(t *testing.T) {
+			dir := filepath.Join("..", "..", "testdata", "lab", "ubuntu2404", c.dir)
+			snap := readSnapshotFile(t, filepath.Join(dir, "snapshot.json"))
+			stale := groundTruth(t, filepath.Join(dir, "deleted-maps.tsv"))
+
+			got := map[string]Status{}
+			counts := map[Status]int{}
+			for _, f := range Analyze(snap).Findings {
+				got[f.Unit] = f.Status
+				counts[f.Status]++
+				switch {
+				case f.Status == Inferred && !stale[f.Unit]:
+					t.Errorf("%s: inferred, but no process of it mapped a deleted file", f.Unit)
+				case f.Status == None && stale[f.Unit]:
+					t.Errorf("%s: none, but root saw it map a deleted file", f.Unit)
+				}
+			}
+			for u := range stale {
+				if _, ok := got[u]; !ok {
+					t.Errorf("%s: stale per root, absent from the snapshot", u)
+				}
+			}
+			for u, w := range c.want {
+				if got[u] != w {
+					t.Errorf("%s: %s, want %s", u, got[u], w)
+				}
+			}
+			for _, st := range []Status{Inferred, Possible, Unknown, None} {
+				if counts[st] != c.counts[st] {
+					t.Errorf("%d %s, want %d", counts[st], st, c.counts[st])
+				}
+			}
+		})
 	}
 }
 

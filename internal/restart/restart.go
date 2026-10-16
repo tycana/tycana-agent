@@ -12,11 +12,16 @@
 // the service still maps the old, deleted copy.
 //
 // A finding is therefore "inferred", never "observed". Libraries opened
-// later with dlopen (PAM and NSS modules, OpenSSL providers, interpreter
-// modules) are outside its view.
+// later with dlopen are outside the closure. For the common kinds (NSS
+// modules named in nsswitch.conf, PAM modules, OpenSSL providers and
+// engines, SASL and gconv modules) the agent lists those replaced since
+// the earliest unit started, and a unit that links their host library
+// becomes "possible" rather than "none". Interpreter modules are outside
+// its view: a script's unit is "unknown".
 package restart
 
 import (
+	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -29,8 +34,14 @@ const (
 	// Inferred means a file the unit's program maps at start was created
 	// after the unit started.
 	Inferred Status = "inferred"
-	// None means every file in the closure is older than the unit.
-	// Libraries loaded later are not checked.
+	// Possible means the closure is older than the unit, but a run-time
+	// module its host library can load was replaced after the unit
+	// started (Finding.Modules). Only root can tell whether the unit
+	// loaded it.
+	Possible Status = "possible"
+	// None means every file in the closure, and every run-time module of
+	// the listed kinds, is older than the unit. Other libraries loaded
+	// later are not checked.
 	None Status = "none"
 	// Unknown means the agent cannot tell (see Finding.Reason).
 	Unknown Status = "unknown"
@@ -46,6 +57,9 @@ type Snapshot struct {
 	Programs map[string]Program `json:"programs"`
 	// Files maps each canonical path in a closure to its creation time.
 	Files map[string]FileTime `json:"files"`
+	// Modules lists run-time modules created after the earliest unit
+	// started.
+	Modules []Module `json:"modules,omitempty"`
 	// SSHProgram is the program an sshd login session runs: sshd itself,
 	// or sshd-session from OpenSSH 9.8. Its closure is in Programs.
 	SSHProgram string `json:"ssh_program,omitempty"`
@@ -71,6 +85,8 @@ type Finding struct {
 	Reason string `json:"reason,omitempty"`
 	// Replaced lists the closure files created after Start.
 	Replaced []Replaced `json:"replaced,omitempty"`
+	// Modules lists the run-time modules behind a Possible verdict.
+	Modules []Replaced `json:"modules,omitempty"`
 }
 
 // Replaced is one file a unit maps that has been replaced since.
@@ -113,6 +129,9 @@ func Analyze(s Snapshot) Report {
 		if f.Status == "" {
 			judge(&f, u.Start, s.Programs[exec], s.Files)
 		}
+		if f.Status == None {
+			possible(&f, u.Start, s.Programs[exec], s.Modules)
+		}
 		f.Program = exec
 		r.Findings = append(r.Findings, f)
 	}
@@ -147,6 +166,23 @@ func judge(f *Finding, start time.Time, p Program, files map[string]FileTime) {
 		f.Reason = join(f.Reason, incomplete(p, missing))
 	default:
 		f.Status = None
+	}
+}
+
+// possible marks a unit whose closure is clean but whose host libraries
+// can load a module replaced after it started.
+func possible(f *Finding, start time.Time, p Program, mods []Module) {
+	kinds := map[string]bool{}
+	for _, m := range mods {
+		if m.Created.After(start) && slices.Contains(p.Sonames, m.Host) {
+			f.Modules = append(f.Modules, Replaced{Path: m.Path, Created: m.Created})
+			kinds[m.Kind] = true
+		}
+	}
+	if len(f.Modules) > 0 {
+		f.Status = Possible
+		ks := slices.Sorted(maps.Keys(kinds))
+		f.Reason = join(f.Reason, "it can load "+strings.Join(ks, ", ")+" modules replaced since it started; only root can see whether it did")
 	}
 }
 

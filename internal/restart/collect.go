@@ -27,6 +27,9 @@ func Collect(ctx context.Context, now time.Time) (Snapshot, error) {
 	addSessions(ctx, s.Units)
 	r := NewResolver("/")
 	s.Programs, s.Files = closures(r, s.Units)
+	if since, ok := earliest(s.Units); ok {
+		s.Modules = r.modules(since)
+	}
 	for _, u := range s.Units {
 		if u.Service == "sshd" {
 			s.SSHProgram = addProgram(r, sshSessionProgram(r), s.Programs, s.Files)
@@ -34,6 +37,18 @@ func Collect(ctx context.Context, now time.Time) (Snapshot, error) {
 		}
 	}
 	return s, nil
+}
+
+// earliest returns the earliest unit start: no unit can have loaded a
+// module created before it.
+func earliest(units []Unit) (time.Time, bool) {
+	var t time.Time
+	for _, u := range units {
+		if !u.Start.IsZero() && (t.IsZero() || u.Start.Before(t)) {
+			t = u.Start
+		}
+	}
+	return t, !t.IsZero()
 }
 
 // sshSessionPrograms are, in order, the programs an sshd connection runs:

@@ -1,0 +1,10 @@
+NEEDRESTART-VER: 3.6
+NEEDRESTART-KCUR: 6.8.0-147-generic
+NEEDRESTART-KEXP: 6.8.0-147-generic
+NEEDRESTART-KSTA: 1
+NEEDRESTART-SVC: dbus.service
+NEEDRESTART-SVC: rsyslog.service
+NEEDRESTART-SVC: ssh.service
+NEEDRESTART-SVC: systemd-logind.service
+NEEDRESTART-SESS: operator @ session #4
+NEEDRESTART-SESS: operator @ user manager service
