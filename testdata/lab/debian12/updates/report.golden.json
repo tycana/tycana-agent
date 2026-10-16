@@ -1,0 +1,136 @@
+{
+  "schema": "tycana.updates/v0",
+  "manager": "apt",
+  "updates": [
+    {
+      "name": "libexpat1",
+      "arch": "amd64",
+      "installed": "2.5.0-1+deb12u3",
+      "candidate": "2.5.0-1+deb12u4",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "libpcre2-8-0",
+      "arch": "amd64",
+      "installed": "10.42-1+deb12u1",
+      "candidate": "10.42-1+deb12u2",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "libpng16-16",
+      "arch": "amd64",
+      "installed": "1.6.39-2+deb12u5",
+      "candidate": "1.6.39-2+deb12u6",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "libpython3.11-minimal",
+      "arch": "amd64",
+      "installed": "3.11.2-6+deb12u8",
+      "candidate": "3.11.2-6+deb12u9",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "libpython3.11-stdlib",
+      "arch": "amd64",
+      "installed": "3.11.2-6+deb12u8",
+      "candidate": "3.11.2-6+deb12u9",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "libssl3",
+      "arch": "amd64",
+      "installed": "3.0.20-1~deb12u2",
+      "candidate": "3.0.22-1~deb12u1",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "openssl",
+      "arch": "amd64",
+      "installed": "3.0.20-1~deb12u2",
+      "candidate": "3.0.22-1~deb12u1",
+      "state": "held",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "perl-base",
+      "arch": "amd64",
+      "installed": "5.36.0-7+deb12u3",
+      "candidate": "5.36.0-7+deb12u4",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "python3.11",
+      "arch": "amd64",
+      "installed": "3.11.2-6+deb12u8",
+      "candidate": "3.11.2-6+deb12u9",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    },
+    {
+      "name": "python3.11-minimal",
+      "arch": "amd64",
+      "installed": "3.11.2-6+deb12u8",
+      "candidate": "3.11.2-6+deb12u9",
+      "state": "upgrade",
+      "security": true,
+      "origins": [
+        {
+          "suite": "bookworm-security"
+        }
+      ]
+    }
+  ]
+}

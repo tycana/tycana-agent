@@ -56,10 +56,9 @@ type Update struct {
 	PhasedPercent int `json:"phased_percent,omitempty"`
 }
 
-// Origin is one archive that offers the candidate version.
+// Origin is one archive suite that offers the candidate version.
 type Origin struct {
-	Label string `json:"label,omitempty"` // "Ubuntu", "Debian-Security"
-	Suite string `json:"suite"`           // "noble-security", "bookworm-updates"
+	Suite string `json:"suite"` // "noble-security", "bookworm-updates"
 }
 
 // Removal is a package the full upgrade would remove.

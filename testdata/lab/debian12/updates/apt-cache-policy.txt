@@ -1,0 +1,107 @@
+curl:
+  Installed: 7.88.1-10+deb12u15
+  Candidate: 7.88.1-10+deb12u15
+  Version table:
+     8.14.1-2+deb13u2~bpo13+1 100
+        100 mirror+file:/etc/apt/mirrors/debian.list bookworm-backports/main amd64 Packages
+ *** 7.88.1-10+deb12u15 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+     7.88.1-10+deb12u5 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+openssl:
+  Installed: 3.0.20-1~deb12u2
+  Candidate: 3.0.22-1~deb12u1
+  Version table:
+     3.0.22-1~deb12u1 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 3.0.20-1~deb12u2 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+     3.0.17-1~deb12u2 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm-updates/main amd64 Packages
+perl-base:
+  Installed: 5.36.0-7+deb12u3
+  Candidate: 5.36.0-7+deb12u4
+  Version table:
+     5.36.0-7+deb12u4 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 5.36.0-7+deb12u3 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+libssl3:
+  Installed: 3.0.20-1~deb12u2
+  Candidate: 3.0.22-1~deb12u1
+  Version table:
+     3.0.22-1~deb12u1 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 3.0.20-1~deb12u2 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+     3.0.17-1~deb12u2 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm-updates/main amd64 Packages
+python3.11:
+  Installed: 3.11.2-6+deb12u8
+  Candidate: 3.11.2-6+deb12u9
+  Version table:
+     3.11.2-6+deb12u9 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 3.11.2-6+deb12u8 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+libpython3.11-stdlib:
+  Installed: 3.11.2-6+deb12u8
+  Candidate: 3.11.2-6+deb12u9
+  Version table:
+     3.11.2-6+deb12u9 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 3.11.2-6+deb12u8 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+python3.11-minimal:
+  Installed: 3.11.2-6+deb12u8
+  Candidate: 3.11.2-6+deb12u9
+  Version table:
+     3.11.2-6+deb12u9 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 3.11.2-6+deb12u8 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+libpython3.11-minimal:
+  Installed: 3.11.2-6+deb12u8
+  Candidate: 3.11.2-6+deb12u9
+  Version table:
+     3.11.2-6+deb12u9 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 3.11.2-6+deb12u8 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status
+libexpat1:
+  Installed: 2.5.0-1+deb12u3
+  Candidate: 2.5.0-1+deb12u4
+  Version table:
+     2.5.0-1+deb12u4 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 2.5.0-1+deb12u3 100
+        100 /var/lib/dpkg/status
+     2.5.0-1+deb12u2 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+libpcre2-8-0:
+  Installed: 10.42-1+deb12u1
+  Candidate: 10.42-1+deb12u2
+  Version table:
+     10.42-1+deb12u2 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 10.42-1+deb12u1 100
+        100 /var/lib/dpkg/status
+     10.42-1 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+libpng16-16:
+  Installed: 1.6.39-2+deb12u5
+  Candidate: 1.6.39-2+deb12u6
+  Version table:
+     1.6.39-2+deb12u6 500
+        500 mirror+file:/etc/apt/mirrors/debian-security.list bookworm-security/main amd64 Packages
+ *** 1.6.39-2+deb12u5 500
+        500 mirror+file:/etc/apt/mirrors/debian.list bookworm/main amd64 Packages
+        100 /var/lib/dpkg/status

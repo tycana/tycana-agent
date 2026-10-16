@@ -1,0 +1,32 @@
+NOTE: This is only a simulation!
+      apt-get needs root privileges for real execution.
+      Keep also in mind that locking is deactivated,
+      so don't depend on the relevance to the real current situation!
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+The following packages have been kept back:
+  openssl
+The following packages will be upgraded:
+  libexpat1 libpcre2-8-0 libpng16-16 libpython3.11-minimal
+  libpython3.11-stdlib libssl3 perl-base python3.11 python3.11-minimal
+9 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+Inst perl-base [5.36.0-7+deb12u3] (5.36.0-7+deb12u4 Debian-Security:12/oldstable-security [amd64])
+Conf perl-base (5.36.0-7+deb12u4 Debian-Security:12/oldstable-security [amd64])
+Inst libssl3 [3.0.20-1~deb12u2] (3.0.22-1~deb12u1 Debian-Security:12/oldstable-security [amd64])
+Inst python3.11 [3.11.2-6+deb12u8] (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64]) []
+Inst libpython3.11-stdlib [3.11.2-6+deb12u8] (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64]) []
+Inst python3.11-minimal [3.11.2-6+deb12u8] (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64]) []
+Inst libpython3.11-minimal [3.11.2-6+deb12u8] (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64])
+Inst libexpat1 [2.5.0-1+deb12u3] (2.5.0-1+deb12u4 Debian-Security:12/oldstable-security [amd64])
+Inst libpcre2-8-0 [10.42-1+deb12u1] (10.42-1+deb12u2 Debian-Security:12/oldstable-security [amd64])
+Conf libpcre2-8-0 (10.42-1+deb12u2 Debian-Security:12/oldstable-security [amd64])
+Inst libpng16-16 [1.6.39-2+deb12u5] (1.6.39-2+deb12u6 Debian-Security:12/oldstable-security [amd64])
+Conf libssl3 (3.0.22-1~deb12u1 Debian-Security:12/oldstable-security [amd64])
+Conf python3.11 (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64])
+Conf libpython3.11-stdlib (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64])
+Conf python3.11-minimal (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64])
+Conf libpython3.11-minimal (3.11.2-6+deb12u9 Debian-Security:12/oldstable-security [amd64])
+Conf libexpat1 (2.5.0-1+deb12u4 Debian-Security:12/oldstable-security [amd64])
+Conf libpng16-16 (1.6.39-2+deb12u6 Debian-Security:12/oldstable-security [amd64])

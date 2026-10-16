@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -53,56 +54,96 @@ func golden(t *testing.T, path string, got any) {
 	}
 }
 
-// Ubuntu 24.04 lab VM, 2026-10-16: 44 plain upgrades, 4 deferred by
-// phasing (10% and 30%), 4 kernel metapackages kept back, 6 new kernel packages,
-// nano held with nothing newer.
-func TestAptUbuntu2404(t *testing.T) {
+// labCase is one captured host. now and sec are what the host's own tools
+// say: installable now (phased and held excluded) and how many of those
+// carry a security fix.
+type labCase struct {
+	dir        string
+	nativeArch string
+	held       []string
+	states     map[State]int
+	now, sec   int
+}
+
+var labCases = []labCase{
+	// Ubuntu 24.04, 2026-10-16, before the VM's unattended-upgrades run:
+	// 44 plain upgrades, 4 deferred by phasing (10% to 40%), 4 kernel
+	// metapackages kept back, 6 new kernel packages, nano held with
+	// nothing newer. apt-check printed "54;51".
+	{
+		dir: "ubuntu2404", nativeArch: "amd64", held: []string{"nano"},
+		states: map[State]int{Upgrade: 44, Phased: 4, DistUpgrade: 4, New: 6},
+		now:    54, sec: 51,
+	},
+	// Debian 12, 2026-10-16, with curl held (nothing newer) and openssl
+	// held for this capture. apt list --upgradable: 10, all from
+	// oldstable-security; the held openssl is one of them.
+	{
+		dir: "debian12", nativeArch: "amd64", held: []string{"curl", "openssl"},
+		states: map[State]int{Upgrade: 9, Held: 1},
+		now:    9, sec: 9,
+	},
+}
+
+func TestAptLab(t *testing.T) {
+	for _, c := range labCases {
+		t.Run(c.dir, func(t *testing.T) {
+			dir := filepath.Join("../../testdata/lab", c.dir, "updates")
+			b, err := os.ReadFile(filepath.Join(dir, "apt-cache-policy-query.txt"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			run := fixtureRunner(t, dir, strings.Fields(string(b)))
+			r, err := collectApt(context.Background(), run, c.nativeArch, c.held)
+			if err != nil {
+				t.Fatal(err)
+			}
+			count := map[State]int{}
+			now, sec := 0, 0
+			for _, u := range r.Updates {
+				count[u.State]++
+				if u.State != Phased && u.State != Held {
+					now++
+					if u.Security {
+						sec++
+					}
+				}
+				if len(u.Origins) == 0 {
+					t.Errorf("%s: no origins", u.Name)
+				}
+			}
+			if !maps.Equal(count, c.states) {
+				t.Errorf("states %v, want %v", count, c.states)
+			}
+			if now != c.now || sec != c.sec {
+				t.Errorf("native tools say %d;%d, we say %d;%d", c.now, c.sec, now, sec)
+			}
+			golden(t, filepath.Join(dir, "report.golden.json"), r)
+		})
+	}
+}
+
+func TestSecurityRuleUbuntu(t *testing.T) {
 	dir := "../../testdata/lab/ubuntu2404/updates"
-	b, err := os.ReadFile(filepath.Join(dir, "apt-cache-policy-query.txt"))
+	b, _ := os.ReadFile(filepath.Join(dir, "apt-cache-policy-query.txt"))
+	r, err := collectApt(context.Background(), fixtureRunner(t, dir, strings.Fields(string(b))), "amd64", []string{"nano"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	run := fixtureRunner(t, dir, strings.Fields(string(b)))
-	r, err := collectApt(context.Background(), run, "amd64", []string{"nano"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	count := map[State]int{}
 	for _, u := range r.Updates {
-		count[u.State]++
-	}
-	want := map[State]int{Upgrade: 44, Phased: 4, DistUpgrade: 4, New: 6}
-	for s, n := range want {
-		if count[s] != n {
-			t.Errorf("%s: %d updates, want %d", s, count[s], n)
-		}
-	}
-	if len(count) != len(want) {
-		t.Errorf("states %v, want %v", count, want)
-	}
-	for _, u := range r.Updates {
-		if u.Name == "snapd" && (u.PhasedPercent != 10 || u.Candidate != "2.77.1+ubuntu24.04" || u.Arch != "amd64") {
-			t.Errorf("snapd: %+v", u)
-		}
-		if (u.Name == "libssl3t64" || u.Name == "tzdata") && !u.Security {
-			t.Errorf("%s carries a security fix: %+v", u.Name, u)
-		}
-	}
-	// Ubuntu's own count on the same VM: apt-check printed "54;51", 54
-	// installable now (phased excluded) of which 51 carry a security fix.
-	now, sec := 0, 0
-	for _, u := range r.Updates {
-		if u.State != Phased && u.State != Held {
-			now++
-			if u.Security {
-				sec++
+		switch u.Name {
+		case "snapd":
+			if u.PhasedPercent != 10 || u.Candidate != "2.77.1+ubuntu24.04" || u.Arch != "amd64" {
+				t.Errorf("snapd: %+v", u)
+			}
+		case "libssl3t64", "tzdata":
+			// tzdata: candidate in noble-updates only, an intermediate
+			// version in noble-security.
+			if !u.Security {
+				t.Errorf("%s carries a security fix: %+v", u.Name, u)
 			}
 		}
 	}
-	if now != 54 || sec != 51 {
-		t.Errorf("apt-check says 54;51, we say %d;%d", now, sec)
-	}
-	golden(t, filepath.Join(dir, "report.golden.json"), r)
 }
 
 func TestParseSimulationLines(t *testing.T) {
@@ -125,7 +166,7 @@ Conf newpkg (1.0 Debian:12.7/stable [all])
 	if libc.Name != "libc6" || libc.Arch != "i386" || libc.Installed != "2.39-0ubuntu8.5" || !libc.Security || len(libc.Origins) != 2 {
 		t.Errorf("libc6: %+v", libc)
 	}
-	if n := s.installs[1]; n.Installed != "" || n.Origins[0] != (Origin{Label: "Debian", Suite: "stable"}) || n.Security {
+	if n := s.installs[1]; n.Installed != "" || n.Origins[0] != (Origin{Suite: "stable"}) || n.Security {
 		t.Errorf("newpkg: %+v", n)
 	}
 	if l := s.installs[2]; l.Candidate != "1.0" || len(l.Origins) != 0 {

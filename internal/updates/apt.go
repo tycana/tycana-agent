@@ -80,6 +80,7 @@ func collectApt(ctx context.Context, run runner, nativeArch string, held []strin
 	for i, u := range r.Updates {
 		if p, ok := byName[policyName(u, nativeArch)]; ok {
 			r.Updates[i].Security = p.securityFix(u.Candidate)
+			r.Updates[i].Origins = p.origins(u.Candidate)
 		}
 	}
 	for _, q := range slices.Concat(fs.lists[headPhased], held) {
@@ -97,9 +98,9 @@ func collectApt(ctx context.Context, run runner, nativeArch string, held []strin
 		for _, v := range p.Versions {
 			if v.Version == p.Candidate {
 				u.PhasedPercent = v.PhasedPercent
-				u.Origins = v.Origins
 			}
 		}
+		u.Origins = p.origins(p.Candidate)
 		u.Security = p.securityFix(p.Candidate)
 		r.Updates = append(r.Updates, u)
 	}
@@ -167,19 +168,21 @@ func parseSimulation(out []byte) (simulation, error) {
 	return s, sc.Err()
 }
 
-// parseInstOrigins splits "Ubuntu:24.04/noble-updates, Ubuntu:24.04/noble-security".
+// parseInstOrigins splits "Ubuntu:24.04/noble-updates, Ubuntu:24.04/noble-security"
+// into archive names. apt-cache policy replaces them with suite names when
+// it knows the package.
 func parseInstOrigins(s string) []Origin {
 	var out []Origin
 	for _, part := range strings.Split(s, ", ") {
 		if part == "" {
 			continue
 		}
-		label, rest, _ := strings.Cut(part, ":")
+		_, rest, _ := strings.Cut(part, ":")
 		_, suite, ok := strings.Cut(rest, "/")
 		if !ok {
 			suite = rest
 		}
-		out = append(out, Origin{Label: label, Suite: suite})
+		out = append(out, Origin{Suite: suite})
 	}
 	return out
 }
@@ -234,6 +237,17 @@ func (p policyPkg) securityFix(candidate string) bool {
 		}
 	}
 	return false
+}
+
+// origins are the suites that offer version, as sources.list names them
+// ("bookworm-security"; the simulation would say "oldstable-security").
+func (p policyPkg) origins(version string) []Origin {
+	for _, v := range p.Versions {
+		if v.Version == version {
+			return v.Origins
+		}
+	}
+	return nil
 }
 
 type policyPkg struct {
