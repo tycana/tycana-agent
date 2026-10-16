@@ -27,7 +27,9 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		AptConfigDump:          "/usr/bin/apt-config dump",
 		SystemctlShowUpdaterTimers: "/usr/bin/systemctl show --no-pager --timestamp=us+utc --property=Id,LoadState,UnitFileState,ActiveState,NextElapseUSecRealtime,LastTriggerUSec " +
 			"apt-daily.timer apt-daily-upgrade.timer dnf-automatic.timer dnf-automatic-install.timer dnf-automatic-download.timer dnf-automatic-notifyonly.timer",
-		LoginctlShowSession: "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
+		LoginctlShowSession:       "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
+		SystemctlListDependencies: "/usr/bin/systemctl list-dependencies --plain --no-pager --all multi-user.target",
+		SystemctlShowUnits:        "/usr/bin/systemctl show --no-pager --property=Id,LoadState,ActiveState,SubState,UnitFileState,Where,What,Options,Type -- [names]",
 	}
 	if len(registry) != len(want) {
 		t.Errorf("registry has %d commands, test lists %d", len(registry), len(want))
@@ -40,6 +42,24 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		if got != want[id] {
 			t.Errorf("%s:\n got %s\nwant %s", id, got, want[id])
 		}
+	}
+}
+
+func TestUnitNames(t *testing.T) {
+	for _, ok := range [][]string{{"sshd.service"}, {"-.mount"}, {`var-log-audit.mount`, `var-lib-x\x2dy.mount`},
+		{"systemd-journal-remote.socket", "getty@tty1.service", "dnf-automatic.timer", "multi-user.target"}} {
+		if err := unitNames(ok); err != nil {
+			t.Errorf("%q: %v", ok, err)
+		}
+	}
+	for _, bad := range [][]string{nil, {"--all"}, {"-x.mount"}, {"x.service", "-p"}, {"sshd"}, {"a b.service"},
+		{"../x.service"[3:] + "/"}, {"x.device"}, {"x.service\n"}, {"*.service"}} {
+		if err := unitNames(bad); err == nil {
+			t.Errorf("%q accepted", bad)
+		}
+	}
+	if err := unitNames(make([]string, maxUnits+1)); err == nil {
+		t.Error("too many names accepted")
 	}
 }
 

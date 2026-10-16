@@ -3,6 +3,7 @@
 # shipped systemd unit, so "works in the lab" means "works as tycanad".
 #
 #   scripts/lab-sandbox.sh tycana-VM [-p Extra=Override ...] -- inventory --format dpkg-query
+#   TYCANA_LAB_BIN=baseline.test scripts/lab-sandbox.sh tycana-VM -p Environment=X=1 -- -test.run=TestLabCapture
 #
 # Every [Service] setting in packaging/systemd/tycanad.service is passed to
 # systemd-run except the ones that only make sense for the long-running
@@ -31,8 +32,14 @@ while IFS= read -r line; do
   props+=("-p" "$line")
 done < <(sed -n '/^\[Service\]/,/^\[Install\]/p' "$unit")
 
-make -C "$root" -s build
-limactl copy "$root/bin/tycana" "$vm:/tmp/tycana-sandbox-bin"
+# TYCANA_LAB_BIN runs another binary in the same sandbox, such as a test
+# binary built with "go test -c" for a lab capture.
+bin=${TYCANA_LAB_BIN:-}
+if [ -z "$bin" ]; then
+  make -C "$root" -s build
+  bin=$root/bin/tycana
+fi
+limactl copy "$bin" "$vm:/tmp/tycana-sandbox-bin"
 limactl shell "$vm" -- sudo install -D -m 0755 -o root -g root /tmp/tycana-sandbox-bin /opt/tycana-lab/tycana
 limactl shell "$vm" -- rm -f /tmp/tycana-sandbox-bin
 # Lab runs before 2026-10-16 used DynamicUser= and left

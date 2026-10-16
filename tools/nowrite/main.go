@@ -8,7 +8,7 @@
 //
 // The SQLite driver can write databases, so only internal/sqlitero, which
 // opens them read-only, may import it. internal/filetime may import
-// golang.org/x/sys/unix for one read-only call, statx.
+// golang.org/x/sys/unix for two read-only calls, statx and lstat.
 //
 // Test files are exempt (they write fixtures under t.TempDir). The check is
 // syntactic and alias-aware but not type-aware; it is a tripwire, not a

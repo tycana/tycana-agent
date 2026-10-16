@@ -57,7 +57,14 @@ ReadOnlyPaths=-/var/lib/dpkg -/var/lib/rpm -/usr/lib/sysimage/rpm -/var/lib/apt 
 # dynamic user already (mode 0000 or root:shadow 0640), and listing them
 # fails the namespace on systemd 252 with SELinux enforcing (AlmaLinux 9,
 # "Permission denied" mounting over a mode-0000 file, 2026-10-16).
-InaccessiblePaths=-/root -/home -/etc/ssh
+# /etc/ssh stays readable (M3): the baseline reads sshd_config, which is
+# 0644 on Debian and Ubuntu, and the mode and owner of the host keys. The
+# private keys are 0600 root (or 0640 root:ssh_keys on RHEL), so the
+# agent's user cannot read them; before M3 this list also hid /etc/ssh.
+InaccessiblePaths=-/root -/home
+
+# No PrivateNetwork=: the net.* sysctls are per network namespace, and the
+# baseline must read the host's, not an empty namespace's.
 
 # Kernel surface.
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6

@@ -38,6 +38,14 @@ const (
 	// SystemctlShowUpdaterTimers prints the state and next run of the
 	// timers that start unattended-upgrades and dnf-automatic.
 	SystemctlShowUpdaterTimers ID = "systemctl-show-updater-timers"
+	// SystemctlShowUnits prints the load, activation, and unit-file state
+	// of the named units, and for mount units where and with which
+	// options they are mounted. systemd answers from the host's mount
+	// table, not from the caller's mount namespace.
+	SystemctlShowUnits ID = "systemctl-show-units"
+	// SystemctlListDependencies prints every unit multi-user.target
+	// depends on, recursively, one per line.
+	SystemctlListDependencies ID = "systemctl-list-dependencies"
 )
 
 // UpdaterTimers are the timers SystemctlShowUpdaterTimers reports, in
@@ -109,6 +117,20 @@ var registry = map[ID]Spec{
 			UpdaterTimers...),
 		Timeout: 30 * time.Second,
 	},
+	SystemctlShowUnits: {
+		Paths: []string{"/usr/bin/systemctl", "/bin/systemctl"},
+		// "--" ends the options: a unit name can never become one.
+		Args: []string{"show", "--no-pager",
+			"--property=Id,LoadState,ActiveState,SubState,UnitFileState,Where,What,Options,Type",
+			"--"},
+		Extra:   unitNames,
+		Timeout: 30 * time.Second,
+	},
+	SystemctlListDependencies: {
+		Paths:   []string{"/usr/bin/systemctl", "/bin/systemctl"},
+		Args:    []string{"list-dependencies", "--plain", "--no-pager", "--all", "multi-user.target"},
+		Timeout: 30 * time.Second,
+	},
 	LoginctlShowSession: {
 		Paths: []string{"/usr/bin/loginctl", "/bin/loginctl"},
 		// loginctl, unlike systemctl, ignores a comma list after --property.
@@ -123,6 +145,9 @@ var registry = map[ID]Spec{
 var (
 	// debName is a Debian package name with an optional architecture.
 	debName = regexp.MustCompile(`^[a-z0-9][a-z0-9+.-]+(:[a-z0-9-]+)?$`)
+	// unitName is a systemd unit name of the types baseline checks read.
+	// It cannot start with "-".
+	unitName = regexp.MustCompile(`^[A-Za-z0-9_:@][A-Za-z0-9_:@.\\-]{0,250}\.(service|socket|mount|timer|target)$`)
 	// sessionID is a logind session id: "4", "c2", "12".
 	sessionID = regexp.MustCompile(`^[A-Za-z0-9]{1,32}$`)
 )
@@ -137,6 +162,23 @@ func sessionIDs(ids []string) error {
 	for _, id := range ids {
 		if !sessionID.MatchString(id) {
 			return fmt.Errorf("hostexec: %q is not a session id", id)
+		}
+	}
+	return nil
+}
+
+// maxUnits bounds one systemctl call; callers batch above it.
+const maxUnits = 500
+
+func unitNames(names []string) error {
+	if len(names) == 0 || len(names) > maxUnits {
+		return fmt.Errorf("hostexec: %d unit names, want 1 to %d", len(names), maxUnits)
+	}
+	for _, n := range names {
+		// "-.mount" is the root file system's unit, the one name that
+		// starts with "-"; Args ends with "--", so it cannot be an option.
+		if n != "-.mount" && !unitName.MatchString(n) {
+			return fmt.Errorf("hostexec: %q is not a unit name", n)
 		}
 	}
 	return nil
