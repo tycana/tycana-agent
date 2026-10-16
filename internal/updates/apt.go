@@ -184,15 +184,17 @@ func parseInstOrigins(s string) []Origin {
 	return out
 }
 
-// policyName is how apt-cache policy names a package in its query and
-// its output: bare for the native architecture and "all", qualified for a
+// AptName is how apt names a package in a query and in apt-cache policy
+// output: bare for the native architecture and "all", qualified for a
 // foreign one ("libc6:i386").
-func policyName(u Update, nativeArch string) string {
-	if u.Arch == nativeArch || u.Arch == "all" {
-		return u.Name
+func AptName(name, arch, nativeArch string) string {
+	if arch == nativeArch || arch == "all" || arch == "" {
+		return name
 	}
-	return u.Name + ":" + u.Arch
+	return name + ":" + arch
 }
+
+func policyName(u Update, nativeArch string) string { return AptName(u.Name, u.Arch, nativeArch) }
 
 // policy runs apt-cache policy in batches of at most hostexec's limit.
 func policy(ctx context.Context, run runner, names []string) ([]policyPkg, error) {

@@ -21,6 +21,7 @@ Usage:
 Commands:
   inventory   list installed packages, OS, and kernel state (--format json|dpkg-query)
   history     package changes from dpkg and apt logs (--since DATE, --format json)
+  updates     updates waiting on this host, as apt computes them (--format json)
   version     print build information (--json for machine-readable output)
   help        print this help
 
@@ -41,6 +42,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runHistory(args[1:], stdout, stderr)
 	case "inventory":
 		return runInventory(args[1:], stdout, stderr)
+	case "updates":
+		return runUpdates(args[1:], stdout, stderr)
 	case "version":
 		return runVersion(args[1:], stdout, stderr)
 	case "help", "-h", "--help":
