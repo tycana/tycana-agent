@@ -43,7 +43,7 @@ type SysctlCheck struct {
 
 const vendorSysctlDir = "/usr/lib/sysctl.d"
 
-var sysctlKeyRE = regexp.MustCompile(`^[a-z0-9_]+(\.[a-zA-Z0-9_*-]+)+$`)
+var sysctlKeyRE = regexp.MustCompile(`^[a-z0-9_]+(\.[a-zA-Z0-9_-]+)+$`)
 
 func (s *SysctlCheck) validate() error {
 	if !sysctlKeyRE.MatchString(s.Key) {
@@ -85,7 +85,7 @@ func (s *SysctlCheck) eval(h *Host) (bool, string, error) {
 }
 
 func (s *SysctlCheck) evalOne(h *Host) (bool, string, error) {
-	re := regexp.MustCompile(`(?m)^[\s]*` + s.Key + `[\s]*=[\s]*(.*\S)[\s]*$`)
+	re := sysctlLineRE(s.Key)
 	user, err := s.lines(h, re, s.userFiles(h))
 	if err != nil {
 		return false, "", err
@@ -126,6 +126,15 @@ func (s *SysctlCheck) evalOne(h *Host) (bool, string, error) {
 		return false, fmt.Sprintf("%s is %s at run time, want %s", s.Key, v, strings.Join(s.Values, " or ")), nil
 	}
 	return true, fmt.Sprintf("%s is %s at run time and set %s", s.Key, v, where), nil
+}
+
+// sysctlLineRE is the OVAL's line pattern for a key. The key is quoted;
+// only its dots stay wildcards, as in the OVAL, so "net/ipv4/ip_forward"
+// matches "net.ipv4.ip_forward". validate restricts keys to a grammar
+// without other metacharacters.
+func sysctlLineRE(key string) *regexp.Regexp {
+	k := strings.ReplaceAll(regexp.QuoteMeta(key), `\.`, ".")
+	return regexp.MustCompile(`(?m)^[\s]*` + k + `[\s]*=[\s]*(.*\S)[\s]*$`)
 }
 
 type sysctlLine struct{ file, value string }

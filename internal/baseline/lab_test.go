@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -139,4 +140,20 @@ func readFixture(t *testing.T, path string) *fixture {
 		t.Fatal(err)
 	}
 	return &fx
+}
+
+// Fable review, 2026-10-16: /etc/ssh is readable in the unit, so the
+// presets must never read a host key's content, only its mode and owner.
+func TestNoHostKeyContentRead(t *testing.T) {
+	keyRE := regexp.MustCompile(`^/etc/ssh/.*_key(\.pub)?$`)
+	for _, c := range labCases {
+		for _, view := range []string{"root", "sandbox"} {
+			fx := readFixture(t, filepath.Join("..", "..", "testdata", "lab", c.vm, "baseline-"+view+".json.gz"))
+			for p := range fx.Files {
+				if keyRE.MatchString(p) {
+					t.Errorf("%s %s: read the content of %s", c.vm, view, p)
+				}
+			}
+		}
+	}
 }

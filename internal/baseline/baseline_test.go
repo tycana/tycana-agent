@@ -433,3 +433,46 @@ func TestParseMountinfo(t *testing.T) {
 		t.Errorf("%+v", m)
 	}
 }
+
+// Fable review, 2026-10-16: a sysctl key is quoted, never a raw regex.
+func TestSysctlKeyIsNotARegex(t *testing.T) {
+	for _, k := range []string{"net.a**", "net.(x", "net.a|b", "kernel.x*"} {
+		if err := sysctl(k, "0").validate(); err == nil {
+			t.Errorf("%q accepted", k)
+		}
+	}
+	re := sysctlLineRE("net.ipv4.ip_forward")
+	for line, ok := range map[string]bool{"net.ipv4.ip_forward=0": true, "net/ipv4/ip_forward = 0": true, "netXipv4.ip_forward=0": true, "net.ipv4.ip_forwardx=0": false} {
+		if re.MatchString(line) != ok {
+			t.Errorf("%q: match %v", line, !ok)
+		}
+	}
+}
+
+func TestWalkBounds(t *testing.T) {
+	f := &fake{files: map[string]string{"/var/": "", "/var/log/": "", "/var/log/nfs/": "", "/var/log/x/": ""},
+		meta: map[string]Meta{"/var/log/nfs/bad": {Mode: 0o777, Type: "file"}, "/var/log/x/ok": {Mode: 0o600, Type: "file"}}}
+	h := f.host()
+	h.Mounts = []Mount{{Root: "/", Target: "/var/log/nfs", FSType: "nfs4"}}
+	c := Check{File: &FileCheck{Paths: []string{"/var/log/"}, FileRegex: ".*", Recursive: true, Mode: "0640"}}
+	// The walk does not enter a network file system (recurse_file_system="local").
+	want(t, run(t, h, c), Pass, "1 file")
+	h.Mounts[0].FSType = "ext4"
+	want(t, run(t, h, c), Fail, "/var/log/nfs/bad")
+	// A tree deeper than the bound is unknown, not pass.
+	deep := &fake{files: map[string]string{}}
+	p := "/d"
+	for i := 0; i <= maxWalkDepth+1; i++ {
+		deep.files[p+"/"] = ""
+		p += "/d"
+	}
+	want(t, run(t, deep.host(), Check{File: &FileCheck{Paths: []string{"/d/"}, FileRegex: ".*", Recursive: true, Mode: "0644"}}), Unknown, "deeper than")
+}
+
+func TestUnitNamesFailAtLoad(t *testing.T) {
+	for _, n := range []string{"@foo", "foo@", "a\\x2d", strings.Repeat("a", 201), "-x"} {
+		if err := (&ServiceCheck{Name: n, State: "socket_masked"}).validate(); err == nil {
+			t.Errorf("%q accepted", n)
+		}
+	}
+}

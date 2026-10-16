@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"slices"
 	"strings"
 	"testing"
 
@@ -15,6 +16,8 @@ func TestWriteBaselineText(t *testing.T) {
 		Results: []baseline.Result{
 			{ID: "a_pass", Status: baseline.Pass},
 			{ID: "b_fail", Status: baseline.Fail, Severity: "medium", Reason: "/etc/passwd is 0666"},
+			{ID: "a_low", Status: baseline.Fail, Severity: "low", Reason: "x"},
+			{ID: "z_high", Status: baseline.Fail, Severity: "high", Reason: "y"},
 			{ID: "c_unknown", Status: baseline.Unknown, Reason: "not readable without privilege"},
 			{ID: "d_exc", Status: baseline.Excepted, Found: baseline.Fail,
 				Exception: &baseline.Exception{Reason: "legacy app", Owner: "ops", Expires: "2027-01-31"}},
@@ -40,7 +43,8 @@ func TestWriteBaselineText(t *testing.T) {
 	if strings.Contains(s, "a_pass") {
 		t.Error("passed checks listed without --all")
 	}
-	if strings.Index(s, "b_fail") > strings.Index(s, "c_unknown") {
-		t.Error("failed checks must come first")
+	order := []int{strings.Index(s, "z_high"), strings.Index(s, "b_fail"), strings.Index(s, "a_low"), strings.Index(s, "c_unknown")}
+	if !slices.IsSorted(order) {
+		t.Errorf("want failed checks first, worst severity first:\n%s", s)
 	}
 }

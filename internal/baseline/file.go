@@ -207,7 +207,13 @@ func (f *FileCheck) collect(h *Host) ([]selected, string, error) {
 			}
 			continue
 		}
-		f.walk(h, dir, re, excl, &out, &unread)
+		w := &walker{h: h, f: f, re: re, excl: excl}
+		w.walk(dir, 0)
+		out = append(out, w.out...)
+		unread = append(unread, w.unread...)
+		if w.capped {
+			return out, fmt.Sprintf("%s has more than %d entries or is deeper than %d levels; the agent stopped there", dir, maxWalkEntries, maxWalkDepth), nil
+		}
 	}
 	if len(unread) > 0 {
 		return out, "these directories are not readable without privilege: " + summarize(unread), nil
@@ -215,21 +221,52 @@ func (f *FileCheck) collect(h *Host) ([]selected, string, error) {
 	return out, "", nil
 }
 
-func (f *FileCheck) walk(h *Host, dir string, re *regexp.Regexp, excl []*regexp.Regexp, out *[]selected, unread *[]string) {
-	ents, err := h.ReadDir(dir)
+// Bounds of one walk: a recursive bind mount or a huge tree must not
+// stall the agent or exhaust its 128 MiB (MemoryMax).
+const (
+	maxWalkEntries = 100000
+	maxWalkDepth   = 64
+)
+
+// localFS are the file system types OVAL's recurse_file_system="local"
+// descends into. Network and pseudo file systems are skipped.
+var localFS = []string{"ext2", "ext3", "ext4", "xfs", "btrfs", "f2fs", "jfs", "reiserfs",
+	"vfat", "exfat", "tmpfs", "zfs", "bcachefs"}
+
+type walker struct {
+	h      *Host
+	f      *FileCheck
+	re     *regexp.Regexp
+	excl   []*regexp.Regexp
+	out    []selected
+	unread []string
+	seen   int
+	capped bool
+}
+
+func (w *walker) walk(dir string, depth int) {
+	if depth > maxWalkDepth {
+		w.capped = true
+		return
+	}
+	ents, err := w.h.ReadDir(dir)
 	if errors.Is(err, fs.ErrNotExist) {
 		return
 	}
 	if err != nil {
-		*unread = append(*unread, dir)
+		w.unread = append(w.unread, dir)
 		return
 	}
 	for _, e := range ents {
+		if w.seen++; w.seen > maxWalkEntries {
+			w.capped = true
+			return
+		}
 		p := path.Join(dir, e.Name())
-		m, err := h.Stat(p)
+		m, err := w.h.Stat(p)
 		if err != nil {
 			if !errors.Is(err, fs.ErrNotExist) {
-				*unread = append(*unread, p)
+				w.unread = append(w.unread, p)
 			}
 			continue
 		}
@@ -238,13 +275,24 @@ func (f *FileCheck) walk(h *Host, dir string, re *regexp.Regexp, excl []*regexp.
 		}
 		// OpenSCAP selects only non-directories when a name pattern is
 		// given; directories are walked, not matched.
-		if m.Type != "dir" && re.MatchString(e.Name()) && !slices.ContainsFunc(excl, func(x *regexp.Regexp) bool { return x.MatchString(e.Name()) }) {
-			*out = append(*out, selected{p, m})
+		if m.Type != "dir" && w.re.MatchString(e.Name()) && !slices.ContainsFunc(w.excl, func(x *regexp.Regexp) bool { return x.MatchString(e.Name()) }) {
+			w.out = append(w.out, selected{p, m})
 		}
-		if f.Recursive && m.Type == "dir" {
-			f.walk(h, p, re, excl, out, unread)
+		if w.f.Recursive && m.Type == "dir" && w.local(p) {
+			w.walk(p, depth+1)
 		}
 	}
+}
+
+// local reports whether a walk may enter a directory: it is not a mount
+// point, or the last mount on it is of a local file system.
+func (w *walker) local(p string) bool {
+	for i := len(w.h.Mounts) - 1; i >= 0; i-- {
+		if mt := w.h.Mounts[i]; mt.Target == p && !sandboxMount(&mt) {
+			return slices.Contains(localFS, mt.FSType)
+		}
+	}
+	return true
 }
 
 // resolveIDs turns owner names into ids. A numeric entry is the id. A

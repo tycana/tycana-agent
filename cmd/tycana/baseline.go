@@ -129,6 +129,10 @@ func loadFile[T any](path string, load func(io.Reader) (T, error)) (T, error) {
 var statusOrder = []baseline.Status{baseline.Fail, baseline.Unknown, baseline.Error,
 	baseline.Excepted, baseline.NotApplicable, baseline.Pass}
 
+// severityOrder puts the worst first; ComplianceAsCode's "unknown"
+// severity sorts with the unrated.
+var severityOrder = []string{"high", "medium", "low", "info", "unknown", ""}
+
 func writeBaselineText(w io.Writer, r baseline.Report, all bool) error {
 	s := r.Score
 	met := "below"
@@ -142,7 +146,10 @@ func writeBaselineText(w io.Writer, r baseline.Report, all bool) error {
 	fmt.Fprintf(w, "Source: %s %s (%s), %s.\n\n", r.Source.Project, short(r.Source.Commit), r.Source.Product, r.Source.License)
 	res := slices.Clone(r.Results)
 	slices.SortStableFunc(res, func(a, b baseline.Result) int {
-		return slices.Index(statusOrder, a.Status) - slices.Index(statusOrder, b.Status)
+		if d := slices.Index(statusOrder, a.Status) - slices.Index(statusOrder, b.Status); d != 0 {
+			return d
+		}
+		return slices.Index(severityOrder, a.Severity) - slices.Index(severityOrder, b.Severity)
 	})
 	tw := tabwriter.NewWriter(w, 0, 4, 2, ' ', 0)
 	fmt.Fprintln(tw, "STATUS\tCHECK\tSEVERITY\tWHY")

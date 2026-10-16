@@ -41,7 +41,9 @@ const (
 	// SystemctlShowUnits prints the load, activation, and unit-file state
 	// of the named units, and for mount units where and with which
 	// options they are mounted. systemd answers from the host's mount
-	// table, not from the caller's mount namespace.
+	// table, not from the caller's mount namespace. A name systemd has not
+	// loaded makes PID 1 read its unit file into memory; nothing is
+	// written and nothing starts (the M2 timer query does the same).
 	SystemctlShowUnits ID = "systemctl-show-units"
 	// SystemctlListDependencies prints every unit multi-user.target
 	// depends on, recursively, one per line.

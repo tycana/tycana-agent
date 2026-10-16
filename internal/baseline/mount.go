@@ -37,7 +37,7 @@ type MountCheck struct {
 var mountOptionRE = regexp.MustCompile(`^[a-z0-9_]+(=[A-Za-z0-9_.,:-]+)?$`)
 
 func (m *MountCheck) validate() error {
-	if !path.IsAbs(m.Path) || path.Clean(m.Path) != m.Path {
+	if !path.IsAbs(m.Path) || path.Clean(m.Path) != m.Path || len(m.Path) > 120 {
 		return fmt.Errorf("mount: path %q is not clean and absolute", m.Path)
 	}
 	if !mountOptionRE.MatchString(m.Option) {

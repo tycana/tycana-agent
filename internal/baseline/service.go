@@ -27,7 +27,10 @@ type ServiceCheck struct {
 	Package string `yaml:"package,omitempty"`
 }
 
-var serviceNameRE = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_@:.-]*$`)
+// serviceNameRE is a systemd unit prefix: no "@" template forms, no
+// escapes, at most 200 characters, so every unit name built from it passes
+// hostexec's check and one bad name cannot fail the systemctl batch.
+var serviceNameRE = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_:.-]{0,199}$`)
 
 func (s *ServiceCheck) validate() error {
 	if !serviceNameRE.MatchString(s.Name) {

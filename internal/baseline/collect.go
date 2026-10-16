@@ -89,6 +89,16 @@ func liveStat(path string) (Meta, error) {
 }
 
 func liveRead(path string) ([]byte, error) {
+	// A FIFO would block the run and a device would read garbage; the
+	// checks only read regular files (and /proc/sys, which reports them
+	// as regular).
+	fi, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+	if !fi.Mode().IsRegular() {
+		return nil, unknownf("%s is not a regular file", path)
+	}
 	f, err := os.Open(path) //nolint:gosec // paths come from the baseline, read-only
 	if err != nil {
 		return nil, err

@@ -45,8 +45,9 @@ func (c *Condition) validate() error {
 	switch {
 	case c.Package != "" && !pkgNameRE.MatchString(c.Package):
 		return fmt.Errorf("condition: package %q is not valid", c.Package)
-	case c.FileExists != "" && !path.IsAbs(c.FileExists), c.Mounted != "" && !path.IsAbs(c.Mounted):
-		return errors.New("condition: path is not absolute")
+	case c.FileExists != "" && !path.IsAbs(c.FileExists),
+		c.Mounted != "" && (!path.IsAbs(c.Mounted) || path.Clean(c.Mounted) != c.Mounted || len(c.Mounted) > 120):
+		return errors.New("condition: path is not a clean absolute path")
 	case c.ServiceDisabled != nil:
 		return c.ServiceDisabled.validate()
 	case c.Not != nil:
