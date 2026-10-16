@@ -1,0 +1,4 @@
+Captured 2026-10-16T01:05:53Z from Lima VM tycana-ubuntu2404 by scripts/lab-dpkg.sh.
+Host: Ubuntu 24.04.5 LTS, kernel 6.8.0-142-generic, Debian 'dpkg' package management program version 1.22.6 (amd64).
+root/ holds copies of the files the agent reads; boot/vmlinuz-* are empty placeholders.
+expected/ holds the native tools' output on the same host at the same moment.

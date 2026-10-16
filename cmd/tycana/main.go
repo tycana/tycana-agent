@@ -19,6 +19,7 @@ Usage:
   tycana <command> [flags]
 
 Commands:
+  inventory   list installed packages, OS, and kernel state (--format json|dpkg-query)
   version     print build information (--json for machine-readable output)
   help        print this help
 
@@ -35,6 +36,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	switch args[0] {
+	case "inventory":
+		return runInventory(args[1:], stdout, stderr)
 	case "version":
 		return runVersion(args[1:], stdout, stderr)
 	case "help", "-h", "--help":
