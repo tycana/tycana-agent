@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-// labCases replay restart states of tycana-ubuntu2404 on 2026-10-16
+// labCases replay restart states of lab VMs on 2026-10-16
 // (README in each directory) against the root ground truth captured at
 // the same moment: the units whose processes mapped a deleted file in
 // /proc/<pid>/maps.
@@ -26,7 +26,7 @@ var labCases = []struct {
 	{
 		// After the VM's own unattended-upgrades run: libraries the
 		// services link directly were replaced.
-		dir: "restart",
+		dir: "ubuntu2404/restart",
 		want: map[string]Status{
 			"dbus.service":                Inferred,
 			"systemd-logind.service":      Inferred,
@@ -40,7 +40,7 @@ var labCases = []struct {
 	{
 		// Only NSS and PAM modules were replaced: no stale unit links
 		// them, so none can be inferred; every stale unit is possible.
-		dir: "restart-modules",
+		dir: "ubuntu2404/restart-modules",
 		want: map[string]Status{
 			"dbus.service":           Possible,
 			"systemd-logind.service": Possible,
@@ -50,6 +50,27 @@ var labCases = []struct {
 		},
 		counts: map[Status]int{Inferred: 0, Possible: 19, Unknown: 2, None: 3},
 	},
+	{
+		// Debian 12 after its ten pending security updates (libssl3,
+		// libpcre2, libexpat1, python3.11, perl-base): libraries nearly
+		// every daemon links. PID 1 did not re-execute and is stale.
+		dir: "debian12/restart",
+		want: map[string]Status{
+			"dbus.service":                Inferred,
+			"ssh.service":                 Inferred,
+			"session-4.scope":             Inferred,
+			"systemd-journald.service":    Inferred,
+			"systemd-logind.service":      Inferred,
+			"systemd-networkd.service":    Inferred,
+			"systemd-resolved.service":    Inferred,
+			"systemd-timesyncd.service":   Inferred,
+			"systemd-udevd.service":       Inferred,
+			"unattended-upgrades.service": Inferred, // python3.11 itself was replaced
+			"user@1000.service":           Inferred,
+			"init.scope":                  Unknown,
+		},
+		counts: map[Status]int{Inferred: 11, Possible: 0, Unknown: 1, None: 4},
+	},
 }
 
 // TestLab checks the property the product promises: a unit the agent
@@ -57,7 +78,7 @@ var labCases = []struct {
 func TestLab(t *testing.T) {
 	for _, c := range labCases {
 		t.Run(c.dir, func(t *testing.T) {
-			dir := filepath.Join("..", "..", "testdata", "lab", "ubuntu2404", c.dir)
+			dir := filepath.Join("..", "..", "testdata", "lab", c.dir)
 			snap := readSnapshotFile(t, filepath.Join(dir, "snapshot.json"))
 			stale := groundTruth(t, filepath.Join(dir, "deleted-maps.tsv"))
 
@@ -108,8 +129,9 @@ func readSnapshotFile(t *testing.T, name string) Snapshot {
 }
 
 // groundTruth reads deleted-maps.tsv (pid, cgroup, exe, deleted paths) and
-// returns the units with a stale process. A process in a user manager's
-// init.scope belongs to user@UID.service.
+// returns the units with a stale process: the innermost .service or .scope
+// in the cgroup path. A process in a user manager's init.scope belongs to
+// user@UID.service; one in a sub-cgroup (udev's "udev") to its unit.
 func groundTruth(t *testing.T, name string) map[string]bool {
 	t.Helper()
 	f, err := os.Open(name)
@@ -124,11 +146,17 @@ func groundTruth(t *testing.T, name string) map[string]bool {
 		if len(fields) < 4 {
 			continue
 		}
-		parts := strings.Split(fields[1], "/")
-		if parts[len(parts)-1] == "init.scope" && len(parts) > 1 {
-			parts = parts[:len(parts)-1]
+		parts := strings.Split(strings.Trim(fields[1], "/"), "/")
+		for i := len(parts) - 1; i >= 0; i-- {
+			p := parts[i]
+			if p == "init.scope" && i > 0 {
+				continue
+			}
+			if strings.HasSuffix(p, ".service") || strings.HasSuffix(p, ".scope") {
+				stale[p] = true
+				break
+			}
 		}
-		stale[parts[len(parts)-1]] = true
 	}
 	if err := sc.Err(); err != nil {
 		t.Fatal(err)
