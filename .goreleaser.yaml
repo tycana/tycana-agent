@@ -1,0 +1,98 @@
+# Release pipeline for the Tycana agent (ADR 0012).
+# Reproducible: pinned toolchain via go.mod, -trimpath, no VCS stamping,
+# empty build id, timestamps from the commit. Signed: cosign keyless bundle on
+# checksums.txt. SBOM per archive. SLSA provenance is produced by the release
+# workflow's slsa-github-generator job over the same checksums.
+version: 2
+project_name: tycana
+
+before:
+  hooks:
+    - go mod tidy
+    - go run ./tools/nowrite
+
+builds:
+  - id: tycanad
+    main: ./cmd/tycanad
+    binary: tycanad
+    env: [CGO_ENABLED=0]
+    goos: [linux]
+    goarch: [amd64, arm64]
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: [-trimpath, -buildvcs=false]
+    ldflags:
+      - -s -w -buildid=
+      - -X tycana.ai/agent/internal/buildinfo.Version={{ .Version }}
+      - -X tycana.ai/agent/internal/buildinfo.Commit={{ .FullCommit }}
+      - -X tycana.ai/agent/internal/buildinfo.Date={{ .CommitDate }}
+  - id: tycana
+    main: ./cmd/tycana
+    binary: tycana
+    env: [CGO_ENABLED=0]
+    goos: [linux]
+    goarch: [amd64, arm64]
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: [-trimpath, -buildvcs=false]
+    ldflags:
+      - -s -w -buildid=
+      - -X tycana.ai/agent/internal/buildinfo.Version={{ .Version }}
+      - -X tycana.ai/agent/internal/buildinfo.Commit={{ .FullCommit }}
+      - -X tycana.ai/agent/internal/buildinfo.Date={{ .CommitDate }}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - VERIFY.md
+      - SECURITY.md
+      - packaging/systemd/tycanad.service
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+sboms:
+  - id: archives
+    artifacts: archive
+    documents: ["{{ .ArtifactName }}.spdx.json"]
+
+signs:
+  - id: checksums
+    cmd: cosign
+    artifacts: checksum
+    signature: "${artifact}.sigstore.json"
+    output: true
+    args:
+      - sign-blob
+      - --yes
+      - --bundle
+      - "${signature}"
+      - "${artifact}"
+
+release:
+  github:
+    owner: tycana
+    name: tycana-agent
+  prerelease: auto
+  draft: false
+  footer: |
+    ## Verify before you run it
+    Every release is signed with Sigstore and carries SLSA Build L3 provenance and an SBOM.
+    See [VERIFY.md](https://github.com/tycana/tycana-agent/blob/{{ .Tag }}/VERIFY.md).
+
+    The agent never changes a host.
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"

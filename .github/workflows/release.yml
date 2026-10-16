@@ -1,0 +1,99 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write   # create the GitHub release and upload assets
+      id-token: write   # Sigstore keyless signing
+    outputs:
+      hashes: ${{ steps.hashes.outputs.hashes }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+      - name: observe-only source guard (ADR 0017)
+        run: make nowrite
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: subjects for SLSA provenance
+        id: hashes
+        run: echo "hashes=$(base64 -w0 < dist/checksums.txt)" >> "$GITHUB_OUTPUT"
+
+  provenance:
+    needs: goreleaser
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    # SLSA generators must be referenced by tag; the generator verifies itself.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: ${{ needs.goreleaser.outputs.hashes }}
+      upload-assets: true
+      provenance-name: multiple.intoto.jsonl
+
+  verify:
+    name: VERIFY.md steps pass against the published release
+    needs: [goreleaser, provenance]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - run: go install github.com/slsa-framework/slsa-verifier/v2/cli/slsa-verifier@v2.7.1
+      - name: download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir rel && cd rel
+          gh release download "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}"
+          ls -l
+      - name: signature on checksums
+        working-directory: rel
+        run: |
+          cosign verify-blob \
+            --bundle checksums.txt.sigstore.json \
+            --certificate-identity-regexp '^https://github.com/tycana/tycana-agent/\.github/workflows/release\.yml@refs/tags/v' \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            checksums.txt
+      - name: archives match checksums
+        working-directory: rel
+        run: sha256sum --check --ignore-missing checksums.txt
+      - name: provenance on every archive
+        working-directory: rel
+        run: |
+          for f in *.tar.gz; do
+            ~/go/bin/slsa-verifier verify-artifact "$f" \
+              --provenance-path multiple.intoto.jsonl \
+              --source-uri "github.com/${GITHUB_REPOSITORY}" \
+              --source-tag "${GITHUB_REF_NAME}"
+          done
+      - name: binary reports the tagged commit
+        working-directory: rel
+        run: |
+          tar xzf tycana_*_linux_amd64.tar.gz tycana
+          ./tycana version | tee out.txt
+          grep -q "${GITHUB_SHA:0:12}" out.txt

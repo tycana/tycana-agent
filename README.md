@@ -9,7 +9,8 @@ read-only queries, and no code path that modifies packages, services, or configu
 observes, reports, and signs what it saw. Changes are proposed to a human, who applies them with
 whatever they already use; the agent then verifies the result and issues a signed receipt.
 
-Status: pre-release. Nothing to install yet.
+Status: pre-release. Nothing to install yet. When there is, verify it first: see
+[VERIFY.md](VERIFY.md). The safety model is in [docs/SAFETY.md](docs/SAFETY.md).
 
 ## What it will do
 
@@ -26,6 +27,16 @@ Status: pre-release. Nothing to install yet.
 - Reproducible, signed builds with provenance and an SBOM. No self-update.
 - Tiny footprint, unprivileged where the operating system allows it.
 - Report-only is the product, not a mode.
+
+## Developing
+
+```sh
+make check    # vet, observe-only source guard, tests, build, unit security score, reproducible build
+make lint     # golangci-lint v2
+```
+
+Contributions need a DCO sign-off (`git commit -s`); see [CONTRIBUTING.md](CONTRIBUTING.md).
+Security reports go through [SECURITY.md](SECURITY.md), never an issue.
 
 ## License
 
