@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
+	"tycana.ai/agent/evidence"
 	"tycana.ai/agent/internal/baseline"
 	"tycana.ai/agent/internal/collect"
-	"tycana.ai/agent/internal/evidence"
 	"tycana.ai/agent/internal/inventory"
 	"tycana.ai/agent/internal/state"
 	"tycana.ai/agent/internal/updates"

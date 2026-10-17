@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"tycana.ai/agent/internal/inventory/dpkg"
+	"tycana.ai/agent/debversion"
 )
 
 // Change kinds. dpkg logs downgrades and reinstalls as "upgrade"; we tell
@@ -123,12 +123,12 @@ func none(v string) string {
 }
 
 func upgradeKind(from, to string) string {
-	a, errA := dpkg.ParseVersion(from)
-	b, errB := dpkg.ParseVersion(to)
+	a, errA := debversion.ParseVersion(from)
+	b, errB := debversion.ParseVersion(to)
 	if errA != nil || errB != nil {
 		return KindUpgrade
 	}
-	switch dpkg.Compare(a, b) {
+	switch debversion.Compare(a, b) {
 	case 1:
 		return KindDowngrade
 	case 0:

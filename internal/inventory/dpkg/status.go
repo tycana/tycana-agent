@@ -16,6 +16,8 @@ import (
 	"path"
 	"sort"
 	"strings"
+
+	"tycana.ai/agent/debversion"
 )
 
 // DefaultAdminDir is dpkg's database directory, relative to the root of the
@@ -32,12 +34,12 @@ type Package struct {
 	Name         string
 	Architecture string
 	MultiArch    string // "same", "foreign", "allowed", or ""
-	Version      Version
+	Version      debversion.Version
 	// SourceName and SourceVersion follow dpkg-query's ${source:Package}
 	// and ${source:Version}: they fall back to the binary package's own
 	// name and version when the Source field omits them.
 	SourceName    string
-	SourceVersion Version
+	SourceVersion debversion.Version
 	Want          string // unknown, install, hold, deinstall, purge
 	Flag          string // ok, reinstreq
 	State         string // not-installed, config-files, half-installed, unpacked, half-configured, triggers-awaited, triggers-pending, installed
@@ -241,7 +243,7 @@ func packageFromFields(f map[string]string) (Package, error) {
 		return p, fmt.Errorf("package %s: unknown Status %q", p.Name, f["status"])
 	}
 	if v, ok := f["version"]; ok && v != "" {
-		ver, err := ParseVersion(v)
+		ver, err := debversion.ParseVersion(v)
 		if err != nil {
 			return p, fmt.Errorf("package %s: %w", p.Name, err)
 		}
@@ -252,7 +254,7 @@ func packageFromFields(f map[string]string) (Package, error) {
 		name, rest, _ := strings.Cut(src, " ")
 		p.SourceName = name
 		if rest = strings.TrimSpace(rest); strings.HasPrefix(rest, "(") && strings.HasSuffix(rest, ")") {
-			ver, err := ParseVersion(rest[1 : len(rest)-1])
+			ver, err := debversion.ParseVersion(rest[1 : len(rest)-1])
 			if err != nil {
 				return p, fmt.Errorf("package %s: Source version: %w", p.Name, err)
 			}

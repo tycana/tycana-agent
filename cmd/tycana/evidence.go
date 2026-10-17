@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"tycana.ai/agent/evidence"
 	"tycana.ai/agent/internal/agent"
-	"tycana.ai/agent/internal/evidence"
 	"tycana.ai/agent/internal/state"
 	"tycana.ai/agent/internal/updates"
 )

@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	"tycana.ai/agent/internal/evidence"
+	"tycana.ai/agent/evidence"
 )
 
 // DefaultDir is the unit's StateDirectory.

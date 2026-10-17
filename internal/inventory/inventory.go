@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"tycana.ai/agent/debversion"
 	"tycana.ai/agent/internal/inventory/dpkg"
 	"tycana.ai/agent/internal/inventory/kernel"
 	"tycana.ai/agent/internal/inventory/osrelease"
@@ -247,7 +248,7 @@ func fromRPM(s *Snapshot, db *rpm.Database) []kernel.Candidate {
 	return cands
 }
 
-func evr(v dpkg.Version) string {
+func evr(v debversion.Version) string {
 	if v.Upstream == "" {
 		return ""
 	}
@@ -257,12 +258,12 @@ func evr(v dpkg.Version) string {
 // compareDeb orders two version strings that came out of a parsed dpkg
 // database, so they always parse.
 func compareDeb(a, b string) int {
-	va, errA := dpkg.ParseVersion(a)
-	vb, errB := dpkg.ParseVersion(b)
+	va, errA := debversion.ParseVersion(a)
+	vb, errB := debversion.ParseVersion(b)
 	if errA != nil || errB != nil {
 		return 0
 	}
-	return dpkg.Compare(va, vb)
+	return debversion.Compare(va, vb)
 }
 
 func compareRPM(a, b string) int {

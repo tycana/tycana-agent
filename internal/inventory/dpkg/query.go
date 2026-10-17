@@ -3,6 +3,8 @@ package dpkg
 import (
 	"bufio"
 	"io"
+
+	"tycana.ai/agent/debversion"
 )
 
 // QueryFormat is the dpkg-query --showformat that WriteQuery reproduces
@@ -34,7 +36,7 @@ func (db *Database) WriteQuery(w io.Writer) error {
 
 // versionField prints a version as dpkg-query does, which is the empty
 // string when the package has none.
-func versionField(v Version) string {
+func versionField(v debversion.Version) string {
 	if v.Upstream == "" {
 		return ""
 	}

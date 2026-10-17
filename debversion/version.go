@@ -1,4 +1,8 @@
-package dpkg
+// Package debversion parses and compares Debian package versions with
+// dpkg's rules. It is a public package so that a control plane can compare
+// installed versions with vendor data in the same way as the agent (ADR
+// 0016: the contracts between the agent and a control plane are public).
+package debversion
 
 import (
 	"errors"

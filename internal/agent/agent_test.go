@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"tycana.ai/agent/internal/evidence"
+	"tycana.ai/agent/evidence"
 	"tycana.ai/agent/internal/inventory"
 	"tycana.ai/agent/internal/state"
 )

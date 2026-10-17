@@ -4,7 +4,9 @@
 // SHA-256 of the previous record's payload (the signed Statement bytes).
 //
 // The package does no I/O. internal/state keeps the key and the record
-// files; the commands read them.
+// files; the commands read them. It is a public package because the
+// record format is a contract between the agent and any control plane
+// (ADR 0016): a verifier imports it rather than copying it.
 package evidence
 
 import (
