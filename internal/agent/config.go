@@ -11,10 +11,17 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"regexp"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"go.yaml.in/yaml/v3"
 )
+
+// ConfigPath is the agent's configuration file. /etc/tycana is
+// root-owned; the file holds no secret, so the CLI reads the tags from it.
+const ConfigPath = "/etc/tycana/tycanad.yaml"
 
 // Config is /etc/tycana/tycanad.yaml. Every field is optional.
 type Config struct {
@@ -28,6 +35,11 @@ type Config struct {
 	// BaselineTarget is the target percent of the score of the checked
 	// rules (0: the default, 95).
 	BaselineTarget float64 `yaml:"baseline_target"`
+	// Tags are the operator's key=value statements about the host
+	// (tycana-hq ADR 0031): "owner", "client", "internet" (yes or no),
+	// and others. The agent signs them in each record as given and
+	// never infers them.
+	Tags map[string]string `yaml:"tags"`
 }
 
 // Defaults: one cycle each hour, 30 days of records on the host (Mark,
@@ -104,5 +116,40 @@ func (c Config) withDefaults() (Config, error) {
 	if c.BaselineTarget < 0 || c.BaselineTarget > 100 {
 		return c, fmt.Errorf("baseline_target %v is not a percent", c.BaselineTarget)
 	}
+	if err := checkTags(c.Tags); err != nil {
+		return c, err
+	}
 	return c, nil
+}
+
+// Limits of the tags: a tag is data from the operator, shown and never
+// interpreted, and it goes into every record.
+const (
+	MaxTags     = 16
+	MaxTagValue = 128
+)
+
+var tagKey = regexp.MustCompile(`^[a-z][a-z0-9_.-]{0,31}$`)
+
+func checkTags(tags map[string]string) error {
+	if len(tags) > MaxTags {
+		return fmt.Errorf("tags: %d tags, at most %d", len(tags), MaxTags)
+	}
+	for k, v := range tags {
+		if !tagKey.MatchString(k) {
+			return fmt.Errorf("tags: key %q: use 1 to 32 characters a-z, 0-9, _ . -, starting with a letter", k)
+		}
+		if len(v) > MaxTagValue || !utf8.ValidString(v) {
+			return fmt.Errorf("tags: %s: the value is longer than %d bytes or not UTF-8", k, MaxTagValue)
+		}
+		for _, r := range v {
+			if !unicode.IsPrint(r) {
+				return fmt.Errorf("tags: %s: the value has a control character", k)
+			}
+		}
+		if k == "internet" && v != "yes" && v != "no" {
+			return fmt.Errorf("tags: internet is %q; use yes or no", v)
+		}
+	}
+	return nil
 }

@@ -54,6 +54,17 @@ type Header struct {
 	// first and the last cycle that saw it). It tells a halt from an
 	// agent that did not run (Mark, 2026-10-17, ADR 0025).
 	Halted *Halt `json:"halted,omitempty"`
+	// Operator is what the operator states about the host in the
+	// agent's configuration (tycana-hq ADR 0031). It is the operator's
+	// statement, signed as given; the agent did not observe it.
+	Operator *Operator `json:"operator,omitempty"`
+}
+
+// Operator is the operator's statement about a host.
+type Operator struct {
+	// Tags are key=value pairs: the well-known keys "owner", "client",
+	// and "internet" ("yes" or "no"), and any others.
+	Tags map[string]string `json:"tags,omitempty"`
 }
 
 // Halt is a period in which the halt file stopped the agent.

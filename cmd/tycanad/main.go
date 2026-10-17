@@ -54,7 +54,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		fs.PrintDefaults()
 	}
 	showVersion := fs.Bool("version", false, "print build information and exit")
-	configPath := fs.String("config", "/etc/tycana/tycanad.yaml", "path to the agent configuration")
+	configPath := fs.String("config", agent.ConfigPath, "path to the agent configuration")
 	stateDir := fs.String("state-dir", state.DefaultDir, "the agent's state directory (the unit's StateDirectory)")
 	once := fs.Bool("once", false, "run one cycle and exit")
 	if err := fs.Parse(args); err != nil {

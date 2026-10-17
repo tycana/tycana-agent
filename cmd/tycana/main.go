@@ -24,8 +24,8 @@ Commands:
   updates     updates waiting on this host, and what its own autopilot installs (--format json)
   restart     services still using replaced files, and a waiting kernel (--format json)
   baseline    configuration baseline: coverage and score (--format json, --list)
-  status      the latest state that tycanad signed, and its chain of records
-  evidence    export the signed records as a bundle, or verify a bundle
+  status      what to do now: updates by source package or advisory, reboot, restarts (no sudo)
+  evidence    the signed state and its chain (status, sudo); export or verify a bundle
   version     print build information (--json for machine-readable output)
   help        print this help
 

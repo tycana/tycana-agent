@@ -15,6 +15,7 @@ Status: pre-release. Nothing to install yet. When there is, verify it first: see
 What works today, on Debian, Ubuntu, and the RHEL 9 family, as an ordinary user:
 
 ```sh
+go run ./cmd/tycana status                          # what to do first: updates by source package or advisory, reboot, restarts
 go run ./cmd/tycana inventory                       # packages, OS, kernels
 go run ./cmd/tycana inventory --format dpkg-query   # byte-identical to dpkg-query -W (see --help)
 go run ./cmd/tycana inventory --format rpm-query    # byte-identical to rpm -qa --qf (see --help)
@@ -63,9 +64,14 @@ expiry date.
 The daemon `tycanad` runs as an unprivileged systemd service. Each hour it reads the host and
 signs two records with a key generated on the host: the inventory, and the assessment (pending
 updates, restart state, baseline). The records form a hash chain and stay on the host for 30
-days. `sudo tycana status` shows the latest signed state; `sudo tycana evidence export` writes
+days. `sudo tycana evidence status` shows the latest signed state; `sudo tycana evidence export` writes
 them as one bundle; `tycana evidence verify` checks a bundle anywhere, and
 [VERIFY.md](VERIFY.md) shows how to check it with OpenSSL or cosign instead.
+
+The operator can add tags to `/etc/tycana/tycanad.yaml`, for example
+`tags: {owner: web-team, client: acme, internet: "no"}`. Each record carries them as the
+operator's statement, signed as given; the agent never infers them. At most 16 tags; keys are
+lower case; `internet` is `yes` or `no`.
 
 On the four lab hosts, every record verified with OpenSSL and with cosign. The package list in
 each record was identical to dpkg-query or rpm -qa.

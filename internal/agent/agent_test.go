@@ -111,6 +111,30 @@ func TestCyclesMakeOneChain(t *testing.T) {
 	}
 }
 
+// TestTagsInRecords: the operator's tags are in both records of a cycle,
+// as the operator's statement.
+func TestTagsInRecords(t *testing.T) {
+	dir := t.TempDir()
+	c := &clock{time.Date(2026, 10, 17, 12, 0, 0, 0, time.UTC)}
+	a := newAgent(t, dir, c)
+	a.Config.Tags = map[string]string{"owner": "web-team", "internet": "no"}
+	if err := a.Cycle(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	recs, _ := state.Reader(dir).Records()
+	if len(recs) != 2 {
+		t.Fatalf("%d records", len(recs))
+	}
+	for _, r := range recs {
+		raw, _ := state.ReadRecord(r)
+		var env evidence.Envelope
+		_ = json.Unmarshal(raw, &env)
+		if p := mustPayload(t, env); !strings.Contains(p, `"operator":{"tags":{"internet":"no","owner":"web-team"}}`) {
+			t.Errorf("record %d: %s", r.Sequence, p[:300])
+		}
+	}
+}
+
 func mustPayload(t *testing.T, env evidence.Envelope) string {
 	t.Helper()
 	b, err := decodeB64(env.Payload)
@@ -270,6 +294,11 @@ func TestConfig(t *testing.T) {
 		"retention_days: -1\n":               false,
 		"apply: yes\n":                       false,
 		"":                                   true,
+		"tags: {owner: web-team, client: acme, internet: \"yes\"}\n": true,
+		"tags: {internet: maybe}\n":                                  false,
+		"tags: {Owner: x}\n":                                         false,
+		"tags: {owner: \"a\\nb\"}\n":                                 false,
+		"tags: {owner: " + strings.Repeat("x", 129) + "}\n":          false,
 	} {
 		_ = os.WriteFile(p, []byte(body), 0o600)
 		if _, err := LoadConfig(p); (err == nil) != ok {

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -17,8 +18,13 @@ import (
 	"tycana.ai/agent/internal/updates"
 )
 
-const evidenceUsage = `Usage: tycana evidence export [--state-dir DIR] [--since DATE] > bundle.json
+const evidenceUsage = `Usage: tycana evidence status [--state-dir DIR]
+       tycana evidence export [--state-dir DIR] [--since DATE] > bundle.json
        tycana evidence verify [--key PUBLIC-KEY] BUNDLE
+
+status shows the latest state that tycanad signed on this host and whether
+its chain of records is complete. Only root and the tycana user can read
+the records; run it with sudo.
 
 export writes the signed records that tycanad keeps on this host, with the
 public keys that signed them, as one JSON bundle on standard output, and a
@@ -37,6 +43,8 @@ func runEvidence(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	switch args[0] {
+	case "status":
+		return runEvidenceStatus(args[1:], stdout, stderr)
 	case "export":
 		return runExport(args[1:], stdout, stderr)
 	case "verify":
@@ -243,6 +251,17 @@ func writeEvidenceSummary(w io.Writer, b *evidence.Bundle, r evidence.ChainRepor
 	h := ls.Header.Host
 	if h.Hostname != "" {
 		fmt.Fprintf(w, "Host: %s (%s %s), host id %s.\n", safe(h.Hostname), safe(h.OS), safe(h.OSVersion), safe(h.ID))
+	}
+	if op := ls.Header.Operator; op != nil && len(op.Tags) > 0 {
+		keys := make([]string, 0, len(op.Tags))
+		for k := range op.Tags {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for i, k := range keys {
+			keys[i] = safe(k) + "=" + safe(op.Tags[k])
+		}
+		fmt.Fprintf(w, "Tags (the operator's statement, signed as given): %s.\n", strings.Join(keys, ", "))
 	}
 	fmt.Fprintf(w, "Records: %d in the bundle, %d verify", len(b.Records), r.Records)
 	if r.Records > 0 {

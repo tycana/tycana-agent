@@ -215,6 +215,9 @@ func (a *Agent) sign(typ string, host evidence.HostInfo, errs []evidence.Collect
 		Errors: errs,
 		Halted: halt,
 	}
+	if len(a.Config.Tags) > 0 {
+		h.Operator = &evidence.Operator{Tags: a.Config.Tags}
+	}
 	payload, err := evidence.NewStatement(h, a.key.PublicDER, body)
 	if err != nil {
 		return err
