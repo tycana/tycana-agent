@@ -59,8 +59,9 @@ than the retention (30 days by default) are deleted, but never the newest 50. Th
 and how to check it without Tycana are in `VERIFY.md`.
 
 **Halt.** While `/etc/tycana/halt` exists (any kind of file), the agent collects nothing and
-signs nothing. It checks before each cycle and again before it signs. `/etc/tycana` belongs
-to root, so only root can make the file.
+signs nothing. It checks before each cycle and again before it signs. The first records after a halt state
+when the agent first and last saw the file, so a halt is not mistaken for an agent that did not
+run. `/etc/tycana` belongs to root, so only root can make the file.
 
 **Self-check.** At start the agent hashes its own binary. If a package installed it, the
 agent compares the hash with the package database (dpkg's MD5, rpm's file digest) and exits

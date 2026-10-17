@@ -92,7 +92,10 @@ KeyringMode=private
 NotifyAccess=none
 
 # Resources: the agent is meant to be tiny (spec §8).
-MemoryMax=128M
+# 256M (Mark, 2026-10-17, tycana-hq ADR 0025): tycanad itself uses
+# 16-30 MiB, but apt-get (113 MiB RSS) and dnf (108 MiB) run inside
+# this cgroup for the update list, and 128M left them about 15 MiB.
+MemoryMax=256M
 TasksMax=64
 CPUQuota=20%
 

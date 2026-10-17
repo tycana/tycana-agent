@@ -270,6 +270,10 @@ func writeEvidenceSummary(w io.Writer, b *evidence.Bundle, r evidence.ChainRepor
 			fmt.Fprintf(w, "  - %s\n", x)
 		}
 	}
+	for _, h := range halts(b) {
+		fmt.Fprintf(w, "Halt: %s to %s UTC. The operator's halt file stopped the agent; it signed nothing in that time.\n",
+			h.From.UTC().Format("2006-01-02 15:04"), h.To.UTC().Format("2006-01-02 15:04"))
+	}
 	if ls.HaveInv || ls.HaveAssess {
 		fmt.Fprintf(w, "\nLatest state, signed %s UTC:\n", ls.Header.Record.Created.UTC().Format("2006-01-02 15:04"))
 		writeState(w, ls)
@@ -277,6 +281,22 @@ func writeEvidenceSummary(w io.Writer, b *evidence.Bundle, r evidence.ChainRepor
 	fmt.Fprintln(w, "\nA valid signature shows that nobody without this host's key changed a record after the\n"+
 		"agent signed it. It does not show that the host reported the truth: root on the host can\n"+
 		"read the key.")
+}
+
+// halts lists the halts the records name, once each.
+func halts(b *evidence.Bundle) []evidence.Halt {
+	var out []evidence.Halt
+	for _, raw := range b.Records {
+		h, err := header(raw)
+		if err != nil || h.Halted == nil {
+			continue
+		}
+		if n := len(out); n > 0 && out[n-1] == *h.Halted {
+			continue
+		}
+		out = append(out, *h.Halted)
+	}
+	return out
 }
 
 func writeState(w io.Writer, ls latestState) {

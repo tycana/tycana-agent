@@ -146,6 +146,30 @@ func TestHalt(t *testing.T) {
 	if recs, _ := a.Store.Records(); len(recs) != 0 {
 		t.Fatalf("agent signed after the halt file appeared: %d records", len(recs))
 	}
+	// The halt ends: the first cycle's two records name it, the next do not.
+	a.Collect = collect
+	_ = os.Remove(a.HaltPath)
+	m, err := a.Store.HaltMarker()
+	if err != nil || m == nil || m.To.Before(m.From) {
+		t.Fatalf("marker %+v %v", m, err)
+	}
+	for range 2 {
+		if err := a.Cycle(context.Background()); err != nil {
+			t.Fatal(err)
+		}
+	}
+	recs, _ := a.Store.Records()
+	for i, r := range recs {
+		raw, _ := state.ReadRecord(r)
+		var env evidence.Envelope
+		_ = json.Unmarshal(raw, &env)
+		if has := strings.Contains(mustPayload(t, env), `"halted":{"from"`); has != (i < 2) {
+			t.Errorf("record %d: halted %v", r.Sequence, has)
+		}
+	}
+	if m, _ := a.Store.HaltMarker(); m != nil {
+		t.Errorf("marker not cleared: %+v", m)
+	}
 }
 
 func TestKeyIsKeptAndReplacedOnlyWhenBroken(t *testing.T) {

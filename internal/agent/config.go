@@ -30,8 +30,9 @@ type Config struct {
 	BaselineTarget float64 `yaml:"baseline_target"`
 }
 
-// Provisional defaults: Mark chooses them (tycana-hq inbox item 1.1,
-// 2026-10-17). Until then, one cycle each hour and 30 days of records.
+// Defaults: one cycle each hour, 30 days of records on the host (Mark,
+// 2026-10-17, tycana-hq old inbox item 1.1, answer 2 A). Older evidence
+// lives in the exports the operator keeps.
 const (
 	DefaultInterval      = time.Hour
 	DefaultRetentionDays = 30

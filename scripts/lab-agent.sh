@@ -7,7 +7,8 @@
 # Installs bin/tycanad and bin/tycana in /usr/bin, the unit, and the
 # sysusers file; empties /var/lib/tycanad; starts the unit and waits for
 # its first cycle; restarts it for a second cycle; checks that the halt
-# file stops a cycle; exports the bundle as root. OUTDIR gets the bundle,
+# file stops a cycle and that the next records name the halt; exports the
+# bundle as root. OUTDIR gets the bundle,
 # the native package list, the unit's resource counters, and the journal.
 # Restore the VM's snapshot afterwards: this script changes the VM.
 set -euo pipefail
@@ -57,7 +58,13 @@ sleep 8
 n=$(records)
 echo "halted restart: $n records (want 4)" | tee -a "$out/counters.txt"
 [ "$n" -eq 4 ] || { echo "halt file did not stop the cycle" >&2; exit 1; }
-remote 'rm /etc/tycana/halt; systemctl stop tycanad'
+# The first cycle after the halt names it in both records.
+remote 'rm /etc/tycana/halt; systemctl restart tycanad'
+wait_records 6
+remote 'systemctl stop tycanad'
+h=$(remote 'zcat /var/lib/tycanad/records/0000000005.host-inventory.json.gz' | python3 -c 'import sys,json,base64; print("halted" in json.loads(base64.b64decode(json.load(sys.stdin)["payload"]))["predicate"])')
+echo "record after the halt names it: $h (want True)" | tee -a "$out/counters.txt"
+[ "$h" = True ] || { echo "no halt record" >&2; exit 1; }
 
 remote 'ls -l /var/lib/tycanad/records /var/lib/tycanad/key; du -sb /var/lib/tycanad/records' > "$out/store.txt"
 remote 'tycana evidence export > /tmp/bundle.json 2> /tmp/summary.txt; chmod 644 /tmp/bundle.json /tmp/summary.txt'

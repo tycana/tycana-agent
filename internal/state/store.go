@@ -3,6 +3,7 @@ package state
 import (
 	"bytes"
 	"compress/gzip"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -270,4 +271,41 @@ func (s *Store) write(dir, name string, data []byte, mode os.FileMode) (err erro
 	}
 	defer func() { _ = d.Close() }()
 	return d.Sync()
+}
+
+const haltFile = "halt.json"
+
+// HaltMarker reads the halt marker: when the agent first and last saw
+// the halt file. It returns nil when there is none.
+func (s *Store) HaltMarker() (*evidence.Halt, error) {
+	b, err := os.ReadFile(filepath.Join(s.dir, haltFile))
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	var h evidence.Halt
+	if err := json.Unmarshal(b, &h); err != nil {
+		return nil, fmt.Errorf("state: %s: %w", haltFile, err)
+	}
+	return &h, nil
+}
+
+// SetHaltMarker keeps the halt marker.
+func (s *Store) SetHaltMarker(h evidence.Halt) error {
+	b, err := json.Marshal(h)
+	if err != nil {
+		return err
+	}
+	return s.write(s.dir, haltFile, b, 0o600)
+}
+
+// ClearHaltMarker removes the halt marker.
+func (s *Store) ClearHaltMarker() error {
+	err := os.Remove(filepath.Join(s.dir, haltFile))
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
+	return err
 }

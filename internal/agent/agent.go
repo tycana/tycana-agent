@@ -161,29 +161,51 @@ func (a *Agent) Halted() bool {
 func (a *Agent) Cycle(ctx context.Context) error {
 	if a.Halted() {
 		a.Log.Info("halt file present: no collection and no records", "path", a.HaltPath)
-		return nil
+		return a.markHalt()
 	}
 	start := a.Now()
 	inv, as, errs := a.Collect(ctx, start)
 	if a.Halted() {
 		a.Log.Info("halt file appeared during the cycle: nothing signed", "path", a.HaltPath)
-		return nil
+		return a.markHalt()
+	}
+	halt, err := a.Store.HaltMarker()
+	if err != nil {
+		a.storeErr(fmt.Sprintf("halt marker: %v", err))
 	}
 	a.cycle++
 	errs = append(a.storeErrs, errs...)
 	a.storeErrs = nil
 	host := a.hostInfo(inv.Inventory)
-	if err := a.sign(evidence.TypeHostInventory, host, errs, inv); err != nil {
+	if err := a.sign(evidence.TypeHostInventory, host, errs, halt, inv); err != nil {
 		return err
 	}
-	if err := a.sign(evidence.TypeHostAssessment, host, errs, as); err != nil {
+	if err := a.sign(evidence.TypeHostAssessment, host, errs, halt, as); err != nil {
 		return err
+	}
+	if halt != nil {
+		// Both records of this cycle name the halt; the next do not.
+		if err := a.Store.ClearHaltMarker(); err != nil {
+			return err
+		}
 	}
 	a.Log.Info("signed records", "cycle", a.cycle, "sequence", a.seq, "errors", len(errs), "seconds", a.Now().Sub(start).Seconds())
 	return a.prune()
 }
 
-func (a *Agent) sign(typ string, host evidence.HostInfo, errs []evidence.CollectError, body any) error {
+// markHalt records that a cycle saw the halt file: the first time it was
+// seen stays, the last time moves.
+func (a *Agent) markHalt() error {
+	now := a.Now().UTC().Truncate(time.Millisecond)
+	h, err := a.Store.HaltMarker()
+	if err != nil || h == nil {
+		h = &evidence.Halt{From: now}
+	}
+	h.To = now
+	return a.Store.SetHaltMarker(*h)
+}
+
+func (a *Agent) sign(typ string, host evidence.HostInfo, errs []evidence.CollectError, halt *evidence.Halt, body any) error {
 	h := evidence.Header{
 		Record: evidence.RecordInfo{Type: typ, Sequence: a.seq + 1, Previous: a.prevDigest,
 			PreviousKeyID: a.prevKeyID, Created: a.Now().UTC().Truncate(time.Millisecond), Cycle: a.cycle},
@@ -191,6 +213,7 @@ func (a *Agent) sign(typ string, host evidence.HostInfo, errs []evidence.Collect
 		Agent: evidence.AgentInfo{Version: a.Version, Commit: a.Commit, BinarySHA256: a.Check.SHA256,
 			SelfCheck: a.Check.Result},
 		Errors: errs,
+		Halted: halt,
 	}
 	payload, err := evidence.NewStatement(h, a.key.PublicDER, body)
 	if err != nil {

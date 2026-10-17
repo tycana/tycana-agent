@@ -49,6 +49,17 @@ type Header struct {
 	// Errors names each collector that failed in this cycle. A record
 	// with errors is incomplete, and says so.
 	Errors []CollectError `json:"errors,omitempty"`
+	// Halted is set on the records of the first cycle after a halt: the
+	// operator's halt file stopped the agent between From and To (the
+	// first and the last cycle that saw it). It tells a halt from an
+	// agent that did not run (Mark, 2026-10-17, ADR 0025).
+	Halted *Halt `json:"halted,omitempty"`
+}
+
+// Halt is a period in which the halt file stopped the agent.
+type Halt struct {
+	From time.Time `json:"from"`
+	To   time.Time `json:"to"`
 }
 
 // RecordInfo places a record in the host's chain.
