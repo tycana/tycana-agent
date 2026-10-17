@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"tycana.ai/agent/internal/sqlitero"
+	"tycana.ai/agent/rpmversion"
 )
 
 // DBFile is the name of rpm's SQLite database inside the database
@@ -38,7 +39,7 @@ type Package struct {
 	// returned in this order, which is the order rpm -qa prints.
 	Instance int64
 	Name     string
-	EVR      EVR
+	EVR      rpmversion.EVR
 	Arch     string // "" for gpg-pubkey entries
 	// SourceRPM is the %{SOURCERPM} tag, "" for gpg-pubkey entries.
 	SourceRPM string

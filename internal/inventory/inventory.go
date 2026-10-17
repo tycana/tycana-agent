@@ -16,6 +16,7 @@ import (
 	"tycana.ai/agent/internal/inventory/kernel"
 	"tycana.ai/agent/internal/inventory/osrelease"
 	"tycana.ai/agent/internal/inventory/rpm"
+	"tycana.ai/agent/rpmversion"
 )
 
 // Schema names the snapshot format. Bump it on any incompatible change.
@@ -267,5 +268,5 @@ func compareDeb(a, b string) int {
 }
 
 func compareRPM(a, b string) int {
-	return rpm.Compare(rpm.ParseEVR(a), rpm.ParseEVR(b))
+	return rpmversion.Compare(rpmversion.ParseEVR(a), rpmversion.ParseEVR(b))
 }

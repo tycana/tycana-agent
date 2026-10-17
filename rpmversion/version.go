@@ -1,4 +1,9 @@
-package rpm
+// Package rpmversion parses and compares rpm package versions with rpm's
+// rules (lib/rpmvercmp.c). It is a public package so that a control plane
+// can compare installed versions with vendor data in the same way as the
+// agent (ADR 0016: the contracts between the agent and a control plane are
+// public).
+package rpmversion
 
 import (
 	"strconv"
@@ -154,24 +159,3 @@ func Vercmp(a, b string) int {
 func isDigit(c byte) bool { return c >= '0' && c <= '9' }
 func isAlpha(c byte) bool { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') }
 func isAlnum(c byte) bool { return isDigit(c) || isAlpha(c) }
-
-// SourceRPM splits a SOURCERPM value, "name-version-release.src.rpm",
-// into its name and version-release. ok is false for anything else,
-// including the "(none)" of gpg-pubkey entries.
-func SourceRPM(s string) (name, vr string, ok bool) {
-	base, found := strings.CutSuffix(s, ".src.rpm")
-	if !found {
-		if base, found = strings.CutSuffix(s, ".nosrc.rpm"); !found {
-			return "", "", false
-		}
-	}
-	r := strings.LastIndexByte(base, '-')
-	if r <= 0 {
-		return "", "", false
-	}
-	v := strings.LastIndexByte(base[:r], '-')
-	if v <= 0 {
-		return "", "", false
-	}
-	return base[:v], base[v+1:], true
-}
