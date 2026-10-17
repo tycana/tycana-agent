@@ -43,6 +43,12 @@ type Result struct {
 	// Reason says why, in one line: what was found against what was
 	// expected, or what could not be read.
 	Reason string `json:"reason,omitempty"`
+	// Note is set on a failed check when the rule is stricter than the
+	// system it checks: the system's own behaviour meets the intent, and
+	// the source rule still fails it. The verdict stays the source's (the
+	// result OpenSCAP gives); the note says what the rule wants beyond
+	// the system (Mark, 2026-10-16, old inbox item 3.4, option A).
+	Note string `json:"note,omitempty"`
 	// Found is the status before an exception applied.
 	Found     Status     `json:"found,omitempty"`
 	Exception *Exception `json:"exception,omitempty"`
@@ -58,6 +64,73 @@ type Report struct {
 	// NotCovered lists the source rules this baseline does not evaluate.
 	NotCovered []Uncovered `json:"not_covered,omitempty"`
 	Score      Score       `json:"score"`
+	// Benchmark is the coverage per benchmark recommendation. Nil when the
+	// baseline has no benchmark data (a hand-written baseline).
+	Benchmark *BenchmarkCoverage `json:"benchmark,omitempty"`
+}
+
+// BenchmarkCoverage counts the automated recommendations of the benchmark
+// that the source profile follows. A recommendation is checked only when
+// the baseline has a check for every rule that implements it (the method
+// of the coverage checkpoint, tycana-hq research 2026-10-16).
+type BenchmarkCoverage struct {
+	Level string `json:"level"`
+	// Automated is the number of automated recommendations at Level.
+	Automated int `json:"automated"`
+	// Checked is the number of recommendations the baseline has a check
+	// for each rule of.
+	Checked int `json:"checked"`
+	// Partly is the number it has checks for some, not all, rules of.
+	// They are not in Checked.
+	Partly int `json:"partly"`
+	// Percent is Checked / Automated * 100, rounded down to one decimal
+	// place.
+	Percent float64 `json:"percent"`
+	// Evaluated is the number of Checked recommendations whose every
+	// check read the host on this run: pass, fail, or not applicable,
+	// before any exception. The others have an unknown or faulty check.
+	Evaluated int `json:"evaluated"`
+}
+
+func benchmarkCoverage(bm *Benchmark, results []Result) *BenchmarkCoverage {
+	if bm == nil {
+		return nil
+	}
+	found := map[string]Status{}
+	for _, r := range results {
+		st := r.Status
+		if st == Excepted {
+			st = r.Found
+		}
+		found[r.ID] = st
+	}
+	c := &BenchmarkCoverage{Level: bm.Level, Automated: bm.Automated}
+	for _, rec := range bm.Recommendations {
+		n, read := 0, 0
+		for _, id := range rec {
+			st, ok := found[id]
+			if !ok {
+				continue
+			}
+			n++
+			if st == Pass || st == Fail || st == NotApplicable {
+				read++
+			}
+		}
+		switch {
+		case n == len(rec):
+			c.Checked++
+			if read == n {
+				c.Evaluated++
+			}
+		case n > 0:
+			c.Partly++
+		}
+	}
+	if c.Automated > 0 {
+		c.Percent = float64(c.Checked*1000/c.Automated) / 10
+	}
+	return c
 }
 
 // Score is passed checks over evaluated checks, with the coverage of the

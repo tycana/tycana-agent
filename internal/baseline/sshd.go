@@ -118,3 +118,71 @@ func (s *SSHDCheck) allowed(v string) bool {
 	}
 	return v == s.Value
 }
+
+// stricter notes a check that fails although sshd itself gets an allowed
+// value. sshd uses the first value it reads for a keyword, and it reads
+// an Include at the place of the Include line; the rule wants every line
+// to have an allowed value, and without DropIns it reads only
+// sshd_config. The note is given only when the first value sshd reads,
+// before any Match block, is allowed.
+func (s *SSHDCheck) stricter(h *Host) string {
+	if _, ok := h.Packages[s.Package]; !ok {
+		return ""
+	}
+	v, from, ok := s.sshdValue(h)
+	if !ok || !s.allowed(v) {
+		return ""
+	}
+	if !s.DropIns && from != sshdConfig {
+		return "The rule reads only " + sshdConfig + ". sshd gets " + s.Keyword + " " + v + " from " + from + ", which the rule does not read."
+	}
+	return "sshd uses the first value it reads, " + s.Keyword + " " + v + " from " + from + ". The rule wants every line that sets " + s.Keyword + " to have an allowed value."
+}
+
+// sshdValue is the value sshd uses for s.Keyword outside Match blocks:
+// the first one in sshd_config, with each "Include" of sshd_config.d
+// read in its place, in lexical order. It reports false when it cannot
+// tell (an unreadable file, or an Include of other files).
+func (s *SSHDCheck) sshdValue(h *Host) (value, from string, ok bool) {
+	b, err := h.ReadFile(sshdConfig)
+	if err != nil {
+		return "", "", false
+	}
+	key := regexp.MustCompile(`^(?i)` + s.Keyword + `(?-i)[ \t]+(.+?)[ \t]*(?:$|#)`)
+	var walk func(path string, data []byte, depth int) (string, string, bool, bool)
+	// walk returns value, file, found, and stop (a Match line or an
+	// Include the agent cannot follow ends the search).
+	walk = func(path string, data []byte, depth int) (string, string, bool, bool) {
+		for _, line := range strings.Split(string(data), "\n") {
+			line = strings.TrimLeft(line, " \t")
+			f := strings.Fields(line)
+			if len(f) == 0 || strings.HasPrefix(f[0], "#") {
+				continue
+			}
+			switch strings.ToLower(f[0]) {
+			case "match":
+				return "", "", false, true
+			case "include":
+				if depth > 0 || len(f) != 2 || f[1] != sshdDropIn+"/*.conf" {
+					return "", "", false, true
+				}
+				for _, p := range confFiles(h, sshdDropIn) {
+					d, err := h.ReadFile(p)
+					if err != nil {
+						return "", "", false, true
+					}
+					if v, from, found, stop := walk(p, d, depth+1); found || stop {
+						return v, from, found, stop
+					}
+				}
+				continue
+			}
+			if m := key.FindStringSubmatch(line); m != nil {
+				return m[1], path, true, false
+			}
+		}
+		return "", "", false, false
+	}
+	v, from, found, _ := walk(sshdConfig, b, 0)
+	return v, from, found
+}

@@ -38,6 +38,27 @@ type Baseline struct {
 	Applies    []Release   `yaml:"applies"`
 	Checks     []Check     `yaml:"checks"`
 	NotCovered []Uncovered `yaml:"not_covered,omitempty"`
+	// Benchmark is the benchmark the source profile follows, counted
+	// per recommendation. Nil for a hand-written baseline.
+	Benchmark *Benchmark `yaml:"benchmark,omitempty"`
+}
+
+// Benchmark counts the automated recommendations of the benchmark that
+// the source profile follows, at the profile's level. It carries no
+// recommendation numbers or titles (no CIS data; tycana-hq inbox, old
+// item 1.1, option A): each recommendation is only the list of source
+// rules that implement it. Coverage per recommendation is Mark's decision
+// of 2026-10-16 (old inbox item 3.6, option A).
+type Benchmark struct {
+	// Level is the source's level id, for example l1_server.
+	Level string `yaml:"level"`
+	// Automated is the number of automated recommendations at Level:
+	// the denominator of the coverage sentence.
+	Automated int `yaml:"automated"`
+	// Recommendations holds the rule ids of each automated
+	// recommendation that has source rules. Automated minus their
+	// number have no source rule at all.
+	Recommendations [][]string `yaml:"recommendations"`
 }
 
 // Source records where generated content came from.
@@ -136,6 +157,21 @@ func (b *Baseline) validate() error {
 		}
 		if err := c.validate(); err != nil {
 			return fmt.Errorf("check %s: %w", c.ID, err)
+		}
+	}
+	if bm := b.Benchmark; bm != nil {
+		if bm.Automated < len(bm.Recommendations) {
+			return fmt.Errorf("benchmark: %d automated recommendations, but %d listed", bm.Automated, len(bm.Recommendations))
+		}
+		for i, rec := range bm.Recommendations {
+			if len(rec) == 0 {
+				return fmt.Errorf("benchmark: recommendation %d has no rules", i+1)
+			}
+			for _, id := range rec {
+				if !idRE.MatchString(id) {
+					return fmt.Errorf("benchmark: recommendation %d: rule id %q is not valid", i+1, id)
+				}
+			}
 		}
 	}
 	return nil

@@ -158,3 +158,26 @@ func sandboxMount(mt *Mount) bool {
 func sandboxed(ms []Mount) bool {
 	return slices.ContainsFunc(ms, func(m Mount) bool { return sandboxMount(&m) })
 }
+
+// stricter notes a check that fails only because the path has no
+// /etc/fstab line, when the host's mount has the option now. The rule
+// wants an fstab line (the /dev/shm rules); the kernel and systemd do
+// not need one.
+func (m *MountCheck) stricter(h *Host) string {
+	if m.MustExist {
+		return ""
+	}
+	if l, err := fstabLine(h, m.Path, true, m.ExcludeFSType); err != nil || l != nil {
+		return ""
+	}
+	rt := hostMount(h, m.Path)
+	if !rt.mounted || !rt.certain || len(rt.options) == 0 {
+		return ""
+	}
+	for _, opts := range rt.options {
+		if !slices.Contains(opts, m.Option) {
+			return ""
+		}
+	}
+	return "The rule wants a line for " + m.Path + " in /etc/fstab. The mount has " + m.Option + " now, but the rule does not accept a mount without an fstab line."
+}

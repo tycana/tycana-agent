@@ -224,3 +224,72 @@ func describe(ls []sysctlLine, where string) string {
 	}
 	return summarize(vs)
 }
+
+// sysctlDirs are the directories systemd-sysctl reads, in priority
+// order: a file name in an earlier directory hides the same name in a
+// later one. Distributions link /etc/sysctl.d/99-sysctl.conf to
+// /etc/sysctl.conf; systemd-sysctl does not read that file otherwise.
+var sysctlDirs = []string{"/etc/sysctl.d", "/run/sysctl.d", "/usr/local/lib/sysctl.d", "/usr/lib/sysctl.d", "/lib/sysctl.d"}
+
+// stricter notes a check that fails although the value the kernel gets
+// at boot is allowed. systemd-sysctl applies the last line that sets a
+// key; the rule wants every line to have an allowed value. A bad line in
+// a file systemd-sysctl does not read (for example /etc/ufw/sysctl.conf,
+// which ufw applies when it starts) gives a note only when the running
+// value is read and allowed.
+func (s *SysctlCheck) stricter(h *Host) string {
+	if s.IPv6 {
+		return ""
+	}
+	re := sysctlLineRE(s.Key)
+	order := systemdSysctlFiles(h)
+	ls, err := s.lines(h, re, order)
+	if err != nil || len(ls) == 0 {
+		return ""
+	}
+	last := ls[len(ls)-1]
+	if !s.allowed(last.value) {
+		return ""
+	}
+	running := false
+	if s.Runtime {
+		b, err := h.ReadFile("/proc/sys/" + strings.ReplaceAll(s.Key, ".", "/"))
+		if err != nil || !s.allowed(strings.TrimSpace(string(b))) {
+			return ""
+		}
+		running = true
+	}
+	user, err := s.lines(h, re, s.userFiles(h))
+	if err != nil {
+		return ""
+	}
+	for _, l := range user {
+		if !s.allowed(l.value) && !slices.Contains(order, l.file) && !running {
+			return ""
+		}
+	}
+	return fmt.Sprintf("At boot, systemd-sysctl applies the last line that sets %s: %s in %s. The rule wants every line that sets it to have an allowed value, also in files that systemd-sysctl does not read.",
+		s.Key, last.value, last.file)
+}
+
+// systemdSysctlFiles lists the files systemd-sysctl applies, in order.
+func systemdSysctlFiles(h *Host) []string {
+	byName := map[string]string{}
+	for _, d := range sysctlDirs {
+		for _, p := range confFiles(h, d) {
+			if _, ok := byName[path.Base(p)]; !ok {
+				byName[path.Base(p)] = p
+			}
+		}
+	}
+	names := make([]string, 0, len(byName))
+	for n := range byName {
+		names = append(names, n)
+	}
+	slices.Sort(names)
+	out := make([]string, 0, len(names)+1)
+	for _, n := range names {
+		out = append(out, byName[n])
+	}
+	return out
+}

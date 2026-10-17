@@ -104,6 +104,7 @@ func Evaluate(b *Baseline, h *Host, exc []Exception, target float64, now time.Ti
 	}
 	applyExceptions(r.Results, exc, now)
 	r.Score = score(r.Results, len(b.NotCovered), target)
+	r.Benchmark = benchmarkCoverage(b.Benchmark, r.Results)
 	return r
 }
 
@@ -147,8 +148,37 @@ func evaluate(c *Check, h *Host) Result {
 		res.Status, res.Reason = Pass, why
 	default:
 		res.Status, res.Reason = Fail, why
+		if s, ok := c.probe().(stricter); ok {
+			res.Note = s.stricter(h)
+		}
 	}
 	return res
+}
+
+// stricter is a probe whose source rule can be stricter than the system
+// it checks. stricter is called only after a fail and returns a note when
+// the system's own behaviour meets the intent, or "".
+type stricter interface {
+	stricter(h *Host) string
+}
+
+func (c *Check) probe() any {
+	switch {
+	case c.File != nil:
+		return c.File
+	case c.Sysctl != nil:
+		return c.Sysctl
+	case c.Package != nil:
+		return c.Package
+	case c.Service != nil:
+		return c.Service
+	case c.SSHD != nil:
+		return c.SSHD
+	case c.Mount != nil:
+		return c.Mount
+	default:
+		return c.KernelModule
+	}
 }
 
 // classify maps a probe error to Unknown or Error. A permission error

@@ -477,3 +477,128 @@ func TestUnitNamesFailAtLoad(t *testing.T) {
 		}
 	}
 }
+
+// Mark, 2026-10-16 (old inbox item 3.4, option A): a note when the rule
+// is stricter than the system; the verdict does not change.
+func TestStricterNotes(t *testing.T) {
+	note := func(t *testing.T, r Result, s Status, has string) {
+		t.Helper()
+		if r.Status != s || (has == "") != (r.Note == "") || !strings.Contains(r.Note, has) {
+			t.Errorf("got %s, note %q; want %s, note with %q", r.Status, r.Note, s, has)
+		}
+	}
+	t.Run("service", func(t *testing.T) {
+		h := (&fake{}).host()
+		h.Packages["rsync"] = nil
+		h.Wanted = []string{"multi-user.target"}
+		c := Check{Service: &ServiceCheck{Name: "rsync", State: "disabled", Package: "rsync"}}
+		h.Units["rsync.service"] = map[string]string{"LoadState": "loaded", "ActiveState": "inactive", "UnitFileState": "disabled"}
+		h.Units["rsync.socket"] = unit("not-found", "inactive")
+		note(t, run(t, h, c), Fail, "masked")
+		h.Wanted = append(h.Wanted, "rsync.service")
+		note(t, run(t, h, c), Fail, "")
+		h.Wanted = h.Wanted[:1]
+		h.Units["rsync.service"]["UnitFileState"] = "enabled"
+		note(t, run(t, h, c), Fail, "")
+		h.Units["rsync.service"]["UnitFileState"] = "disabled"
+		h.Units["rsync.service"]["ActiveState"] = "active"
+		note(t, run(t, h, c), Fail, "")
+	})
+	t.Run("mount", func(t *testing.T) {
+		h := (&fake{files: map[string]string{"/etc/fstab": "UUID=x / ext4 defaults 0 1\n"}}).host()
+		c := Check{Mount: &MountCheck{Path: "/dev/shm", Option: "nodev"}}
+		h.Mounts = []Mount{{Root: "/", Target: "/dev/shm", FSType: "tmpfs", Options: []string{"rw", "nosuid", "nodev"}}}
+		note(t, run(t, h, c), Fail, "fstab")
+		h.Mounts[0].Options = []string{"rw"}
+		note(t, run(t, h, c), Fail, "")
+		h.Mounts[0].Options = []string{"rw", "nodev"}
+		h.Sandboxed = true
+		note(t, run(t, h, c), Fail, "")
+	})
+	t.Run("sshd", func(t *testing.T) {
+		f := &fake{files: map[string]string{
+			"/etc/ssh/sshd_config":                 "Include /etc/ssh/sshd_config.d/*.conf\nPermitRootLogin yes\nMatch User x\nPermitRootLogin no\n",
+			"/etc/ssh/sshd_config.d/":              "",
+			"/etc/ssh/sshd_config.d/10-local.conf": "PermitRootLogin no\n",
+		}}
+		h := f.host()
+		h.Packages["openssh-server"] = nil
+		c := func(dropIns bool) Check {
+			return Check{SSHD: &SSHDCheck{Keyword: "PermitRootLogin", Value: "no", Match: "regex", Package: "openssh-server", DropIns: dropIns}}
+		}
+		// sshd reads the drop-in first: its value wins; the later
+		// "yes" fails the rule.
+		note(t, run(t, h, c(true)), Fail, "first value it reads")
+		// Without DropIns the rule reads only sshd_config.
+		note(t, run(t, h, c(false)), Fail, "reads only /etc/ssh/sshd_config")
+		// The value sshd uses is the bad one: no note.
+		f.files["/etc/ssh/sshd_config.d/10-local.conf"] = "PermitRootLogin yes\n"
+		f.files["/etc/ssh/sshd_config"] = "Include /etc/ssh/sshd_config.d/*.conf\nPermitRootLogin no\n"
+		note(t, run(t, h, c(true)), Fail, "")
+		// An Include the agent does not follow: no note.
+		f.files["/etc/ssh/sshd_config"] = "Include /etc/ssh/other.conf\nPermitRootLogin no\nPermitRootLogin yes\n"
+		note(t, run(t, h, c(true)), Fail, "")
+	})
+	t.Run("sysctl", func(t *testing.T) {
+		f := &fake{files: map[string]string{
+			"/proc/sys/net/ipv4/ip_forward":    "0\n",
+			"/etc/sysctl.d/":                   "",
+			"/etc/sysctl.d/10-a.conf":          "net.ipv4.ip_forward = 1\n",
+			"/etc/sysctl.d/90-b.conf":          "net.ipv4.ip_forward = 0\n",
+			"/etc/sysctl.d/99-sysctl.conf":     "# link to /etc/sysctl.conf\n",
+			"/usr/lib/sysctl.d/":               "",
+			"/usr/lib/sysctl.d/90-b.conf":      "net.ipv4.ip_forward = 1\n",
+			"/usr/lib/sysctl.d/50-vendor.conf": "net.ipv4.ip_forward = 1\n",
+		}}
+		h := f.host()
+		c := Check{Sysctl: sysctl("net.ipv4.ip_forward", "0")}
+		// 90-b.conf in /etc hides the one in /usr/lib, and it is last.
+		note(t, run(t, h, c), Fail, "0 in /etc/sysctl.d/90-b.conf")
+		f.files["/proc/sys/net/ipv4/ip_forward"] = "1\n"
+		note(t, run(t, h, c), Fail, "")
+		f.files["/proc/sys/net/ipv4/ip_forward"] = "0\n"
+		f.files["/etc/sysctl.d/95-c.conf"] = "net.ipv4.ip_forward = 1\n"
+		note(t, run(t, h, c), Fail, "")
+	})
+}
+
+func TestBenchmarkCoverage(t *testing.T) {
+	bm := &Benchmark{Level: "l1_server", Automated: 5, Recommendations: [][]string{{"a"}, {"a", "b"}, {"c"}, {"d", "x"}}}
+	res := []Result{
+		{ID: "a", Status: Pass}, {ID: "b", Status: Unknown}, {ID: "c", Status: Excepted, Found: Fail}, {ID: "d", Status: Fail},
+	}
+	got := benchmarkCoverage(bm, res)
+	want := BenchmarkCoverage{Level: "l1_server", Automated: 5, Checked: 3, Partly: 1, Percent: 60, Evaluated: 2}
+	if *got != want {
+		t.Errorf("got %+v, want %+v", *got, want)
+	}
+}
+
+// The coverage checkpoint measured these counts with
+// tycana-hq tools/research/baseline_coverage.py (2026-10-16, F1); the
+// converter must reproduce them.
+func TestPresetBenchmarkCoverage(t *testing.T) {
+	want := map[string][3]int{ // automated, checked, partly
+		"ubuntu2404-level1-server": {232, 110, 5},
+		"debian12-level1-server":   {230, 113, 6},
+		"almalinux9-level1-server": {219, 103, 4},
+	}
+	ps, err := Presets()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range ps {
+		var res []Result
+		for _, c := range p.Checks {
+			res = append(res, Result{ID: c.ID, Status: Pass})
+		}
+		c := benchmarkCoverage(p.Benchmark, res)
+		if c == nil {
+			t.Errorf("%s: no benchmark data", p.Name)
+			continue
+		}
+		if got := [3]int{c.Automated, c.Checked, c.Partly}; got != want[p.Name] {
+			t.Errorf("%s: automated, checked, partly = %v, want %v", p.Name, got, want[p.Name])
+		}
+	}
+}

@@ -28,15 +28,15 @@ jinja2_cache_dir: ""
 sce_enabled: "OFF"
 CFG
 
-# product  profile  os-release ID:VERSION_ID  preset name  title
+# product  profile  controls file:level  os-release ID:VERSION_ID  preset name  title
 presets=(
-  "ubuntu2404 cis_level1_server ubuntu:24.04 ubuntu2404-level1-server Ubuntu 24.04 level 1 server baseline"
-  "debian12 cis_level1_server debian:12 debian12-level1-server Debian 12 level 1 server baseline"
-  "almalinux9 cis_server_l1 almalinux:9 almalinux9-level1-server AlmaLinux 9 level 1 server baseline"
+  "ubuntu2404 cis_level1_server cis_ubuntu2404:l1_server ubuntu:24.04 ubuntu2404-level1-server Ubuntu 24.04 level 1 server baseline"
+  "debian12 cis_level1_server cis_debian12:l1_server debian:12 debian12-level1-server Debian 12 level 1 server baseline"
+  "almalinux9 cis_server_l1 cis_almalinux9:l1_server almalinux:9 almalinux9-level1-server AlmaLinux 9 level 1 server baseline"
 )
 
 for line in "${presets[@]}"; do
-  read -r product profile applies name title <<<"$line"
+  read -r product profile controls applies name title <<<"$line"
   out="$work/$product"
   mkdir -p "$out"
   PYTHONPATH=$cac python3 "$cac/build-scripts/compile_product.py" \
@@ -48,7 +48,8 @@ for line in "${presets[@]}"; do
     --project-root "$cac" --build-config-yaml "$work/build_config.yml" \
     --product-yaml "$out/product.yml" --sce-metadata "$out/sce.json" >"$work/compile.log" 2>&1 || { cat "$work/compile.log" >&2; exit 1; }
   (cd "$root" && go run ./tools/cacconv -in "$out" -product "$product" -profile "$profile" \
-    -name "$name" -title "$title" -commit "$commit" -version "$version" -applies "$applies") \
+    -name "$name" -title "$title" -commit "$commit" -version "$version" -applies "$applies" \
+    -controls "$cac/controls/${controls%%:*}.yml" -level "${controls#*:}") \
     >"$root/internal/baseline/presets/$name.yaml"
   echo "$name: $(grep -c '^  - id:' "$root/internal/baseline/presets/$name.yaml") entries"
 done

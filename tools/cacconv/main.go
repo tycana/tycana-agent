@@ -45,6 +45,7 @@ func main() {
 
 type options struct {
 	in, product, profile, name, title, commit, version string
+	controls, level                                    string
 	releases                                           []baseline.Release
 }
 
@@ -60,11 +61,16 @@ func run(args []string, out io.Writer) error {
 	fs.StringVar(&o.commit, "commit", "", "ComplianceAsCode commit")
 	fs.StringVar(&o.version, "version", "", "ComplianceAsCode version")
 	fs.StringVar(&applies, "applies", "", "os-release ID:VERSION_ID pairs, comma-separated")
+	fs.StringVar(&o.controls, "controls", "", "ComplianceAsCode controls file of the benchmark the profile follows (optional)")
+	fs.StringVar(&o.level, "level", "", "level id in -controls, for example l1_server")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
 	if o.in == "" || o.product == "" || o.profile == "" || o.name == "" || o.commit == "" || applies == "" {
 		return fmt.Errorf("-in, -product, -profile, -name, -commit, and -applies are necessary")
+	}
+	if (o.controls == "") != (o.level == "") {
+		return fmt.Errorf("-controls and -level go together")
 	}
 	for _, a := range strings.Split(applies, ",") {
 		id, ver, ok := strings.Cut(a, ":")
@@ -161,6 +167,13 @@ func convert(o options) (*baseline.Baseline, error) {
 			continue
 		}
 		b.Checks = append(b.Checks, *chk)
+	}
+	if o.controls != "" {
+		bm, err := benchmark(o.controls, o.level)
+		if err != nil {
+			return nil, err
+		}
+		b.Benchmark = bm
 	}
 	return b, nil
 }

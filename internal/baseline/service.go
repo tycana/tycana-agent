@@ -106,3 +106,32 @@ func (s *ServiceCheck) eval(h *Host) (bool, string, error) {
 		return true, s.Name + " is active and started by multi-user.target", nil
 	}
 }
+
+// stricter notes a "disabled" check that fails only because a unit is
+// disabled, not masked: every existing unit is disabled, inactive, and
+// not in multi-user.target's dependencies, so systemd does not start it
+// at boot, and the rule still wants "masked".
+func (s *ServiceCheck) stricter(h *Host) string {
+	if s.State != "disabled" {
+		return ""
+	}
+	n := 0
+	for _, u := range s.units() {
+		p := h.Units[u]
+		if p == nil || p["LoadState"] == "not-found" {
+			continue
+		}
+		n++
+		if p["LoadState"] == "masked" {
+			continue
+		}
+		active := !strings.Contains(p["ActiveState"], "inactive") && !strings.Contains(p["ActiveState"], "failed")
+		if p["UnitFileState"] != "disabled" || active || h.Wanted == nil || slices.Contains(h.Wanted, u) {
+			return ""
+		}
+	}
+	if n == 0 {
+		return ""
+	}
+	return "The rule wants the unit masked. Disabled is not enough for the rule, although systemd does not start a disabled unit at boot."
+}

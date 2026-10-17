@@ -140,6 +140,15 @@ func writeBaselineText(w io.Writer, r baseline.Report, all bool) error {
 	if s.Met {
 		met = "meets"
 	}
+	if bc := r.Benchmark; bc != nil {
+		fmt.Fprintf(w, "%s: Tycana checks %d of the %d automated recommendations of the benchmark (%d percent). %d more are checked only in part and are not in that count.\n",
+			r.Title, bc.Checked, bc.Automated, bc.Checked*100/max(bc.Automated, 1), bc.Partly)
+		if n := bc.Checked - bc.Evaluated; n > 0 {
+			fmt.Fprintf(w, "On this host, %d of these %d recommendations have a result. For %d, a check is unknown or faulty.\n", bc.Evaluated, bc.Checked, n)
+		} else {
+			fmt.Fprintf(w, "On this host, all %d of these recommendations have a result.\n", bc.Checked)
+		}
+	}
 	if s.NotCovered > 0 {
 		fmt.Fprintf(w, "%s: partial assessment. Tycana has checks for %d of the %d rules in the source profile (%.1f%%); %d rules are not checked.\n",
 			r.Title, s.Rules-s.NotCovered, s.Rules, s.Coverage, s.NotCovered)
@@ -167,6 +176,9 @@ func writeBaselineText(w io.Writer, r baseline.Report, all bool) error {
 		why := x.Reason
 		if x.Exception != nil {
 			why = fmt.Sprintf("%s (owner %s, until %s; found %s)", x.Exception.Reason, x.Exception.Owner, x.Exception.Expires, x.Found)
+		}
+		if x.Note != "" {
+			why += " Note: " + x.Note
 		}
 		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\n", x.Status, x.ID, x.Severity, why)
 	}
