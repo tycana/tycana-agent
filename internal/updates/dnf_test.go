@@ -112,3 +112,19 @@ func TestSplitNEVRA(t *testing.T) {
 		t.Error("accepted a name without version")
 	}
 }
+
+// dnf check-update on AlmaLinux 9 after "dnf upgrade", before the reboot
+// (M5 lab, 2026-10-17): two notices on stdout and no update rows. M2's
+// parser refused the first notice, so the host lost its update list.
+func TestParseCheckUpdateKernelNotices(t *testing.T) {
+	out := []byte("Security: kernel-core-5.14.0-687.57.1.el9_8.x86_64 is an installed security update\n" +
+		"Security: kernel-core-5.14.0-687.36.1.el9_8.x86_64 is the currently running version\n")
+	ups, err := parseCheckUpdate(out)
+	if err != nil || len(ups) != 0 {
+		t.Fatalf("%v %+v", err, ups)
+	}
+	ups, err = parseCheckUpdate(append(out, []byte("short.noarch  2:3.4-5.el9  appstream\n")...))
+	if err != nil || len(ups) != 1 || ups[0].Name != "short" {
+		t.Errorf("%v %+v", err, ups)
+	}
+}

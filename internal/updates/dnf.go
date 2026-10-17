@@ -70,6 +70,15 @@ func parseCheckUpdate(out []byte) ([]Update, error) {
 		if strings.HasPrefix(line, "Obsoleting Packages") {
 			break
 		}
+		// dnf's notices about the running kernel when a newer one with a
+		// security fix is installed: "Security: kernel-core-NEVRA is an
+		// installed security update" and "... is the currently running
+		// version". They are not update rows; the kernel state (restart)
+		// covers them. Seen on AlmaLinux 9 after an upgrade, before the
+		// reboot (M5 lab, 2026-10-17).
+		if strings.HasPrefix(line, "Security: ") {
+			continue
+		}
 		fields = append(fields, strings.Fields(line)...)
 		if len(fields) < 3 {
 			continue
