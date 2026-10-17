@@ -15,6 +15,7 @@ import (
 	"tycana.ai/agent/internal/inventory/dpkg"
 	"tycana.ai/agent/internal/inventory/kernel"
 	"tycana.ai/agent/internal/inventory/osrelease"
+	"tycana.ai/agent/internal/inventory/repos"
 	"tycana.ai/agent/internal/inventory/rpm"
 	"tycana.ai/agent/rpmversion"
 )
@@ -30,6 +31,10 @@ type Snapshot struct {
 	Kernel      kernel.Info    `json:"kernel"`
 	PackageDB   PackageDB      `json:"package_db"`
 	Packages    []Package      `json:"packages"`
+	// Repositories are the dnf repositories of an rpm host and whether
+	// each is enabled (/etc/yum.repos.d). A control plane applies a
+	// vendor's advisories only from enabled repositories, as dnf does.
+	Repositories []repos.Repo `json:"repositories,omitempty"`
 }
 
 // PackageDB describes where the package list came from.
@@ -143,6 +148,9 @@ func Collect(root string, now time.Time) (*Snapshot, *Native, error) {
 		}
 		cands = fromRPM(s, native.RPM)
 		cmp = compareRPM
+		if s.Repositories, err = repos.Read(fsys); err != nil {
+			s.PackageDB.Notes = append(s.PackageDB.Notes, "repositories not read: "+err.Error())
+		}
 	}
 	s.Kernel, err = kernel.Collect(fsys, cands, cmp)
 	if err != nil {
