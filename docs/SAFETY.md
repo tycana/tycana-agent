@@ -22,10 +22,12 @@ separate future decision that would ship as a separate binary under a separate t
 |---|---|---|
 | Source | `tools/nowrite` parses every Go file and fails CI on filesystem-mutating calls, process execution, or raw syscalls outside `internal/state` and `internal/hostexec` | `make nowrite`, `.github/workflows/ci.yml` |
 | Process | *planned (M2)*: `internal/hostexec` is the only package that runs a command; allowlisted read-only commands, fixed argument shapes, no shell, clean environment, timeouts | `internal/hostexec/` |
-| Service | systemd unit with no capabilities, `ProtectSystem=strict`, `DynamicUser`, seccomp filter, private devices and users; the only writable path is the state directory | `packaging/systemd/tycanad.service`, `make security-score` |
+| Service | systemd unit with no capabilities, `ProtectSystem=strict`, the dedicated system user `tycana`, seccomp filter, private devices; the only writable path is the state directory | `packaging/systemd/tycanad.service`, `make security-score` |
 | Release | reproducible builds, Sigstore signatures, SLSA L3 provenance, SBOM; no self-update | `VERIFY.md` |
 
-The unit's `systemd-analyze security` exposure is 1.1 at M0 and CI fails if it rises above 1.5.
+The unit's `systemd-analyze security` exposure is 1.2 (1.1 until ADR 0024 removed
+`PrivateUsers=yes` on 2026-10-17, so the baseline can read file owners) and CI fails if it
+rises above 1.5.
 The remaining exposure is network access, which the agent will need to report to a control
 plane.
 
@@ -73,8 +75,8 @@ documented before it ships.
   No configuration value is executed or can widen the unit's permissions.
 - **Untrusted text on the host.** Package descriptions, changelogs, and service names are data.
   They are never interpreted as instructions by the agent or by any model downstream.
-- **Local privilege.** The agent runs as a dynamic unprivileged user with an empty capability
-  set. Compromising it yields read access to world-readable package metadata and the agent's
+- **Local privilege.** The agent runs as the unprivileged system user `tycana`, with no other
+  groups and an empty capability set. Compromising it yields read access to world-readable package metadata and the agent's
   own state directory, nothing more.
 
 ## 7. Reporting

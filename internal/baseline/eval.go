@@ -41,7 +41,8 @@ type Host struct {
 	// options can be added (set from the table itself).
 	Sandboxed bool
 	// UserNS is true when the agent runs in a user namespace that does
-	// not map every id (PrivateUsers=yes). Only then is an overflow id
+	// not map every id (a container, or a unit with PrivateUsers=yes;
+	// tycanad has neither since ADR 0024). Only then is an overflow id
 	// ambiguous.
 	UserNS bool
 	// Container is true inside a container (systemd-detect-virt's rule:

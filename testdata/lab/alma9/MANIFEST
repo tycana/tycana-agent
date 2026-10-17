@@ -11,3 +11,7 @@ run of the host's preset read, as root and inside the tycanad sandbox; /etc/pass
 replaced with 'operator'. baseline-openscap.tsv is OpenSCAP's result per rule on the same VM state, from the
 datastream built from the same ComplianceAsCode commit (4ab60a5, 0.1.83) and profile, with the distribution's
 openscap-scanner installed for the run (the VM was restored from its snapshot afterwards).
+
+Sandbox re-capture (2026-10-17, ADR 0024): baseline-sandbox.json.gz captured again on the same snapshot after
+PrivateUsers=yes left the unit. baseline-root.json.gz and baseline-openscap.tsv are unchanged (the snapshot does not
+carry the openscap packages installed for the OpenSCAP run; no checked setting differs).

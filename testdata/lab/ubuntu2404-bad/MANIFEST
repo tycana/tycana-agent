@@ -3,5 +3,6 @@ Broken by hand before the capture (scripts/lab-baseline.sh) and the OpenSCAP run
   chmod 0666 /etc/passwd; chgrp 1000 /etc/passwd; /etc/sysctl.d/99-tycana-bad.conf with
   net.ipv4.icmp_echo_ignore_broadcasts = 0; sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0 kernel.yama.ptrace_scope=0;
   touch /etc/cron.deny; systemctl stop cron; /etc/ssh/sshd_config.d/99-tycana-bad.conf with PermitEmptyPasswords yes.
-OpenSCAP turned six rules from pass to fail; Tycana as root does the same. In the sandbox, gid 1000 is not mapped,
-so file_groupowner_etc_passwd is unknown there. The VM was restored from snapshot pre-m3-2026-10-16 afterwards.
+OpenSCAP turned six rules from pass to fail; Tycana as root does the same. Until 2026-10-17 the unit had PrivateUsers=yes,
+so gid 1000 was not mapped and file_groupowner_etc_passwd was unknown in the sandbox. The sandbox fixture was
+captured again on 2026-10-17 (ADR 0024) with the same six changes: the sandbox now fails all six, as root does. The VM was restored from snapshot pre-m3-2026-10-16 afterwards.

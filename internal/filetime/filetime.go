@@ -52,9 +52,10 @@ type Meta struct {
 }
 
 // Lstat returns the mode, owner, and type of the file at name, without
-// following a final symlink. Inside the tycanad unit (PrivateUsers=yes)
-// owners other than root and the agent's own user read as the kernel's
-// overflow ids; Overflow returns them.
+// following a final symlink. In a user namespace that maps few ids (a
+// container, or a unit with PrivateUsers=yes) owners other than root and
+// the agent's own user read as the kernel's overflow ids; Overflow
+// returns them.
 func Lstat(name string) (Meta, error) {
 	var st unix.Stat_t
 	if err := unix.Lstat(name, &st); err != nil {

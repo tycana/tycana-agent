@@ -36,7 +36,12 @@ ProtectSystem=strict
 ProtectHome=yes
 PrivateTmp=yes
 PrivateDevices=yes
-PrivateUsers=yes
+# No PrivateUsers= (ADR 0024): in a private user namespace every owner
+# other than root and tycana reads as 65534, so the baseline could not
+# check file owners and groups. It added little here: the unit has no
+# capabilities to confine, NoNewPrivileges and noroot-locked block
+# gaining any, and RestrictNamespaces=yes blocks new user namespaces.
+# Measured on the four lab VMs, 2026-10-17.
 ProtectProc=invisible
 # ProcSubset=pid would hide /proc/sys, which the observer reads for the
 # running kernel (M1) and sysctl baseline checks (M3). /proc/sys stays
