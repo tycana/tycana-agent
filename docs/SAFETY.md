@@ -21,7 +21,8 @@ separate future decision that would ship as a separate binary under a separate t
 | Layer | Mechanism | Where to check |
 |---|---|---|
 | Source | `tools/nowrite` parses every Go file and fails CI on filesystem-mutating calls, process execution, or raw syscalls outside `internal/state` and `internal/hostexec` | `make nowrite`, `.github/workflows/ci.yml` |
-| Process | *planned (M2)*: `internal/hostexec` is the only package that runs a command; allowlisted read-only commands, fixed argument shapes, no shell, clean environment, timeouts | `internal/hostexec/` |
+| State | `internal/state` writes only the host key and the signed records in the state directory | `internal/state/` |
+| Process | `internal/hostexec` is the only package that runs a command; allowlisted read-only commands, fixed argument shapes, no shell, clean environment, timeouts | `internal/hostexec/` |
 | Service | systemd unit with no capabilities, `ProtectSystem=strict`, the dedicated system user `tycana`, seccomp filter, private devices; the only writable path is the state directory | `packaging/systemd/tycanad.service`, `make security-score` |
 | Release | reproducible builds, Sigstore signatures, SLSA L3 provenance, SBOM; no self-update | `VERIFY.md` |
 
@@ -41,13 +42,33 @@ SQLite databases are opened read-only by one package (`internal/sqlitero`); when
 write-ahead log is empty the open is immutable and takes no lock, and when it is not, SQLite's
 read-only path is used, which cannot create or change a file as the unit's user.
 
-*planned (M2)*: pending updates and their security classification from the distribution's own
-metadata, and kernel and service restart requirements. Every reading records its source.
+Done in M2: pending updates and their security classification from apt and dnf in simulate
+mode, through `internal/hostexec`, and kernel and service restart state without privilege.
+Done in M3: configuration baseline checks. Every reading records its source.
 Nothing is inferred from third-party feeds without the vendor's data.
 
-## 4. What leaves the host
+## 4. What the agent keeps, and what leaves the host
 
-At M0, nothing: there is no network code. *planned*: signed records sent to a control plane
+The agent writes only in its state directory, `/var/lib/tycanad` (mode 0700, owner
+`tycana`): its host key and its signed records. At each cycle (one at start, then one each
+interval, one hour by default) it signs two records with the host key, a `host-inventory`
+and a `host-assessment`, and keeps them gzipped. They hold what `tycana inventory`,
+`updates`, `restart`, and `baseline` show to any local user, nothing more. A collector that
+fails is named in the record; a record never looks complete when it is not. Records older
+than the retention (30 days by default) are deleted, but never the newest 50. The format
+and how to check it without Tycana are in `VERIFY.md`.
+
+**Halt.** While `/etc/tycana/halt` exists (any kind of file), the agent collects nothing and
+signs nothing. It checks before each cycle and again before it signs. `/etc/tycana` belongs
+to root, so only root can make the file.
+
+**Self-check.** At start the agent hashes its own binary. If a package installed it, the
+agent compares the hash with the package database (dpkg's MD5, rpm's file digest) and exits
+with status 3 on a mismatch; the unit does not restart it. The hash and the result are in
+every record. This finds a changed binary; it does not stop root, who can also change the
+package database.
+
+Nothing leaves the host yet: there is no network code. *planned*: signed records sent to a control plane
 over TLS, containing package names and versions, finding identifiers, and host identity. No
 file contents, no user data, no shell history, no credentials. The exact record set is
 documented before it ships.

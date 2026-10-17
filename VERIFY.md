@@ -70,6 +70,49 @@ sha256sum dist/*/tycanad dist/*/tycana
 The hashes must match the binaries inside the release archive for your platform. The release
 workflow itself builds twice on separate runners and refuses to publish if the results differ.
 
+## Verify a host's records without Tycana
+
+`tycana evidence export` writes a bundle: the host's public keys and its records. Each record
+is a [DSSE](https://github.com/secure-systems-lab/dsse) envelope around an
+[in-toto Statement v1](https://github.com/in-toto/attestation), signed with ECDSA P-256 and
+SHA-256. `tycana evidence verify bundle.json` checks every signature and the chain. To check
+without Tycana code, use OpenSSL and a few lines of Python:
+
+```sh
+python3 - bundle.json <<'PY'
+import base64, json, sys
+b = json.load(open(sys.argv[1]))
+open("host.pub", "w").write(b["keys"][0]["public_key"])
+for i, env in enumerate(b["records"], 1):
+    p = base64.b64decode(env["payload"])
+    t = env["payloadType"].encode()
+    open(f"r{i}.pae", "wb").write(b"DSSEv1 %d %s %d %s" % (len(t), t, len(p), p))
+    open(f"r{i}.sig", "wb").write(base64.b64decode(env["signatures"][0]["sig"]))
+PY
+for f in r*.pae; do openssl dgst -sha256 -verify host.pub -signature "${f%.pae}.sig" "$f"; done
+```
+
+Each line must say `Verified OK`. The chain: the `predicate.record.previous` field of each
+record is `sha256:` and the SHA-256 of the decoded payload of the record before it, and
+`predicate.record.sequence` goes up by one.
+
+cosign (v3.0.2 tested) checks one record too. The Statement's subject is the host's public
+key, so the key's DER form is the blob:
+
+```sh
+openssl pkey -pubin -in host.pub -outform DER -out host.der
+python3 -c 'import json,sys; json.dump(json.load(open("bundle.json"))["records"][0], open("r1.json","w"))'
+cosign verify-blob-attestation --key host.pub --signature r1.json \
+  --type https://tycana.ai/attestations/host-inventory/v0.1 --insecure-ignore-tlog=true host.der
+```
+
+`--insecure-ignore-tlog` is necessary: records are not in a transparency log yet.
+
+What this does and does not show: a valid signature shows that nobody without the host's key
+changed the record after it was signed. The key is on the host, so root on that host can sign
+anything; compare the key with one you kept from an earlier export (`tycana evidence verify
+--key`).
+
 ## What is not here
 
 There is no auto-update. The agent will never fetch and run a newer version of itself. Updates
