@@ -62,7 +62,7 @@ func TestWriteStatus(t *testing.T) {
 	var b bytes.Buffer
 	writeStatus(&b, statusView{inv: inv, updates: &updates.Report{}, restart: rs, tags: map[string]string{"owner": "web"}, signed: "Signed state: x."})
 	out := b.String()
-	for _, want := range []string{"Tags (the operator's", "owner=web", "1. reboot: kernel 6.8.0-45-generic runs", "2. restart 1 services", "no CVE data"} {
+	for _, want := range []string{"Tags (the operator's", "owner=web", "1. reboot: kernel 6.8.0-45-generic runs", "2. restart 1 service that uses", "no CVE data"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("missing %q in:\n%s", want, out)
 		}

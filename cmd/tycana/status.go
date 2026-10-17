@@ -65,7 +65,13 @@ func runStatus(args []string, stdout, stderr io.Writer) int {
 		v.tags = cfg.Tags
 	}
 	if inv.PackageDB.Format == "rpm" && !*scratch {
-		v.updatesErr = fmt.Sprintf("not read: dnf would leave /var/tmp/dnf-%s-* on this host. Run 'tycana status --allow-dnf-scratch', or 'sudo tycana evidence status' for the last signed list", dnfUser())
+		// dnf without root leaves a directory in /var/tmp. A user who can
+		// read the records gets the newest signed list instead.
+		if r, at, ok := signedUpdates(*dir, now); ok {
+			v.updates, v.updatesFrom = r, fmt.Sprintf("the updates are from the signed record of %s ago (dnf is not run)", now.Sub(at).Round(time.Minute))
+		} else {
+			v.updatesErr = fmt.Sprintf("not read: dnf would leave /var/tmp/dnf-%s-* on this host. Run 'tycana status --allow-dnf-scratch', or 'sudo tycana status' for the newest signed list", dnfUser())
+		}
 	} else {
 		hostexec.AllowScratch = *scratch
 		r, err := collect.Updates(context.Background(), inv)
@@ -90,9 +96,11 @@ type statusView struct {
 	tags       map[string]string
 	updates    *updates.Report
 	updatesErr string
-	restart    *collect.Restart
-	restartErr string
-	signed     string
+	// updatesFrom says where the updates came from when not live.
+	updatesFrom string
+	restart     *collect.Restart
+	restartErr  string
+	signed      string
 }
 
 // statusAction is one row of the action list.
@@ -246,6 +254,9 @@ func writeStatus(w io.Writer, v statusView) {
 	nsec := len(first)
 	first = append(first, hostActions(v.restart)...)
 	fmt.Fprintln(w)
+	if v.updatesFrom != "" {
+		fmt.Fprintf(w, "Note: %s.\n", v.updatesFrom)
+	}
 	switch {
 	case v.updatesErr != "":
 		fmt.Fprintf(w, "Updates: %s.\n", v.updatesErr)
@@ -253,7 +264,11 @@ func writeStatus(w io.Writer, v statusView) {
 		fmt.Fprintln(w, "Nothing to do: no update waits, and no reboot or restart is needed.")
 	}
 	if len(first) > 0 {
-		fmt.Fprintf(w, "Do these first (%d updates with a security fix, then the reboot and restarts):\n", nsec)
+		if v.updates != nil {
+			fmt.Fprintf(w, "Do these first (%d updates with a security fix, then the reboot and restarts):\n", nsec)
+		} else {
+			fmt.Fprintln(w, "Do these first:")
+		}
 		for i, a := range first {
 			fmt.Fprintf(w, "%3d. %s\n", i+1, actionText(a))
 		}
@@ -288,16 +303,26 @@ func actionText(a statusAction) string {
 		}
 		return "reboot: required by " + a.detail
 	case "restart":
+		if len(a.units) == 1 {
+			return "restart 1 service that uses replaced files (inferred): " + a.units[0]
+		}
 		return fmt.Sprintf("restart %d services that use replaced files (inferred): %s", len(a.units), shortList(a.units, 5))
 	}
 	s := "update " + a.name
+	if a.state == updates.New {
+		s = "install the new package " + a.name
+	}
 	if a.severity != "" {
 		s += " (" + a.severity + ")"
 	}
 	if a.from != "" {
 		s += " from " + a.from
 	}
-	s += fmt.Sprintf(": %d packages (%s)", len(a.pkgs), shortList(a.pkgs, 4))
+	noun := "packages"
+	if len(a.pkgs) == 1 {
+		noun = "package"
+	}
+	s += fmt.Sprintf(": %d %s (%s)", len(a.pkgs), noun, shortList(a.pkgs, 4))
 	if a.state == updates.DistUpgrade {
 		s += "; needs a full upgrade"
 	}
@@ -309,6 +334,24 @@ func shortList(s []string, n int) string {
 		return strings.Join(s, ", ")
 	}
 	return fmt.Sprintf("%s, and %d more", strings.Join(s[:n], ", "), len(s)-n)
+}
+
+// signedUpdates is the update list of the newest signed host-assessment
+// record, when the user can read the records.
+func signedUpdates(dir string, now time.Time) (*updates.Report, time.Time, bool) {
+	b, err := exportBundle(state.Reader(dir), time.Time{}, now)
+	if err != nil {
+		return nil, time.Time{}, false
+	}
+	r, _, _, err := b.Verify(nil)
+	if err != nil || r.Records == 0 {
+		return nil, time.Time{}, false
+	}
+	ls := latest(b, r)
+	if !ls.HaveAssess || ls.Assessment.Updates == nil {
+		return nil, time.Time{}, false
+	}
+	return ls.Assessment.Updates, ls.Header.Record.Created, true
 }
 
 // signedLine is one line on the signed state: what a user who can read
