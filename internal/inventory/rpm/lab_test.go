@@ -3,6 +3,7 @@ package rpm
 import (
 	"bytes"
 	"compress/gzip"
+	"errors"
 	"io"
 	"io/fs"
 	"os"
@@ -111,5 +112,22 @@ func TestLabRPMQuery(t *testing.T) {
 				t.Errorf("fixture read: immutable=%v retries=%d", db.Immutable, db.Retries)
 			}
 		})
+	}
+}
+
+// The digest of /usr/bin/bash in the AlmaLinux 9 fixture; the self-check
+// of tycanad (tycana-hq ADR 0025) compares its binary the same way.
+func TestLabLookupFile(t *testing.T) {
+	root := materialize(t, filepath.Join("..", "..", "..", "testdata", "lab", "alma9", "root"))
+	fd, err := LookupFile(root, "var/lib/rpm", "/usr/bin/bash")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fd.Algorithm != "sha256" || len(fd.Digest) != 64 || !strings.HasPrefix(fd.Package, "bash-5.") {
+		t.Errorf("got %+v", fd)
+	}
+	t.Logf("%+v", fd)
+	if _, err := LookupFile(root, "var/lib/rpm", "/usr/bin/tycanad"); !errors.Is(err, ErrNotOwned) {
+		t.Errorf("unowned file: %v", err)
 	}
 }

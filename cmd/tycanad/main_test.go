@@ -14,7 +14,8 @@ func TestRun(t *testing.T) {
 		inStdout string
 		inStderr string
 	}{
-		{"bare run refuses", nil, 2, "", "no observers are implemented"},
+		{"no state directory", []string{"--config", "/nonexistent/tycanad.yaml", "--state-dir", "/nonexistent/state", "--once"}, 1, "", "state directory"},
+		{"argument", []string{"apply"}, 2, "", "unexpected argument"},
 		{"help", []string{"--help"}, 0, "", "never changes"},
 		{"version", []string{"--version"}, 0, "tycana ", ""},
 		{"bad flag", []string{"--apply"}, 2, "", "flag provided but not defined"},

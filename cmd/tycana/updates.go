@@ -13,6 +13,7 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"tycana.ai/agent/internal/collect"
 	"tycana.ai/agent/internal/hostexec"
 	"tycana.ai/agent/internal/inventory"
 	"tycana.ai/agent/internal/updates"
@@ -52,42 +53,15 @@ func runUpdates(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "tycana updates: %v\n", err)
 		return 1
 	}
-	ctx := context.Background()
-	var r updates.Report
-	switch snap.PackageDB.Format {
-	case "deb":
-		var held []string
-		for _, p := range snap.Packages {
-			if p.Want == "hold" {
-				held = append(held, updates.AptName(p.Name, p.Arch, snap.PackageDB.NativeArch))
-			}
-		}
-		r, err = updates.CollectApt(ctx, snap.PackageDB.NativeArch, held)
-	case "rpm":
+	if snap.PackageDB.Format == "rpm" {
 		hostexec.AllowScratch = *scratch
-		// Install-only packages (kernels) have several versions installed;
-		// keep the one installed last.
-		installed := map[string]string{}
-		at := map[string]time.Time{}
-		for _, p := range snap.Packages {
-			k := p.Name + "." + p.Arch
-			if _, seen := at[k]; !seen || !p.InstalledAt.Before(at[k]) {
-				installed[k], at[k] = p.EVR, p.InstalledAt
-			}
-		}
-		r, err = updates.CollectDnf(ctx, installed)
-		if errors.Is(err, hostexec.ErrScratchWrite) {
-			err = fmt.Errorf("%w\n(dnf would leave /var/tmp/dnf-%s-* on this host; pass --allow-dnf-scratch to accept that)", err, dnfUser())
-		}
-	default:
-		err = fmt.Errorf("package format %q not supported", snap.PackageDB.Format)
+	}
+	r, err := collect.Updates(context.Background(), snap)
+	if errors.Is(err, hostexec.ErrScratchWrite) {
+		err = fmt.Errorf("%w\n(dnf would leave /var/tmp/dnf-%s-* on this host; pass --allow-dnf-scratch to accept that)", err, dnfUser())
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "tycana updates: %v\n", err)
-		return 1
-	}
-	if err := updates.PredictAutopilot(ctx, &r, distroID(snap.OS.ID), snap.OS.VersionCodename); err != nil {
-		fmt.Fprintf(stderr, "tycana updates: autopilot: %v\n", err)
 		return 1
 	}
 	if *format == "json" {
@@ -203,19 +177,6 @@ func writeAutopilotText(w io.Writer, a *updates.Autopilot) {
 // distroID is unattended-upgrades' ${distro_id}: lsb_release's ID, which
 // is os-release's ID with a capital first letter for the distributions it
 // supports.
-func distroID(id string) string {
-	switch id {
-	case "ubuntu":
-		return "Ubuntu"
-	case "debian":
-		return "Debian"
-	}
-	if id == "" {
-		return ""
-	}
-	return strings.ToUpper(id[:1]) + id[1:]
-}
-
 // dnfUser names the user dnf will run as: hostexec runs commands as
 // nobody when the CLI is root.
 func dnfUser() string {

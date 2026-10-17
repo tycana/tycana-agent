@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"tycana.ai/agent/internal/collect"
+
 	"tycana.ai/agent/internal/updates"
 )
 
@@ -58,7 +60,7 @@ func TestWriteAutopilotText(t *testing.T) {
 	if !strings.Contains(out.String(), "dnf-automatic is not installed. Nothing installs updates on its own.") {
 		t.Errorf("not installed:\n%s", out.String())
 	}
-	if distroID("ubuntu") != "Ubuntu" || distroID("debian") != "Debian" || distroID("") != "" {
+	if collect.DistroID("ubuntu") != "Ubuntu" || collect.DistroID("debian") != "Debian" || collect.DistroID("") != "" {
 		t.Error("distroID")
 	}
 }

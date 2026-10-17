@@ -24,6 +24,8 @@ Commands:
   updates     updates waiting on this host, and what its own autopilot installs (--format json)
   restart     services still using replaced files, and a waiting kernel (--format json)
   baseline    configuration baseline: coverage and score (--format json, --list)
+  status      the latest state that tycanad signed, and its chain of records
+  evidence    export the signed records as a bundle, or verify a bundle
   version     print build information (--json for machine-readable output)
   help        print this help
 
@@ -50,6 +52,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runRestart(args[1:], stdout, stderr)
 	case "baseline":
 		return runBaseline(args[1:], stdout, stderr)
+	case "status":
+		return runStatus(args[1:], stdout, stderr)
+	case "evidence":
+		return runEvidence(args[1:], stdout, stderr)
 	case "version":
 		return runVersion(args[1:], stdout, stderr)
 	case "help", "-h", "--help":

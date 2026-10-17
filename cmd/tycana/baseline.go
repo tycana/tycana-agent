@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"tycana.ai/agent/internal/baseline"
+	"tycana.ai/agent/internal/collect"
 	"tycana.ai/agent/internal/inventory"
 )
 
@@ -96,18 +97,17 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 			return 1
 		}
 	}
-	h, err := baseline.Collect(context.Background(), b, snap)
+	r, err := collect.Evaluate(context.Background(), b, snap, exc, *target, now)
 	if err != nil {
 		fmt.Fprintf(stderr, "tycana baseline: %v\n", err)
 		return 1
 	}
-	r := baseline.Evaluate(b, h, exc, *target, now)
 	if *format == "json" {
 		enc := json.NewEncoder(stdout)
 		enc.SetIndent("", "  ")
 		err = enc.Encode(r)
 	} else {
-		err = writeBaselineText(stdout, r, *all)
+		err = writeBaselineText(stdout, *r, *all)
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "tycana baseline: %v\n", err)

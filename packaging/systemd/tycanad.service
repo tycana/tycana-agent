@@ -11,6 +11,10 @@ Type=simple
 ExecStart=/usr/bin/tycanad --config /etc/tycana/tycanad.yaml
 Restart=on-failure
 RestartSec=10s
+# Status 3: the binary differs from the one its package installed
+# (self-check, tycana-hq ADR 0025). A restart cannot fix that, and the
+# status stays a failure, so monitoring sees it.
+RestartPreventExitStatus=3
 
 # Identity: a dedicated unprivileged system user from
 # packaging/sysusers.d/tycana.conf. No capabilities at all. Not

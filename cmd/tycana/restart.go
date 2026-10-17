@@ -13,30 +13,10 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"tycana.ai/agent/internal/collect"
 	"tycana.ai/agent/internal/inventory"
-	"tycana.ai/agent/internal/inventory/kernel"
 	"tycana.ai/agent/internal/restart"
 )
-
-// restartOutput is "tycana restart --format json".
-type restartOutput struct {
-	// Host is the main result (ADR 0020); the findings are detail.
-	Host         restart.HostState     `json:"host"`
-	Kernel       *kernelRestart        `json:"kernel,omitempty"`
-	LivePatching *restart.LivePatching `json:"live_patching,omitempty"`
-	Reboot       *restart.RebootHint   `json:"reboot_hint,omitempty"`
-	restart.Report
-}
-
-type kernelRestart struct {
-	Running         string `json:"running"`
-	NewestInstalled string `json:"newest_installed,omitempty"`
-	// RebootNeeded is true when a newer kernel is installed than the one
-	// running. With live patches or Ksplice (EffectiveKnown false) the
-	// running kernel may already carry the fixes.
-	RebootNeeded   bool `json:"reboot_needed"`
-	EffectiveKnown bool `json:"effective_known"`
-}
 
 func runRestart(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("tycana restart", flag.ContinueOnError)
@@ -71,7 +51,7 @@ func runRestart(args []string, stdout, stderr io.Writer) int {
 	}
 
 	var snap restart.Snapshot
-	var out restartOutput
+	var out collect.Restart
 	var err error
 	if *from != "" {
 		snap, err = readSnapshot(*from)
@@ -79,16 +59,8 @@ func runRestart(args []string, stdout, stderr io.Writer) int {
 		now := time.Now()
 		var inv *inventory.Snapshot
 		inv, _, err = inventory.Collect("/", now)
-		var pkgs []restart.PackageChange
 		if err == nil {
-			out.Kernel = kernelState(inv.Kernel)
-			out.Reboot = rebootHint(inv)
-			lp := livePatching(inv)
-			out.LivePatching = &lp
-			pkgs, err = packageChanges(inv)
-		}
-		if err == nil {
-			snap, err = restart.Collect(context.Background(), now, pkgs)
+			snap, err = collect.RestartInputs(context.Background(), inv, now, &out)
 		}
 	}
 	if err != nil {
@@ -100,11 +72,7 @@ func runRestart(args []string, stdout, stderr io.Writer) int {
 	if *format == "snapshot" {
 		err = enc.Encode(snap)
 	} else {
-		out.Report = restart.Analyze(snap)
-		out.Host = restart.Host(snap, out.Report)
-		if out.Kernel != nil && out.Kernel.RebootNeeded {
-			out.Host.State = "restart-needed"
-		}
+		collect.Analyze(snap, &out)
 		if *format == "json" {
 			err = enc.Encode(out)
 		} else {
@@ -132,68 +100,7 @@ func readSnapshot(name string) (restart.Snapshot, error) {
 	return s, nil
 }
 
-// packageChanges is when each package last changed: dpkg's info files,
-// or rpm's install times (whole seconds).
-func packageChanges(inv *inventory.Snapshot) ([]restart.PackageChange, error) {
-	switch inv.PackageDB.Format {
-	case "deb":
-		return restart.DpkgChanges("/")
-	case "rpm":
-		out := make([]restart.PackageChange, 0, len(inv.Packages))
-		for _, p := range inv.Packages {
-			if !p.InstalledAt.IsZero() {
-				out = append(out, restart.PackageChange{Name: p.Name + "." + p.Arch, Changed: p.InstalledAt, Coarse: true})
-			}
-		}
-		return out, nil
-	}
-	return nil, nil
-}
-
-func livePatching(inv *inventory.Snapshot) restart.LivePatching {
-	names := make([]string, 0, len(inv.Kernel.LivePatches))
-	for _, p := range inv.Kernel.LivePatches {
-		names = append(names, p.Name)
-	}
-	pkgs := make([]restart.PackageInfo, 0, len(inv.Packages))
-	for _, p := range inv.Packages {
-		pkgs = append(pkgs, restart.PackageInfo{Name: p.Name, Version: p.Version, Release: p.Release})
-	}
-	return restart.DetectLivePatching("/", names, inv.Kernel.KspliceModules, pkgs)
-}
-
-// rebootHint applies the distribution's own reboot rule: dnf's
-// needs-restarting on rpm hosts, /run/reboot-required on dpkg hosts.
-func rebootHint(inv *inventory.Snapshot) *restart.RebootHint {
-	switch inv.PackageDB.Format {
-	case "rpm":
-		boot, err := restart.BootTime("/")
-		if err != nil {
-			return nil
-		}
-		pkgs := make([]restart.Installed, 0, len(inv.Packages))
-		for _, p := range inv.Packages {
-			pkgs = append(pkgs, restart.Installed{Name: p.Name, At: p.InstalledAt})
-		}
-		h := restart.NeedsRestarting("/", pkgs, boot)
-		return &h
-	case "deb":
-		h := restart.RebootRequired("/")
-		return &h
-	}
-	return nil
-}
-
-func kernelState(k kernel.Info) *kernelRestart {
-	return &kernelRestart{
-		Running:         k.Running.Release,
-		NewestInstalled: k.NewestInstalled,
-		RebootNeeded:    k.NewestInstalled != "" && k.NewestInstalled != k.Running.Release,
-		EffectiveKnown:  k.EffectiveKnown,
-	}
-}
-
-func writeRestartText(w io.Writer, out restartOutput) error {
+func writeRestartText(w io.Writer, out collect.Restart) error {
 	count := map[restart.Status]int{}
 	for _, f := range out.Findings {
 		count[f.Status]++

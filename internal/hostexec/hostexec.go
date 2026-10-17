@@ -265,3 +265,7 @@ func (c *capped) Write(p []byte) (int, error) {
 	}
 	return len(p), nil
 }
+
+// Terminate is SIGTERM, for tycanad's shutdown. It is here because
+// tools/nowrite keeps the syscall package inside this package.
+var Terminate os.Signal = syscall.SIGTERM

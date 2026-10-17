@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+
+	"tycana.ai/agent/internal/collect"
 )
 
 const ubuntuRestart = "../../testdata/lab/ubuntu2404/restart/snapshot.json"
@@ -35,7 +37,7 @@ func TestRestartFromSnapshot(t *testing.T) {
 	if code := run([]string{"restart", "--snapshot", ubuntuRestart, "--format", "json"}, &out, &errb); code != 0 {
 		t.Fatalf("json exit %d: %s", code, errb.String())
 	}
-	var r restartOutput
+	var r collect.Restart
 	if err := json.Unmarshal(out.Bytes(), &r); err != nil || len(r.Findings) != 23 {
 		t.Fatalf("json: %v, %d findings", err, len(r.Findings))
 	}
