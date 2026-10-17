@@ -21,7 +21,7 @@ go run ./cmd/tycana inventory --format rpm-query    # byte-identical to rpm -qa 
 go run ./cmd/tycana history --since 2026-10-01      # what dpkg, apt, and dnf changed, and who asked
 go run ./cmd/tycana updates                         # pending updates, and what the host's autopilot installs
 go run ./cmd/tycana restart                         # services still running replaced code, kernel, reboot
-go run ./cmd/tycana baseline                        # configuration baseline and compliance score
+go run ./cmd/tycana baseline                        # configuration baseline: coverage, then the score of the checked rules
 ```
 
 The package list is read straight from the package manager's database, never by running it:
@@ -44,6 +44,12 @@ Each check gives the verdict OpenSCAP gives for the same rule. On the lab VMs ev
 check agrees with OpenSCAP run as root, including a known-bad case with six settings broken by
 hand (`testdata/lab/*/baseline-*`, `TestLabAgreesWithOpenSCAP`). Rules whose check is custom
 OVAL are listed as not covered, with the reason: 36 to 39 percent of each source profile today.
+Counted per recommendation of the benchmark the profile follows, Tycana checks 110 of 232
+automated recommendations on Ubuntu 24.04, 113 of 230 on Debian 12, and 103 of 219 on
+AlmaLinux 9 (47 to 49 percent); every report starts with that count. When a rule is stricter
+than the system it checks (it wants a unit masked where systemd would not start it anyway, or
+an fstab line for a mount that already has the option), the result keeps the rule's verdict
+and carries a note that says so.
 
 The agent reads without privilege. What it cannot read (a root-only file, an owner its user
 namespace cannot map, a mount option its sandbox may have added) is **unknown**, never
@@ -51,6 +57,23 @@ namespace cannot map, a mount option its sandbox may have added) is **unknown**,
 faulty checks are counted apart, so the number is never inflated by guesses. A local
 exceptions file (`--exceptions`) takes a check out of the score with an owner, a reason, and an
 expiry date.
+
+## Signed records
+
+The daemon `tycanad` runs as an unprivileged systemd service. Each hour it reads the host and
+signs two records with a key generated on the host: the inventory, and the assessment (pending
+updates, restart state, baseline). The records form a hash chain and stay on the host for 30
+days. `sudo tycana status` shows the latest signed state; `sudo tycana evidence export` writes
+them as one bundle; `tycana evidence verify` checks a bundle anywhere, and
+[VERIFY.md](VERIFY.md) shows how to check it with OpenSSL or cosign instead.
+
+On the four lab hosts, every record verified with OpenSSL and with cosign. The package list in
+each record was identical to dpkg-query or rpm -qa.
+
+A valid signature shows that nobody without the host's key changed a record after the agent
+signed it. It does not show that the host reported the truth: root on the host can read the
+key. While `/etc/tycana/halt` exists the agent collects and signs nothing, and its next
+records say when the halt began and ended.
 
 ## What it will do
 
