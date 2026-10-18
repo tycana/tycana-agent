@@ -75,7 +75,7 @@ run. `/etc/tycana` belongs to root, so only root can make the file.
 
 **Limits.** The unit's memory limit is 384 MiB (`MemoryMax=`); apt-get and dnf run inside
 it for the update list, and dnf on Oracle Linux 9 needs about 292 MiB. A cycle that runs
-longer than 10 minutes ends the agent with status 4. The agent first keeps a marker in its
+longer than 10 minutes ends the agent with status 75 (`EX_TEMPFAIL`). The agent first keeps a marker in its
 state directory; systemd starts it again, and the next records name the cycle that did not
 finish and the collector that was running. A cycle that never ends would otherwise stop the
 records and the halt check.

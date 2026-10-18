@@ -36,9 +36,12 @@ const HaltFile = "/etc/tycana/halt"
 // error.
 const CycleLimit = 10 * time.Minute
 
-// ExitCycleLimit is the exit status at the cycle limit. It is not the
-// unit's RestartPreventExitStatus, so systemd restarts the agent.
-const ExitCycleLimit = 4
+// ExitCycleLimit is the exit status at the cycle limit: EX_TEMPFAIL of
+// sysexits.h, which systemd shows as "status=75/TEMPFAIL". It is not the
+// unit's RestartPreventExitStatus, so systemd restarts the agent. (4 was
+// tried first; systemd shows it as "4/NOPERMISSION", which reads as a
+// privilege fault. Lab, 2026-10-18.)
+const ExitCycleLimit = 75
 
 // ErrCycleLimit is what Cycle returns when the limit stopped it and Exit
 // returned (only in tests).

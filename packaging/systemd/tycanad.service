@@ -108,7 +108,7 @@ NotifyAccess=none
 # 292 MiB (its repository metadata and file lists); at 256M without swap
 # the kernel killed it in 10 of 10 runs. Measured 2026-10-18.
 # The agent also ends a cycle that runs longer than 10 minutes (exit
-# status 4; Restart=on-failure starts it again).
+# status 75, EX_TEMPFAIL; Restart=on-failure starts it again).
 MemoryMax=384M
 TasksMax=64
 CPUQuota=20%
