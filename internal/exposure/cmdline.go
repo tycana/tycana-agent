@@ -8,6 +8,8 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"unicode"
+	"unicode/utf8"
 
 	"tycana.ai/agent/internal/restart"
 )
@@ -43,7 +45,7 @@ func mainProgram(proc string, r *restart.Resolver, pid int) (argv0, canon string
 		return "", "", false
 	}
 	a := string(buf[:i])
-	if a == "" || a[0] != '/' || path.Clean(a) != a {
+	if a == "" || a[0] != '/' || path.Clean(a) != a || !printable(a) {
 		return "", "", false
 	}
 	c, err := r.Canonical(a)
@@ -55,4 +57,18 @@ func mainProgram(proc string, r *restart.Resolver, pid int) (argv0, canon string
 		return "", "", false
 	}
 	return a, c, true
+}
+
+// printable is true for valid UTF-8 without control characters: argv[0]
+// goes into a signed record and onto terminals.
+func printable(s string) bool {
+	if !utf8.ValidString(s) {
+		return false
+	}
+	for _, c := range s {
+		if unicode.IsControl(c) {
+			return false
+		}
+	}
+	return true
 }

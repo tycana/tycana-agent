@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
 	"strings"
 	"time"
 
@@ -230,10 +231,17 @@ func Exposure(ctx context.Context, inv *inventory.Snapshot, snap restart.Snapsho
 }
 
 // socketTriggers asks systemd for the Triggers= of each socket unit.
+// It asks in batches of 200, below hostexec's limit of names per call.
 func socketTriggers(ctx context.Context, sockets []string) (map[string][]string, error) {
-	res, err := hostexec.Run(ctx, hostexec.SystemctlShowSocketTriggers, sockets...)
-	if err != nil {
-		return nil, err
+	out := map[string][]string{}
+	for len(sockets) > 0 {
+		n := min(len(sockets), 200)
+		res, err := hostexec.Run(ctx, hostexec.SystemctlShowSocketTriggers, sockets[:n]...)
+		if err != nil {
+			return out, err
+		}
+		maps.Copy(out, exposure.ParseTriggers(res.Stdout))
+		sockets = sockets[n:]
 	}
-	return exposure.ParseTriggers(res.Stdout), nil
+	return out, nil
 }

@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"slices"
+	"strings"
 
 	"tycana.ai/agent/internal/inventory/dpkg"
 	"tycana.ai/agent/internal/inventory/rpm"
@@ -38,7 +39,7 @@ var errNoDB = errors.New("no package database")
 // the closures, whose paths are canonical. Each packaged path is
 // lstat'ed for the setuid bit: rpm records the mode the package gave,
 // dpkg none, and the host's mode is the one that counts.
-func readOwners(r *restart.Resolver, format, rpmDir string, want map[string]bool) (*owners, error) {
+func readOwners(r *restart.Resolver, format, rpmDir string, want map[string]bool, setuid bool) (*owners, error) {
 	o := &owners{of: map[string][]string{}}
 	dirs := map[string]string{}
 	add := func(pkg, p string) {
@@ -46,11 +47,14 @@ func readOwners(r *restart.Resolver, format, rpmDir string, want map[string]bool
 		dir, base := path.Split(p)
 		cd, ok := dirs[dir]
 		if !ok {
-			c, err := r.Canonical(path.Clean(dir))
-			if err != nil {
-				c = ""
+			cd = usrMerged(r, path.Clean(dir))
+			// A listed directory that is itself a link elsewhere (not
+			// a /usr-merge link) is skipped: its files are not what the
+			// package installed.
+			if c, err := r.Canonical(cd); err != nil || c != cd {
+				cd = ""
 			}
-			cd, dirs[dir] = c, c
+			dirs[dir] = cd
 		}
 		if cd == "" {
 			return
@@ -58,6 +62,9 @@ func readOwners(r *restart.Resolver, format, rpmDir string, want map[string]bool
 		cp := path.Join(cd, base)
 		if want[cp] && !slices.Contains(o.of[cp], pkg) {
 			o.of[cp] = append(o.of[cp], pkg)
+		}
+		if !setuid {
+			return
 		}
 		fi, err := os.Lstat(r.Host(cp))
 		if err != nil || !fi.Mode().IsRegular() || fi.Mode()&fs.ModeSetuid == 0 {
@@ -93,6 +100,25 @@ func readOwners(r *restart.Resolver, format, rpmDir string, want map[string]bool
 		return compare(a.Package, b.Package)
 	})
 	return o, err
+}
+
+// mergedTops are the top directories that a merged /usr turns into
+// links: /bin -> usr/bin, /lib -> usr/lib, and the others.
+var mergedTops = []string{"bin", "sbin", "lib", "lib32", "lib64", "libx32"}
+
+// usrMerged maps a directory a package lists to the path the closures
+// use. Only the /usr-merge links count, when the host has them; other
+// links are not followed, so a directory that a service user owns and
+// points elsewhere cannot make a package the owner of another file.
+func usrMerged(r *restart.Resolver, dir string) string {
+	top, rest, _ := strings.Cut(strings.TrimPrefix(dir, "/"), "/")
+	if !slices.Contains(mergedTops, top) {
+		return dir
+	}
+	if t, err := os.Readlink(r.Host("/" + top)); err != nil || path.Clean(t) != "usr/"+top && path.Clean(t) != "/usr/"+top {
+		return dir
+	}
+	return path.Join("/usr", top, rest)
 }
 
 func compare(a, b string) int {

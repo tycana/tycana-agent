@@ -37,12 +37,15 @@ func (s Socket) Loopback() bool { return s.Addr.Unmap().IsLoopback() }
 
 // Linux constants that x/sys/unix does not name.
 const (
-	inetDiagCgroupID = 21 // INET_DIAG_CGROUP_ID, include/uapi/linux/inet_diag.h
-	tcpListen        = 10 // TCP_LISTEN
-	tcpClose         = 7  // TCP_CLOSE: an unconnected UDP socket
-	reqLen           = 56 // sizeof(struct inet_diag_req_v2)
-	msgLen           = 72 // sizeof(struct inet_diag_msg)
+	inetDiagCgroupID = 21   // INET_DIAG_CGROUP_ID, include/uapi/linux/inet_diag.h
+	tcpListen        = 10   // TCP_LISTEN
+	tcpClose         = 7    // TCP_CLOSE: an unconnected UDP socket
+	reqLen           = 56   // sizeof(struct inet_diag_req_v2)
+	msgLen           = 72   // sizeof(struct inet_diag_msg)
+	nlmFDumpIntr     = 0x10 // NLM_F_DUMP_INTR
 )
+
+var errInterrupted = errors.New("sock_diag: dump interrupted")
 
 // maxSockets bounds what one dump may return. A host with more listening
 // sockets than this gets an error, not a partial list.
@@ -75,6 +78,12 @@ func Listening() ([]Socket, error) {
 	} {
 		for _, fam := range []uint8{syscall.AF_INET, syscall.AF_INET6} {
 			got, err := dump(fd, seq, fam, q.ipProt, q.states, q.proto)
+			// A dump that the kernel marks interrupted (the socket table
+			// changed during it) is asked again, at most twice.
+			for try := 0; errors.Is(err, errInterrupted) && try < 2; try++ {
+				seq++
+				got, err = dump(fd, seq, fam, q.ipProt, q.states, q.proto)
+			}
 			if err != nil {
 				return nil, err
 			}
@@ -103,6 +112,7 @@ func dump(fd int, seq uint32, family, proto uint8, states uint32, name string) (
 	}
 	buf := make([]byte, os.Getpagesize()*8)
 	var out []Socket
+	interrupted := false
 	for {
 		n, from, err := syscall.Recvfrom(fd, buf, 0)
 		if err != nil {
@@ -120,8 +130,14 @@ func dump(fd int, seq uint32, family, proto uint8, states uint32, name string) (
 			if m.Header.Seq != seq {
 				continue
 			}
+			if m.Header.Flags&nlmFDumpIntr != 0 {
+				interrupted = true
+			}
 			switch m.Header.Type {
 			case syscall.NLMSG_DONE:
+				if interrupted {
+					return nil, errInterrupted
+				}
 				return out, nil
 			case syscall.NLMSG_ERROR:
 				if len(m.Data) >= 4 {

@@ -168,47 +168,69 @@ func Collect(ctx context.Context, h Host, snap restart.Snapshot, now time.Time) 
 			}
 			w.unit.Main = &mp
 			want[canon] = true
-			if canon != start.Path && canon != start.Interpreter {
-				p := r.Program(canon)
-				if !slices.Contains(p.Closure, canon) {
-					p.Closure = append([]string{canon}, p.Closure...)
-				}
-				w.main = &p
-			}
 		}
 		for _, c := range w.closure {
 			want[c] = true
 		}
-		if w.main != nil {
-			for _, c := range w.main.Closure {
-				want[c] = true
-			}
-		}
 		units = append(units, w)
 	}
 
-	own, err := readOwners(r, h.Format, h.RPMDir, want)
+	own, err := readOwners(r, h.Format, h.RPMDir, want, true)
 	if err != nil {
 		fail("packages", err)
 	}
 	rep.Setuid, rep.PackageFiles = own.setuid, own.files
 
+	// argv[0] is set by the process itself: the agent parses the file it
+	// names only after a package is known to own it, so a service cannot
+	// hand the agent a file of its own (a FIFO, a crafted ELF).
+	more := map[string]bool{}
 	for i := range units {
 		w := &units[i]
 		u := &w.unit
-		if u.Main != nil {
-			canon := u.Main.Path
-			if u.Main.Resolved != "" {
-				canon = u.Main.Resolved
-			}
-			pk := own.of[canon]
-			if len(pk) == 0 {
-				// ADR 0032: kept only when a package owns it.
-				u.Main, w.main = nil, nil
-			} else {
-				u.Main.Package = pk[0]
+		if u.Main == nil {
+			continue
+		}
+		canon := u.Main.Path
+		if u.Main.Resolved != "" {
+			canon = u.Main.Resolved
+		}
+		pk := own.of[canon]
+		if len(pk) == 0 {
+			// ADR 0032: kept only when a package owns it.
+			u.Main = nil
+			continue
+		}
+		u.Main.Package = pk[0]
+		start := snap.Programs[u.Program]
+		if canon == start.Path || canon == start.Interpreter {
+			continue
+		}
+		p := r.Program(canon)
+		if !slices.Contains(p.Closure, canon) {
+			p.Closure = append([]string{canon}, p.Closure...)
+		}
+		w.main = &p
+		for _, c := range p.Closure {
+			if _, ok := own.of[c]; !ok && !want[c] {
+				more[c] = true
 			}
 		}
+	}
+	if len(more) > 0 {
+		// The main programs' libraries that no start closure has.
+		extra, err := readOwners(r, h.Format, h.RPMDir, more, false)
+		if err != nil {
+			fail("packages", err)
+		}
+		for c, pk := range extra.of {
+			own.of[c] = pk
+		}
+	}
+
+	for i := range units {
+		w := &units[i]
+		u := &w.unit
 		if w.main != nil {
 			if u.Interpreter != "" && u.Interpreter == startInterpreter(snap, u.Program) {
 				// The start program is a script, and its main process is

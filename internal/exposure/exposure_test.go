@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -238,6 +239,59 @@ func TestInterpreterName(t *testing.T) {
 	for _, bad := range []string{"postgres", "sshd", "nginx", "php-fpm8.3", "shellcheck", "javac"} {
 		if interpreterName.MatchString(bad) {
 			t.Errorf("%s matched", bad)
+		}
+	}
+}
+
+// A service sets its own argv[0]. A file no package owns is never
+// opened: a FIFO there would block the agent's cycle.
+func TestHostileMainProgram(t *testing.T) {
+	root, proc := fakeHost(t)
+	if err := syscall.Mkfifo(filepath.Join(root, "usr/opt-fifo"), 0o644); err != nil {
+		t.Skip(err)
+	}
+	// os.Stat says a FIFO is not regular; a regular file swapped for a
+	// FIFO after the check is the race. Simulate the worst case: a
+	// regular unowned file, which must not be parsed either.
+	_ = os.WriteFile(filepath.Join(proc, "300", "cmdline"), []byte("/usr/opt-tool\x00"), 0o644)
+	_ = os.MkdirAll(filepath.Join(proc, "500"), 0o755)
+	_ = os.WriteFile(filepath.Join(proc, "500", "cmdline"), []byte("/usr/opt-fifo\x00"), 0o644)
+	_ = os.MkdirAll(filepath.Join(proc, "600"), 0o755)
+	_ = os.WriteFile(filepath.Join(proc, "600", "cmdline"), []byte("/usr/bin/sudo\x1b[2J\x00"), 0o644)
+	snap := snapshot()
+	snap.Units = append(snap.Units, restart.Unit{ID: "fifo.service", MainPID: 500, Exec: "/usr/opt-tool"},
+		restart.Unit{ID: "ctl.service", MainPID: 600, Exec: "/usr/opt-tool"})
+	done := make(chan *Report, 1)
+	go func() {
+		done <- Collect(context.Background(), Host{Root: root, Proc: proc, Format: "deb"}, snap, time.Now())
+	}()
+	select {
+	case rep := <-done:
+		for _, u := range rep.Units {
+			if (u.ID == "fifo.service" || u.ID == "ctl.service" || u.ID == "opt.service") && u.Main != nil {
+				t.Errorf("%s: main %+v", u.ID, u.Main)
+			}
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Collect blocked on a file named by argv[0]")
+	}
+}
+
+// A listed directory that is a link elsewhere does not make its package
+// the owner of the files there.
+func TestPackageDirectoryLink(t *testing.T) {
+	root, proc := fakeHost(t)
+	if err := os.MkdirAll(filepath.Join(root, "var/lib"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink("../../usr/bin", filepath.Join(root, "var/lib/svc")); err != nil {
+		t.Fatal(err)
+	}
+	_ = os.WriteFile(filepath.Join(root, "var/lib/dpkg/info/evil.list"), []byte("/var/lib/svc/sudo\n"), 0o644)
+	rep := Collect(context.Background(), Host{Root: root, Proc: proc, Format: "deb"}, snapshot(), time.Now())
+	for _, s := range rep.Setuid {
+		if s.Package == "evil" {
+			t.Errorf("setuid misattributed: %+v", s)
 		}
 	}
 }
