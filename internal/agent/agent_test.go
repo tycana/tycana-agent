@@ -306,3 +306,99 @@ func TestConfig(t *testing.T) {
 		}
 	}
 }
+
+func TestCycleLimit(t *testing.T) {
+	dir := t.TempDir()
+	c := &clock{time.Date(2026, 10, 18, 12, 0, 0, 0, time.UTC)}
+	a := newAgent(t, dir, c)
+	release := make(chan struct{})
+	a.Limit = 20 * time.Millisecond
+	var code int
+	a.Exit = func(c int) { code = c }
+	a.Collect = func(ctx context.Context, _ time.Time) (HostInventory, HostAssessment, []evidence.CollectError) {
+		SetStep(ctx, "updates")
+		<-release
+		return HostInventory{Inventory: &inventory.Snapshot{Schema: "test"}}, HostAssessment{}, nil
+	}
+	for i := range 2 {
+		go func() { time.Sleep(60 * time.Millisecond); release <- struct{}{} }()
+		if err := a.Cycle(context.Background()); !errors.Is(err, ErrCycleLimit) {
+			t.Fatalf("cycle %d: err %v, want ErrCycleLimit", i, err)
+		}
+		if code != ExitCycleLimit {
+			t.Fatalf("exit code %d", code)
+		}
+		c.t = c.t.Add(time.Hour)
+	}
+	recs, _ := a.Store.Records()
+	if len(recs) != 0 {
+		t.Fatalf("%d records written past the limit", len(recs))
+	}
+	o, err := a.Store.OverrunMarker()
+	if err != nil || o == nil || o.Count != 2 || o.Step != "updates" || !o.Last.After(o.First) {
+		t.Fatalf("marker %+v, %v", o, err)
+	}
+
+	// The restarted agent names the limit in the next record and then
+	// removes the marker.
+	b := newAgent(t, dir, c)
+	if err := b.Cycle(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	h := lastHeader(t, dir)
+	var found bool
+	for _, e := range h.Errors {
+		if e.Source == "cycle-limit" && strings.Contains(e.Error, "2 cycle(s) did not finish within 10m0s") && strings.Contains(e.Error, "step at the limit: updates") {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("no cycle-limit error in %+v", h.Errors)
+	}
+	if o, _ := b.Store.OverrunMarker(); o != nil {
+		t.Fatalf("marker kept after the record: %+v", o)
+	}
+	if err := b.Cycle(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range lastHeader(t, dir).Errors {
+		if e.Source == "cycle-limit" {
+			t.Fatal("cycle-limit error repeated")
+		}
+	}
+	if r := verify(t, dir); !r.OK() {
+		t.Fatalf("chain: %+v", r)
+	}
+}
+
+func TestCycleWithinLimit(t *testing.T) {
+	dir := t.TempDir()
+	a := newAgent(t, dir, &clock{time.Now()})
+	a.Limit = 50 * time.Millisecond
+	a.Exit = func(int) { t.Error("exit within the limit") }
+	if err := a.Cycle(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	time.Sleep(100 * time.Millisecond)
+	if o, _ := a.Store.OverrunMarker(); o != nil {
+		t.Fatalf("marker after a cycle within the limit: %+v", o)
+	}
+}
+
+func lastHeader(t *testing.T, dir string) evidence.Header {
+	t.Helper()
+	recs, _ := state.Reader(dir).Records()
+	if len(recs) == 0 {
+		t.Fatal("no records")
+	}
+	raw, _ := state.ReadRecord(recs[len(recs)-1])
+	var env evidence.Envelope
+	_ = json.Unmarshal(raw, &env)
+	var st struct {
+		Predicate evidence.Header `json:"predicate"`
+	}
+	if err := json.Unmarshal([]byte(mustPayload(t, env)), &st); err != nil {
+		t.Fatal(err)
+	}
+	return st.Predicate
+}

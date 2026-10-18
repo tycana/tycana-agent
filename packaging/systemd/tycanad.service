@@ -102,10 +102,14 @@ KeyringMode=private
 NotifyAccess=none
 
 # Resources: the agent is meant to be tiny (spec §8).
-# 256M (Mark, 2026-10-17, tycana-hq ADR 0025): tycanad itself uses
-# 16-30 MiB, but apt-get (113 MiB RSS) and dnf (108 MiB) run inside
-# this cgroup for the update list, and 128M left them about 15 MiB.
-MemoryMax=256M
+# 384M (Mark, 2026-10-18, tycana-hq ADR 0025 item 6): tycanad itself
+# uses 8-30 MiB, but apt-get and dnf run inside this cgroup for the
+# update list. dnf on Oracle Linux 9 as a non-root user needs about
+# 292 MiB (its repository metadata and file lists); at 256M without swap
+# the kernel killed it in 10 of 10 runs. Measured 2026-10-18.
+# The agent also ends a cycle that runs longer than 10 minutes (exit
+# status 4; Restart=on-failure starts it again).
+MemoryMax=384M
 TasksMax=64
 CPUQuota=20%
 

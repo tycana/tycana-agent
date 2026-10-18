@@ -22,6 +22,7 @@ func HostCollector(cfg Config) Collector {
 		fail := func(src string, err error) {
 			errs = append(errs, evidence.CollectError{Source: src, Error: err.Error()})
 		}
+		SetStep(ctx, "inventory")
 		snap, _, err := inventory.Collect("/", now)
 		if err != nil {
 			// Nothing else can run without the package list.
@@ -29,17 +30,20 @@ func HostCollector(cfg Config) Collector {
 			return inv, as, errs
 		}
 		inv.Inventory = snap
+		SetStep(ctx, "updates")
 		if r, err := collect.Updates(ctx, snap); err != nil {
 			fail("updates", err)
 		} else {
 			as.Updates = &r
 		}
+		SetStep(ctx, "restart")
 		var rs collect.Restart
 		if rsnap, err := collect.RestartInputs(ctx, snap, now, &rs); err != nil {
 			fail("restart", err)
 		} else {
 			collect.Analyze(rsnap, &rs)
 			as.Restart = &rs
+			SetStep(ctx, "exposure")
 			as.Exposure = collect.Exposure(ctx, snap, rsnap, now)
 			for _, e := range as.Exposure.Errors {
 				fail("exposure", errors.New(e))
@@ -48,6 +52,7 @@ func HostCollector(cfg Config) Collector {
 				fail("exposure", errors.New("sockets: "+as.Exposure.Sockets.Error))
 			}
 		}
+		SetStep(ctx, "baseline")
 		var exc []baseline.Exception
 		if cfg.Exceptions != "" {
 			f, err := os.Open(cfg.Exceptions)

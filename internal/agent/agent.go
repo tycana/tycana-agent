@@ -12,6 +12,7 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"tycana.ai/agent/evidence"
@@ -26,6 +27,22 @@ import (
 // HaltFile stops collection and signing while it exists (safety model
 // 5.4, path B). /etc/tycana is root-owned, so only root can make it.
 const HaltFile = "/etc/tycana/halt"
+
+// CycleLimit is the time limit of one cycle (Mark, 2026-10-18, tycana-hq
+// ADR 0025 item 7). File reads have no time limit of their own, and a
+// cycle that never ends stops the records and the halt check. At the
+// limit the agent keeps a marker and exits with ExitCycleLimit; systemd
+// starts it again (Restart=on-failure) and the next record carries the
+// error.
+const CycleLimit = 10 * time.Minute
+
+// ExitCycleLimit is the exit status at the cycle limit. It is not the
+// unit's RestartPreventExitStatus, so systemd restarts the agent.
+const ExitCycleLimit = 4
+
+// ErrCycleLimit is what Cycle returns when the limit stopped it and Exit
+// returned (only in tests).
+var ErrCycleLimit = errors.New("the cycle did not finish within the time limit")
 
 // appID is Tycana's systemd application id: the host id is
 // sd_id128_get_machine_app_specific(appID), so the raw machine id never
@@ -66,6 +83,10 @@ type Agent struct {
 	Version, Commit string
 	// Check is the result of the start-up self-check.
 	Check SelfCheck
+	// Limit is the cycle time limit; zero means CycleLimit.
+	Limit time.Duration
+	// Exit ends the process at the cycle limit; nil means os.Exit.
+	Exit func(code int)
 
 	key        *evidence.Key
 	prevKeyID  string
@@ -73,6 +94,12 @@ type Agent struct {
 	prevDigest string
 	cycle      uint64
 	storeErrs  []evidence.CollectError
+	// overrun is set when Init found a cycle-limit marker; the marker
+	// is removed after the next record names it.
+	overrun bool
+	// writeMu orders the cycle's writes and the cycle-limit exit, so the
+	// agent never exits in the middle of a record.
+	writeMu sync.Mutex
 }
 
 // Init loads or makes the key and finds the end of the chain. It runs
@@ -101,6 +128,12 @@ func (a *Agent) Init() error {
 		return fmt.Errorf("host key: %w", err)
 	}
 	a.key = k
+	if o, err := a.Store.OverrunMarker(); err != nil {
+		a.storeErr(fmt.Sprintf("cycle-limit marker: %v", err))
+	} else if o != nil {
+		a.overrun = true
+		a.storeErrs = append(a.storeErrs, evidence.CollectError{Source: "cycle-limit", Error: o.Message(a.limit())})
+	}
 	if len(recs) == 0 {
 		return nil
 	}
@@ -168,7 +201,14 @@ func (a *Agent) Cycle(ctx context.Context) error {
 		return a.markHalt()
 	}
 	start := a.Now()
-	inv, as, errs := a.Collect(ctx, start)
+	w := a.watch(start)
+	inv, as, errs := a.Collect(context.WithValue(ctx, stepKey{}, w.setStep), start)
+	a.writeMu.Lock()
+	defer a.writeMu.Unlock()
+	if !w.finish() {
+		<-w.done
+		return ErrCycleLimit
+	}
 	if a.Halted() {
 		a.Log.Info("halt file appeared during the cycle: nothing signed", "path", a.HaltPath)
 		return a.markHalt()
@@ -193,8 +233,100 @@ func (a *Agent) Cycle(ctx context.Context) error {
 			return err
 		}
 	}
+	if a.overrun {
+		if err := a.Store.ClearOverrunMarker(); err != nil {
+			return err
+		}
+		a.overrun = false
+	}
 	a.Log.Info("signed records", "cycle", a.cycle, "sequence", a.seq, "errors", len(errs), "seconds", a.Now().Sub(start).Seconds())
 	return a.prune()
+}
+
+func (a *Agent) limit() time.Duration {
+	if a.Limit > 0 {
+		return a.Limit
+	}
+	return CycleLimit
+}
+
+// stepKey holds the watchdog's step setter in the collector's context.
+type stepKey struct{}
+
+// SetStep names the collector that runs now, for the cycle-limit error.
+func SetStep(ctx context.Context, name string) {
+	if f, ok := ctx.Value(stepKey{}).(func(string)); ok {
+		f(name)
+	}
+}
+
+// watchdog ends a cycle that runs past the limit.
+type watchdog struct {
+	mu       sync.Mutex
+	step     string
+	finished bool
+	fired    bool
+	done     chan struct{}
+	timer    *time.Timer
+}
+
+func (a *Agent) watch(start time.Time) *watchdog {
+	w := &watchdog{done: make(chan struct{})}
+	w.timer = time.AfterFunc(a.limit(), func() { a.limitReached(w, start) })
+	return w
+}
+
+func (w *watchdog) setStep(s string) {
+	w.mu.Lock()
+	w.step = s
+	w.mu.Unlock()
+}
+
+// finish ends the watch. It reports false when the limit came first.
+// The caller holds writeMu, so it is past the limit only if the
+// watchdog already ran.
+func (w *watchdog) finish() bool {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	w.timer.Stop()
+	if w.fired {
+		return false
+	}
+	w.finished = true
+	return true
+}
+
+// limitReached runs at the limit. A cycle that is writing its records
+// holds writeMu; when it finishes, the watch is over and nothing
+// happens. Otherwise the marker is kept and the process exits.
+func (a *Agent) limitReached(w *watchdog, start time.Time) {
+	a.writeMu.Lock()
+	defer a.writeMu.Unlock()
+	w.mu.Lock()
+	if w.finished {
+		w.mu.Unlock()
+		return
+	}
+	w.fired = true
+	step := w.step
+	w.mu.Unlock()
+	defer close(w.done)
+	o, err := a.Store.OverrunMarker()
+	if err != nil || o == nil {
+		o = &state.Overrun{First: start.UTC().Truncate(time.Millisecond)}
+	}
+	o.Last, o.Step = start.UTC().Truncate(time.Millisecond), step
+	o.Count++
+	if err := a.Store.SetOverrunMarker(*o); err != nil {
+		a.Log.Error("cycle-limit marker", "error", err)
+	}
+	a.Log.Error("the cycle did not finish within the time limit: exiting, systemd starts the agent again",
+		"limit", a.limit().String(), "step", step, "started", start.UTC())
+	exit := a.Exit
+	if exit == nil {
+		exit = os.Exit
+	}
+	exit(ExitCycleLimit)
 }
 
 // markHalt records that a cycle saw the halt file: the first time it was

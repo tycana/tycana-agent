@@ -34,7 +34,9 @@ directory. It never changes the host.
 
 While /etc/tycana/halt exists, it collects nothing and signs nothing.
 At start it compares its own binary with the package that installed it;
-on a mismatch it exits with status 3.
+on a mismatch it exits with status 3. A cycle that runs longer than 10
+minutes ends the process with status 4; systemd starts it again, and the
+next record names the cycle that did not finish.
 
 Flags:
 `
@@ -121,6 +123,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 	if err != nil {
 		log.Error("cycle", "error", err)
+		if errors.Is(err, agent.ErrCycleLimit) {
+			return agent.ExitCycleLimit
+		}
 		return 1
 	}
 	return 0

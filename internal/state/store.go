@@ -14,6 +14,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"tycana.ai/agent/evidence"
 )
@@ -304,6 +305,69 @@ func (s *Store) SetHaltMarker(h evidence.Halt) error {
 // ClearHaltMarker removes the halt marker.
 func (s *Store) ClearHaltMarker() error {
 	err := os.Remove(filepath.Join(s.dir, haltFile))
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
+	return err
+}
+
+const overrunFile = "cycle-limit.json"
+
+// Overrun is a run of cycles that did not finish within the cycle time
+// limit (tycana-hq ADR 0025 item 7). The agent keeps it before it exits,
+// and the next record carries it as an error.
+type Overrun struct {
+	// First and Last are the start times of the first and the last cycle
+	// that did not finish.
+	First time.Time `json:"first"`
+	Last  time.Time `json:"last"`
+	Count int       `json:"count"`
+	// Step is the collector that was running at the limit.
+	Step string `json:"step,omitempty"`
+}
+
+// Message is the error text of the next record.
+func (o Overrun) Message(limit time.Duration) string {
+	m := fmt.Sprintf("%d cycle(s) did not finish within %s (started %s", o.Count, limit, o.First.Format(time.RFC3339))
+	if o.Count > 1 {
+		m += " to " + o.Last.Format(time.RFC3339)
+	}
+	m += "); the agent stopped and started again"
+	if o.Step != "" {
+		m += "; the step at the limit: " + o.Step
+	}
+	return m
+}
+
+// OverrunMarker reads the cycle-limit marker. It returns nil when there
+// is none.
+func (s *Store) OverrunMarker() (*Overrun, error) {
+	b, err := os.ReadFile(filepath.Join(s.dir, overrunFile))
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	var o Overrun
+	if err := json.Unmarshal(b, &o); err != nil {
+		return nil, fmt.Errorf("state: %s: %w", overrunFile, err)
+	}
+	return &o, nil
+}
+
+// SetOverrunMarker keeps the cycle-limit marker.
+func (s *Store) SetOverrunMarker(o Overrun) error {
+	b, err := json.Marshal(o)
+	if err != nil {
+		return err
+	}
+	return s.write(s.dir, overrunFile, b, 0o600)
+}
+
+// ClearOverrunMarker removes the cycle-limit marker.
+func (s *Store) ClearOverrunMarker() error {
+	err := os.Remove(filepath.Join(s.dir, overrunFile))
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil
 	}
