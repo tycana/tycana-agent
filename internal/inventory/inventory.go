@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"tycana.ai/agent/debversion"
+	"tycana.ai/agent/internal/inventory/aptsrc"
 	"tycana.ai/agent/internal/inventory/dpkg"
 	"tycana.ai/agent/internal/inventory/kernel"
 	"tycana.ai/agent/internal/inventory/osrelease"
@@ -35,6 +36,10 @@ type Snapshot struct {
 	// each is enabled (/etc/yum.repos.d). A control plane applies a
 	// vendor's advisories only from enabled repositories, as dnf does.
 	Repositories []repos.Repo `json:"repositories,omitempty"`
+	// AptSources are the apt lists of a dpkg host that carry an
+	// installed package or its source; Package.AptSources index them
+	// (tycana-hq ADR 0034).
+	AptSources []aptsrc.Source `json:"apt_sources,omitempty"`
 }
 
 // PackageDB describes where the package list came from.
@@ -87,6 +92,16 @@ type Package struct {
 	License string `json:"license,omitempty"`
 	// ModularityLabel marks an rpm installed from a module stream.
 	ModularityLabel string `json:"modularity_label,omitempty"`
+	// FromRepo (rpm) is the dnf repository that installed this version,
+	// from dnf's history; empty for packages of the OS image or from rpm
+	// without dnf (tycana-hq ADR 0034).
+	FromRepo string `json:"from_repo,omitempty"`
+	// AptSources (deb) index Snapshot.AptSources: the apt lists that
+	// carry this exact version. When none does, AptSourceName lists the
+	// ones that carry the package's source name in another version (the
+	// vendor superseded it), and an empty pair means no list knows it.
+	AptSources    []int `json:"apt_sources,omitempty"`
+	AptSourceName []int `json:"apt_source_name,omitempty"`
 }
 
 // ErrNoPackageDB means no supported package database was found.
@@ -141,6 +156,7 @@ func Collect(root string, now time.Time) (*Snapshot, *Native, error) {
 		}
 		cands = fromDpkg(s, native.Dpkg)
 		cmp = compareDeb
+		aptSources(fsys, s)
 	} else {
 		native.RPM, err = rpm.ReadDatabase(root, rpmDir)
 		if err != nil {
@@ -150,6 +166,9 @@ func Collect(root string, now time.Time) (*Snapshot, *Native, error) {
 		cmp = compareRPM
 		if s.Repositories, err = repos.Read(fsys); err != nil {
 			s.PackageDB.Notes = append(s.PackageDB.Notes, "repositories not read: "+err.Error())
+		}
+		if err := fromRepos(root, s); err != nil {
+			s.PackageDB.Notes = append(s.PackageDB.Notes, "dnf history not read for package repositories: "+err.Error())
 		}
 	}
 	s.Kernel, err = kernel.Collect(fsys, cands, cmp)
@@ -277,4 +296,38 @@ func compareDeb(a, b string) int {
 
 func compareRPM(a, b string) int {
 	return rpmversion.Compare(rpmversion.ParseEVR(a), rpmversion.ParseEVR(b))
+}
+
+// aptSources fills the apt lists of each installed package. A host
+// without lists (apt never updated) is noted, not an error.
+func aptSources(fsys fs.FS, s *Snapshot) {
+	want := make([]aptsrc.Want, len(s.Packages))
+	for i, p := range s.Packages {
+		want[i] = aptsrc.Want{Name: p.Name, Arch: p.Arch, Version: p.EVR, Source: p.SourceName}
+	}
+	r, err := aptsrc.Read(fsys, aptsrc.DefaultDir, want)
+	if err != nil {
+		s.PackageDB.Notes = append(s.PackageDB.Notes, "apt lists not read: "+err.Error())
+		return
+	}
+	s.PackageDB.Notes = append(s.PackageDB.Notes, r.Notes...)
+	// Keep only the lists that carry something installed.
+	used := map[int]int{}
+	keep := func(ix []int) []int {
+		out := make([]int, 0, len(ix))
+		for _, i := range ix {
+			j, ok := used[i]
+			if !ok {
+				j = len(s.AptSources)
+				used[i] = j
+				s.AptSources = append(s.AptSources, r.Sources[i])
+			}
+			out = append(out, j)
+		}
+		return out
+	}
+	for i := range s.Packages {
+		s.Packages[i].AptSources = keep(r.Exact[i])
+		s.Packages[i].AptSourceName = keep(r.SourceName[i])
+	}
 }

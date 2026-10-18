@@ -98,6 +98,17 @@ func TestCollectLabAlma9(t *testing.T) {
 	if p := byName["tzdata"]; p.EVR != "2026b-1.el9" || p.Arch != "noarch" || p.SourceName != "tzdata" || p.SourceEVR != "2026b-1.el9" || p.State != "installed" {
 		t.Errorf("tzdata (downgraded on the VM): %+v", p)
 	}
+	// FromRepo from dnf's history: the downgrade and the install name
+	// their repository; a package of the image has none (ADR 0034).
+	if r := byName["tzdata"].FromRepo; r != "baseos" {
+		t.Errorf("tzdata from %q", r)
+	}
+	if r := byName["bc"].FromRepo; r != "appstream" && r != "baseos" {
+		t.Errorf("bc from %q", r)
+	}
+	if r := byName["bash"].FromRepo; r != "" {
+		t.Errorf("bash (in the image) from %q", r)
+	}
 	if p := byName["openssl"]; p.Epoch != 1 || !strings.HasPrefix(p.EVR, "1:3.5.8-") || p.Version != "3.5.8" {
 		t.Errorf("openssl (epoch 1): %+v", p)
 	}
