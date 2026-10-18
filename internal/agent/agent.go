@@ -17,6 +17,7 @@ import (
 	"tycana.ai/agent/evidence"
 	"tycana.ai/agent/internal/baseline"
 	"tycana.ai/agent/internal/collect"
+	"tycana.ai/agent/internal/exposure"
 	"tycana.ai/agent/internal/inventory"
 	"tycana.ai/agent/internal/state"
 	"tycana.ai/agent/internal/updates"
@@ -38,8 +39,11 @@ type HostInventory struct {
 
 // HostAssessment is the body of a host-assessment record.
 type HostAssessment struct {
-	Updates  *updates.Report  `json:"updates,omitempty"`
-	Restart  *collect.Restart `json:"restart,omitempty"`
+	Updates *updates.Report  `json:"updates,omitempty"`
+	Restart *collect.Restart `json:"restart,omitempty"`
+	// Exposure is what the matcher orders actions by (tycana-hq ADR
+	// 0029, ADR 0032).
+	Exposure *exposure.Report `json:"exposure,omitempty"`
 	Baseline *baseline.Report `json:"baseline,omitempty"`
 }
 

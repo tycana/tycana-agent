@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"errors"
 	"os"
 	"time"
 
@@ -33,10 +34,19 @@ func HostCollector(cfg Config) Collector {
 		} else {
 			as.Updates = &r
 		}
-		if r, err := collect.RestartState(ctx, snap, now); err != nil {
+		var rs collect.Restart
+		if rsnap, err := collect.RestartInputs(ctx, snap, now, &rs); err != nil {
 			fail("restart", err)
 		} else {
-			as.Restart = &r
+			collect.Analyze(rsnap, &rs)
+			as.Restart = &rs
+			as.Exposure = collect.Exposure(ctx, snap, rsnap, now)
+			for _, e := range as.Exposure.Errors {
+				fail("exposure", errors.New(e))
+			}
+			if !as.Exposure.Sockets.Read {
+				fail("exposure", errors.New("sockets: "+as.Exposure.Sockets.Error))
+			}
 		}
 		var exc []baseline.Exception
 		if cfg.Exceptions != "" {

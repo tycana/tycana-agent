@@ -394,6 +394,13 @@ func (r *Resolver) host(p string) string {
 	return filepath.Join(r.Root, filepath.FromSlash(p))
 }
 
+// Canonical resolves every symbolic link in the absolute path p inside
+// the resolver's root, as the kernel would on the host.
+func (r *Resolver) Canonical(p string) (string, error) { return r.canonical(p) }
+
+// Host returns the path of p under the resolver's root.
+func (r *Resolver) Host(p string) string { return r.host(p) }
+
 // canonical resolves every symlink in p inside Root, the way the kernel
 // would with Root as "/". Absolute link targets restart at Root.
 func (r *Resolver) canonical(p string) (string, error) {

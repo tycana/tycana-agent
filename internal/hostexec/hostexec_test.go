@@ -27,9 +27,10 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		AptConfigDump:          "/usr/bin/apt-config dump",
 		SystemctlShowUpdaterTimers: "/usr/bin/systemctl show --no-pager --timestamp=us+utc --property=Id,LoadState,UnitFileState,ActiveState,NextElapseUSecRealtime,LastTriggerUSec " +
 			"apt-daily.timer apt-daily-upgrade.timer dnf-automatic.timer dnf-automatic-install.timer dnf-automatic-download.timer dnf-automatic-notifyonly.timer",
-		LoginctlShowSession:       "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
-		SystemctlListDependencies: "/usr/bin/systemctl list-dependencies --plain --no-pager --all multi-user.target",
-		SystemctlShowUnits:        "/usr/bin/systemctl show --no-pager --property=Id,LoadState,ActiveState,SubState,UnitFileState,Where,What,Options,Type -- [names]",
+		LoginctlShowSession:         "/usr/bin/loginctl show-session --no-pager --property=Id --property=Service --property=Scope [names]",
+		SystemctlListDependencies:   "/usr/bin/systemctl list-dependencies --plain --no-pager --all multi-user.target",
+		SystemctlShowUnits:          "/usr/bin/systemctl show --no-pager --property=Id,LoadState,ActiveState,SubState,UnitFileState,Where,What,Options,Type -- [names]",
+		SystemctlShowSocketTriggers: "/usr/bin/systemctl show --no-pager --property=Id,Triggers -- [names]",
 	}
 	if len(registry) != len(want) {
 		t.Errorf("registry has %d commands, test lists %d", len(registry), len(want))
@@ -41,6 +42,17 @@ func TestRegistryIsReadOnly(t *testing.T) {
 		}
 		if got != want[id] {
 			t.Errorf("%s:\n got %s\nwant %s", id, got, want[id])
+		}
+	}
+}
+
+func TestSocketNames(t *testing.T) {
+	if err := socketNames([]string{"ssh.socket", "systemd-journald-dev-log.socket"}); err != nil {
+		t.Error(err)
+	}
+	for _, bad := range [][]string{nil, {"ssh.service"}, {"ssh.socket", "--all"}, {"*.socket"}} {
+		if err := socketNames(bad); err == nil {
+			t.Errorf("%q accepted", bad)
 		}
 	}
 }

@@ -111,3 +111,74 @@ func (h header) int32s(tag int32) []uint32 {
 	}
 	return out
 }
+
+// tagFileModes is FILEMODES, an int16 array (rpmtag.h).
+const tagFileModes = 1030
+
+// File is one file an installed package owns, as the database records
+// it.
+type File struct {
+	// Package is the owner's NAME.
+	Package string
+	// Path is the absolute path the package installs.
+	Path string
+	// Mode is the st_mode the package gives the file (type and
+	// permission bits, setuid included).
+	Mode uint16
+}
+
+// WalkFiles calls fn for every file of every package in the database in
+// dir under root, in database order. It reads each header once, as
+// "rpm -qa --dump" does. fn's error stops the walk.
+func WalkFiles(root, dir string, fn func(File) error) error {
+	db := filepath.Join(root, filepath.FromSlash(dir), DBFile)
+	d, err := sqlitero.Open(db)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = d.Close() }() // read-only
+	rows, err := d.QueryContext(context.Background(), "SELECT hnum, blob FROM Packages ORDER BY hnum")
+	if err != nil {
+		return fmt.Errorf("%s: %w", db, err)
+	}
+	defer func() { _ = rows.Close() }()
+	for rows.Next() {
+		var hnum int64
+		var blob []byte
+		if err := rows.Scan(&hnum, &blob); err != nil {
+			return fmt.Errorf("%s: %w", db, err)
+		}
+		h, err := parseHeader(blob)
+		if err != nil {
+			return fmt.Errorf("%s: header %d: %w", db, hnum, err)
+		}
+		name, _ := h.str(tagName)
+		bases, dirs, ix, modes := h.strs(tagBaseNames), h.strs(tagDirNames), h.int32s(tagDirIndexes), h.int16s(tagFileModes)
+		for i, b := range bases {
+			if i >= len(ix) || int(ix[i]) >= len(dirs) {
+				continue
+			}
+			f := File{Package: name, Path: dirs[ix[i]] + b}
+			if i < len(modes) {
+				f.Mode = modes[i]
+			}
+			if err := fn(f); err != nil {
+				return err
+			}
+		}
+	}
+	return rows.Err()
+}
+
+// int16s returns every element of an int16 array tag.
+func (h header) int16s(tag int32) []uint16 {
+	e, ok := h[tag]
+	if !ok || e.typ != typeInt16 {
+		return nil
+	}
+	out := make([]uint16, 0, e.count)
+	for i := uint32(0); i < e.count && int(i)*2+2 <= len(e.data); i++ {
+		out = append(out, binary.BigEndian.Uint16(e.data[i*2:]))
+	}
+	return out
+}

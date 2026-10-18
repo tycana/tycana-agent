@@ -12,9 +12,12 @@ import (
 	"time"
 
 	"tycana.ai/agent/internal/baseline"
+	"tycana.ai/agent/internal/exposure"
+	"tycana.ai/agent/internal/hostexec"
 	"tycana.ai/agent/internal/inventory"
 	"tycana.ai/agent/internal/inventory/kernel"
 	"tycana.ai/agent/internal/restart"
+	"tycana.ai/agent/internal/sockdiag"
 	"tycana.ai/agent/internal/updates"
 )
 
@@ -208,4 +211,29 @@ func Evaluate(ctx context.Context, b *baseline.Baseline, snap *inventory.Snapsho
 	}
 	r := baseline.Evaluate(b, h, exc, target, now)
 	return &r, nil
+}
+
+// Exposure reads, for each running unit of the restart snapshot, its
+// listening sockets, main program, and packages, and the host's setuid
+// packages (tycana-hq ADR 0029, ADR 0032). It needs AF_NETLINK and
+// ProtectProc=default in tycanad's unit and no privilege.
+func Exposure(ctx context.Context, inv *inventory.Snapshot, snap restart.Snapshot, now time.Time) *exposure.Report {
+	h := exposure.Host{
+		Root: "/", Proc: "/proc",
+		Cgroups:  func() (map[uint64]string, error) { return sockdiag.CgroupPaths("/sys/fs/cgroup") },
+		Format:   inv.PackageDB.Format,
+		RPMDir:   strings.TrimPrefix(inv.PackageDB.Path, "/"),
+		Sockets:  sockdiag.Listening,
+		Triggers: socketTriggers,
+	}
+	return exposure.Collect(ctx, h, snap, now)
+}
+
+// socketTriggers asks systemd for the Triggers= of each socket unit.
+func socketTriggers(ctx context.Context, sockets []string) (map[string][]string, error) {
+	res, err := hostexec.Run(ctx, hostexec.SystemctlShowSocketTriggers, sockets...)
+	if err != nil {
+		return nil, err
+	}
+	return exposure.ParseTriggers(res.Stdout), nil
 }

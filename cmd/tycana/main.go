@@ -23,6 +23,7 @@ Commands:
   history     package changes from dpkg and apt logs (--since DATE, --format json)
   updates     updates waiting on this host, and what its own autopilot installs (--format json)
   restart     services still using replaced files, and a waiting kernel (--format json)
+  exposure    ports, main program, and packages of each running unit; setuid packages (JSON)
   baseline    configuration baseline: coverage and score (--format json, --list)
   status      what to do now: updates by source package or advisory, reboot, restarts (no sudo)
   evidence    the signed state and its chain (status, sudo); export or verify a bundle
@@ -50,6 +51,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runUpdates(args[1:], stdout, stderr)
 	case "restart":
 		return runRestart(args[1:], stdout, stderr)
+	case "exposure":
+		return runExposure(args[1:], stdout, stderr)
 	case "baseline":
 		return runBaseline(args[1:], stdout, stderr)
 	case "status":

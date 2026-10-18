@@ -3,6 +3,7 @@ package hostexec
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -48,6 +49,10 @@ const (
 	// SystemctlListDependencies prints every unit multi-user.target
 	// depends on, recursively, one per line.
 	SystemctlListDependencies ID = "systemctl-list-dependencies"
+	// SystemctlShowSocketTriggers prints the units each named socket unit
+	// starts (tycana-hq ADR 0029: a socket that systemd holds for a socket
+	// unit stands for the units in its Triggers=).
+	SystemctlShowSocketTriggers ID = "systemctl-show-socket-triggers"
 )
 
 // UpdaterTimers are the timers SystemctlShowUpdaterTimers reports, in
@@ -133,6 +138,12 @@ var registry = map[ID]Spec{
 		Args:    []string{"list-dependencies", "--plain", "--no-pager", "--all", "multi-user.target"},
 		Timeout: 30 * time.Second,
 	},
+	SystemctlShowSocketTriggers: {
+		Paths:   []string{"/usr/bin/systemctl", "/bin/systemctl"},
+		Args:    []string{"show", "--no-pager", "--property=Id,Triggers", "--"},
+		Extra:   socketNames,
+		Timeout: 30 * time.Second,
+	},
 	LoginctlShowSession: {
 		Paths: []string{"/usr/bin/loginctl", "/bin/loginctl"},
 		// loginctl, unlike systemctl, ignores a comma list after --property.
@@ -187,6 +198,19 @@ func unitNames(names []string) error {
 }
 
 // maxNames bounds one call; callers batch above it.
+// socketNames accepts only socket unit names.
+func socketNames(names []string) error {
+	if err := unitNames(names); err != nil {
+		return err
+	}
+	for _, n := range names {
+		if !strings.HasSuffix(n, ".socket") {
+			return fmt.Errorf("hostexec: %q is not a socket unit", n)
+		}
+	}
+	return nil
+}
+
 const maxNames = 2000
 
 func packageNames(re *regexp.Regexp) func([]string) error {

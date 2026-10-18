@@ -131,3 +131,38 @@ func TestLabLookupFile(t *testing.T) {
 		t.Errorf("unowned file: %v", err)
 	}
 }
+
+// WalkFiles on the AlmaLinux 9 fixture: bash's program and su's setuid
+// bit, as "rpm -qf" and "rpm -q --dump" report them on the host.
+func TestLabWalkFiles(t *testing.T) {
+	root := materialize(t, "../../../testdata/lab/alma9/root")
+	dbDir, err := Locate(os.DirFS(root))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]File{}
+	n := 0
+	err = WalkFiles(root, dbDir, func(f File) error {
+		n++
+		if f.Path == "/usr/bin/bash" || f.Path == "/usr/bin/su" {
+			got[f.Path] = f
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b := got["/usr/bin/bash"]; b.Package != "bash" || b.Mode&0o170000 != 0o100000 || b.Mode&0o4000 != 0 {
+		t.Errorf("bash %+v", b)
+	}
+	if s := got["/usr/bin/su"]; s.Package != "util-linux" || s.Mode&0o4000 == 0 {
+		t.Errorf("su %+v", s)
+	}
+	if n < 10000 {
+		t.Errorf("%d files", n)
+	}
+	stop := errors.New("stop")
+	if err := WalkFiles(root, dbDir, func(File) error { return stop }); !errors.Is(err, stop) {
+		t.Errorf("stop: %v", err)
+	}
+}

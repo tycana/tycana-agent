@@ -9,6 +9,9 @@
 // The SQLite driver can write databases, so only internal/sqlitero, which
 // opens them read-only, may import it. internal/filetime may import
 // golang.org/x/sys/unix for two read-only calls, statx and lstat.
+// internal/sockdiag may import syscall and golang.org/x/sys/unix for one
+// netlink socket that sends socket-diagnostics dump requests, and statfs
+// (tycana-hq ADR 0029).
 //
 // Test files are exempt (they write fixtures under t.TempDir). The check is
 // syntactic and alias-aware but not type-aware; it is a tripwire, not a
@@ -34,6 +37,7 @@ var allowed = map[string]map[string]bool{
 	"internal/hostexec": {"os": true, "os/exec": true, "syscall": true, "golang.org/x/sys/unix": true},
 	"internal/sqlitero": {"modernc.org/sqlite": true},
 	"internal/filetime": {"golang.org/x/sys/unix": true},
+	"internal/sockdiag": {"syscall": true, "golang.org/x/sys/unix": true},
 }
 
 // forbiddenOS lists os.* functions that mutate the filesystem.
