@@ -20,15 +20,25 @@ separate future decision that would ship as a separate binary under a separate t
 
 | Layer | Mechanism | Where to check |
 |---|---|---|
-| Source | `tools/nowrite` parses every Go file and fails CI on filesystem-mutating calls, process execution, or raw syscalls outside `internal/state` and `internal/hostexec` | `make nowrite`, `.github/workflows/ci.yml` |
+| Source | `tools/nowrite` parses every Go file and fails CI on filesystem-mutating calls, process execution, or raw syscalls outside `internal/state` and `internal/hostexec` (read-only exceptions: `internal/filetime` for statx, `internal/sockdiag` for one socket-diagnostics netlink socket) | `make nowrite`, `.github/workflows/ci.yml` |
 | State | `internal/state` writes only the host key and the signed records in the state directory | `internal/state/` |
 | Process | `internal/hostexec` is the only package that runs a command; allowlisted read-only commands, fixed argument shapes, no shell, clean environment, timeouts | `internal/hostexec/` |
 | Service | systemd unit with no capabilities, `ProtectSystem=strict`, the dedicated system user `tycana`, seccomp filter, private devices; the only writable path is the state directory | `packaging/systemd/tycanad.service`, `make security-score` |
 | Release | reproducible builds, Sigstore signatures, SLSA L3 provenance, SBOM; no self-update | `VERIFY.md` |
 
-The unit's `systemd-analyze security` exposure is 1.2 (1.1 until ADR 0024 removed
-`PrivateUsers=yes` on 2026-10-17, so the baseline can read file owners) and CI fails if it
-rises above 1.5.
+The unit's `systemd-analyze security` exposure is 1.5 and CI fails if it rises above 1.5.
+It was 1.1 at M0 and 1.2 after tycana-hq ADR 0024 removed `PrivateUsers=yes` (2026-10-17, so
+the baseline can read file owners). ADR 0029 and ADR 0032 (2026-10-17) took it to 1.5:
+
+- `AF_NETLINK` in `RestrictAddressFamilies=`: the agent asks the kernel's socket diagnostics
+  which cgroup holds each listening socket, so it can tell which service listens on a port.
+  The dump is open to every user; changes over netlink need `CAP_NET_ADMIN`, which the unit
+  cannot get.
+- `ProtectProc=default` (was `invisible`): the agent can see every process's name and command
+  line, as `ps` shows them to any local user. It reads only `argv[0]` of each running unit's
+  main process, up to the first NUL, and keeps it only when it is the path of a file a
+  package owns; the rest of the command line is never kept. The ptrace check still closes
+  `maps`, `environ`, `fd`, and `mem` of other users.
 The remaining exposure is network access, which the agent will need to report to a control
 plane.
 
@@ -98,8 +108,10 @@ documented before it ships.
 - **Untrusted text on the host.** Package descriptions, changelogs, and service names are data.
   They are never interpreted as instructions by the agent or by any model downstream.
 - **Local privilege.** The agent runs as the unprivileged system user `tycana`, with no other
-  groups and an empty capability set. Compromising it yields read access to world-readable package metadata and the agent's
-  own state directory, nothing more.
+  groups and an empty capability set. Compromising it yields read access to world-readable
+  package metadata, the process list and command lines that `ps` shows any local user, the
+  socket list that `ss` shows any local user, and the agent's own state directory, nothing
+  more.
 
 ## 7. Reporting
 
